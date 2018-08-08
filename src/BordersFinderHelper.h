@@ -7,6 +7,8 @@
 
 #include "TH1.h"
 
+#include "Getter.h"
+
 namespace Centrality {
     
 class BordersFinderHelper {
@@ -14,10 +16,14 @@ class BordersFinderHelper {
 public:
     
     BordersFinderHelper(){}
+    void QA(const Getter& getter, const TH1F &histo);
+    void PlotHisto(const Getter& getter, const TH1F& histo);
+
     
 private:
     
 };
+
 }
 
 #endif //CENTRALITY_BORDERSFINDERHELPER_H

@@ -27,13 +27,16 @@ public:
     
     void SetRanges(const std::vector<float> &ranges) { ranges_ = ranges; }
     void SetRanges(int n, float min, float max) 
-    { 
+    {
         ranges_.clear();
 //         ranges_.reserve(n+1);
         
         for (int i=0; i<=n; ++i)
             ranges_.push_back( min + i*(max-min)/n );
     }
+    
+    void IsSpectator(bool is=true) { isspectator_ = is; }
+    
     
     
 private:
@@ -43,6 +46,9 @@ private:
         
     std::vector<float> ranges_;
     std::vector<double> borders_;
+    
+    bool isspectator_{false};
+    
 };
 }
 

@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
   
   Centrality::BordersFinder bf;
   bf.SetHisto(*histo);
-  bf.SetRanges( 40,0,100 );
+  bf.SetRanges( 10,0,100 );
 //   bf.SetRanges( {0,10,30,60,100} );
 
   bf.FindBorders();

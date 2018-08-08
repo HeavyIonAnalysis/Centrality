@@ -1,5 +1,6 @@
 #include "BordersFinder.h"
 #include "Getter.h"
+#include "BordersFinderHelper.h"
 
 #include <iostream>
 
@@ -11,16 +12,16 @@ void BordersFinder::FindBorders()
 {
     if (ranges_.size() < 2) return;
     if (norm_ == -1) norm_ = histo_.GetEntries();
+    if (!isspectator_) std::reverse(std::begin(ranges_), std::end(ranges_));
     
     uint iSlice{0};
     long int entriesCurrent{0};
     
     for (uint iBin=1; iBin<=histo_.GetNbinsX() && iSlice<ranges_.size() ; ++iBin)
     {
-        const long int entriesNeeeded = ranges_.at(iSlice)/100. * norm_;
+        const float step = isspectator_ ? ranges_.at(iSlice) : 100. - ranges_.at(iSlice);
+        const long int entriesNeeeded = step/100. * norm_;
         entriesCurrent += histo_.GetBinContent(iBin);
-        
-//         std::cout << entriesNeeeded << " " << entriesCurrent << std::endl;
         
         if (entriesCurrent >= entriesNeeeded)
         {
@@ -45,8 +46,15 @@ void BordersFinder::SaveBorders(std::string filename)
     
     getter.SetBorders(borders_);
     getter.SetRanges(ranges_);
+    getter.IsSpectator(isspectator_);
+
+    BordersFinderHelper h;
+    h.QA(getter, histo_);
     
-    std::cout << getter.GetCentrality(100) << std::endl;
+    getter.Write("getter");
+    
+    f->Close();
+    
     
 }
 
