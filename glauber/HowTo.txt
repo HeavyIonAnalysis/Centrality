@@ -1,0 +1,5 @@
+grep -n  "Chi2Min = " 3* | sed -e 's/  / /g' | sed -e 's/  / /g' | sed -e 's/  / /g'| cut -d " " -f 3,6,9,13 > FitInfo.dat
+TFile *f = new TFile("FitInfo_1.root", "new")
+TTree *n = new TTree("fit_tree",""); n->ReadFile("FitInfo.dat","f:mu:k:chi2",' ')
+n->Write()
+f->Close()
