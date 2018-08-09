@@ -30,7 +30,7 @@ void BordersFinder::FindBorders()
             
             borders_.push_back(border);
             
-            std::cout << "!!!!!" << border << std::endl;;
+            std::cout << ranges_.at(iSlice) << "%, border: " << border << std::endl;;
             iSlice++;
         }
     }
@@ -54,10 +54,6 @@ void BordersFinder::SaveBorders(std::string filename)
     getter.Write("getter");
     
     f->Close();
-    
-    
 }
-
-
 
 }

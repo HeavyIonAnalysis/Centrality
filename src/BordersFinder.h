@@ -37,8 +37,6 @@ public:
     
     void IsSpectator(bool is=true) { isspectator_ = is; }
     
-    
-    
 private:
     
     TH1F histo_;

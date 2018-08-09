@@ -1,6 +1,8 @@
 #include "Getter.h"
 #include <iostream>
 
+ClassImp(Centrality::Getter)
+
 namespace Centrality {
 
 
@@ -12,7 +14,6 @@ float Getter::GetCentrality(float value) const
     
 //     std::cout << value << " " << ranges_.at(ibin-1) << "  " << ranges_.at(ibin) << std::endl; 
     
-//     const float centrality = 0.5 * (ranges_.at(ibin-1) + ranges_.at(ibin) );
     const float centrality = 0.5 * ( ranges_.at(ibin-1) + ranges_.at(ibin) );
 
     return centrality;

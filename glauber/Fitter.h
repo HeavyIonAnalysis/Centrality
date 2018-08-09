@@ -91,7 +91,7 @@ namespace Glauber
         TString fMode{"Default"};
         
         TString fOutDirName{""};
-//         ClassDef(Fitter, 2);
+        ClassDef(Fitter, 2);
         
     };
 }
