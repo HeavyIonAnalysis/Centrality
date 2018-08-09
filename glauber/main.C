@@ -1,9 +1,7 @@
-#include "CentralityGetter.h"
-#include "CentralitySlicesFinder.h"
-#include "CentralityManager.h"
+#include <iostream>
 
-#include "glauber/Fitter.h"
-#include "glauber/FitterHelper.h"
+#include "Fitter.h"
+#include "FitterHelper.h"
 
 #include "TH1.h"
 #include "TH2.h"

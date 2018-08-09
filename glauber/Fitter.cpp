@@ -8,7 +8,7 @@
 #include "TMath.h"
 #include "TRandom.h"
 
-ClassImp(Glauber::Fitter)
+// ClassImp(Glauber::Fitter)
 
 // -----   Default constructor   -------------------------------------------
 Glauber::Fitter::Fitter(std::unique_ptr<TTree> tree) 

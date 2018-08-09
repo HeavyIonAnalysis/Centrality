@@ -7,7 +7,9 @@
 #include "TNamed.h"
 #include "TH1F.h"
 #include "TTree.h"
-#include "TMinuit.h"
+// #include "TMinuit.h"
+
+
 namespace Glauber
 {
     class Fitter
@@ -16,6 +18,7 @@ namespace Glauber
     public:
         
         /**   Default constructor   **/
+        Fitter() {};
         Fitter(std::unique_ptr<TTree> tree) ;
         /**   Destructor   **/
         virtual ~Fitter(){};
@@ -56,7 +59,7 @@ namespace Glauber
         TH1F GetNBDHisto ()        const { return fNbdHisto;   }
         TH1F GetNpartHisto ()      const { return fNpartHisto; }
         TH1F GetNcollHisto ()      const { return fNcollHisto;  }
-        TH1F GetBestFiHisto ()     const { return fBestFitHisto;   }
+        TH1F GetBestFiHisto ()     const { return fBestFitHisto;  }
 
         
     private:
@@ -88,7 +91,7 @@ namespace Glauber
         TString fMode{"Default"};
         
         TString fOutDirName{""};
-        ClassDef(Fitter, 2);
+//         ClassDef(Fitter, 2);
         
     };
 }

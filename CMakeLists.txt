@@ -8,8 +8,8 @@ set(SOURCES
         src/BordersFinder.cpp
         src/BordersFinderHelper.cpp
         src/Getter.cpp
-#         glauber/Fitter.cpp 
-#         glauber/FitterHelper.cpp 
+        glauber/Fitter.cpp 
+        glauber/FitterHelper.cpp 
         )
 
 string(REPLACE ".cpp" ".h" HEADERS "${SOURCES}")
@@ -28,10 +28,10 @@ find_package(ROOT REQUIRED COMPONENTS Core MathCore RIO Hist Tree)
 include(${ROOT_USE_FILE})
 add_definitions(${ROOT_CXX_FLAGS})
 
-include_directories(${CMAKE_SOURCE_DIR} ${ROOT_INCLUDE_DIRS} glauber)
+include_directories(${CMAKE_SOURCE_DIR} ${ROOT_INCLUDE_DIRS})
 
-ROOT_GENERATE_DICTIONARY(G__Interface ${INTERFACE_HEADERS} LINKDEF src/CentralityLinkDef.h)
-add_library(centrality SHARED ${SOURCES} G__Interface)
+ROOT_GENERATE_DICTIONARY(G__Centrality ${HEADERS} LINKDEF src/CentralityLinkDef.h)
+add_library(centrality SHARED ${SOURCES} G__Centrality)
 target_link_libraries(centrality ${ROOT_LIBRARIES})
 
 # Create a main program using the library
@@ -39,5 +39,5 @@ add_executable(main main.cpp)
 target_link_libraries(main centrality ${ROOT_LIBRARIES})
 target_include_directories(main PUBLIC src)
 
-# add_executable(glauber glauber/main.C)
-# target_link_libraries(glauber ${ROOT_LIBRARIES} centrality)
+add_executable(glauber glauber/main.C)
+target_link_libraries(glauber ${ROOT_LIBRARIES} centrality)
