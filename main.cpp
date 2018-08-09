@@ -27,6 +27,8 @@ int main(int argc, char **argv) {
   bf.SetRanges( 10,0,100 );
 //   bf.SetRanges( {0,10,30,60,100} );
 
+  bf.IsSpectator(false);
+  
   bf.FindBorders();
   bf.SaveBorders("test.root");
   

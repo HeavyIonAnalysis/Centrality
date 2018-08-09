@@ -20,7 +20,7 @@ void BordersFinderHelper::QA(const Getter& getter, const TH1F& histo)
         const Float_t Mult = histo.GetBinCenter(iBin+1) + (r->Rndm()-0.5);
         if (Mult <= 0) continue;
         
-        std::cout << Mult << "  " << getter.GetCentrality(Mult) << std::endl;
+//         std::cout << Mult << "  " << getter.GetCentrality(Mult) << std::endl;
         
         for (Int_t j = 0; j<histo.GetBinContent(iBin+1); ++j )
         {
