@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(centrality)
+project(Centrality)
 set(CMAKE_MACOSX_RPATH 1)
 set(CMAKE_cpp_STANDARD 14)
 set(CMAKE_BUILD_TYPE debug)
@@ -31,13 +31,13 @@ add_definitions(${ROOT_CXX_FLAGS})
 include_directories(${CMAKE_SOURCE_DIR} ${ROOT_INCLUDE_DIRS})
 
 ROOT_GENERATE_DICTIONARY(G__Centrality ${HEADERS} LINKDEF src/CentralityLinkDef.h)
-add_library(centrality SHARED ${SOURCES} G__Centrality)
-target_link_libraries(centrality ${ROOT_LIBRARIES})
+add_library(Centrality SHARED ${SOURCES} G__Centrality)
+target_link_libraries(Centrality ${ROOT_LIBRARIES})
 
 # Create a main program using the library
 add_executable(main main.cpp)
-target_link_libraries(main centrality ${ROOT_LIBRARIES})
+target_link_libraries(main Centrality ${ROOT_LIBRARIES})
 target_include_directories(main PUBLIC src)
 
 add_executable(glauber glauber/main.C)
-target_link_libraries(glauber ${ROOT_LIBRARIES} centrality)
+target_link_libraries(glauber ${ROOT_LIBRARIES} Centrality)

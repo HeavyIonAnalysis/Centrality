@@ -7,7 +7,4 @@
 #pragma link C++ class Glauber::Fitter+;
 #pragma link C++ class Centrality::Getter+;
 
-
-// Glauber::Fitter.
-
 #endif

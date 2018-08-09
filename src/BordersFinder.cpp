@@ -50,6 +50,7 @@ void BordersFinder::SaveBorders(std::string filename)
 
     BordersFinderHelper h;
     h.QA(getter, histo_);
+    h.PlotHisto(getter, histo_);
     
     getter.Write("getter");
     

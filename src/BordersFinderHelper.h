@@ -16,8 +16,8 @@ class BordersFinderHelper {
 public:
     
     BordersFinderHelper(){}
-    void QA(const Getter& getter, const TH1F &histo);
-    void PlotHisto(const Getter& getter, const TH1F& histo);
+    void QA(const Getter& getter, const TH1F &histo) const;
+    void PlotHisto(const Getter& getter, TH1F& histo) const;
 
     
 private:
