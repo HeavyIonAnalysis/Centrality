@@ -70,7 +70,7 @@ float Glauber::Fitter::Nancestors(float f) const
     else if  (fMode == "Npart")      return TMath::Power(fNpart, f); 
     else if  (fMode == "Ncoll")      return TMath::Power(fNcoll, f);
     
-    return -1;
+    return -1.;
 }
 
 float Glauber::Fitter::NancestorsMax(float f) const
@@ -83,7 +83,7 @@ float Glauber::Fitter::NancestorsMax(float f) const
     else if  (fMode == "Npart")      return TMath::Power(NpartMax, f); 
     else if  (fMode == "Ncoll")      return TMath::Power(NcollMax, f);
     
-    return -1;
+    return -1.;
 }
 
 /*
