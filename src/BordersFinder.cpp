@@ -52,7 +52,7 @@ void BordersFinder::SaveBorders(std::string filename)
     h.QA(getter, histo_);
     h.PlotHisto(getter, histo_);
     
-    getter.Write("getter");
+    getter.Write("centr_getter");
     
     f->Close();
 }

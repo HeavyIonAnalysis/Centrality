@@ -41,7 +41,6 @@ private:
     bool isspectator_{false};
 
     ClassDef(Getter, 2);
-
     
 };
 }

@@ -8,6 +8,7 @@ set(SOURCES
         src/BordersFinder.cpp
         src/BordersFinderHelper.cpp
         src/Getter.cpp
+        src/Converter1D.cpp
         glauber/Fitter.cpp 
         glauber/FitterHelper.cpp 
         )
