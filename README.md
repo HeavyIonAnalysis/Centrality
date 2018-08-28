@@ -39,6 +39,6 @@ Minimal example on how to obtain centrality for a given event:
 
 ### Glauber
 
-**glauber** has
+HowTo for **glauber** is coming soon
 
     ./glauber 0.9 10 10 200
