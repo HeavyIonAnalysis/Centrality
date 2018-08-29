@@ -62,7 +62,7 @@ void BordersFinderHelper::PlotHisto2D(const Getter& getter, TH2F& histo, TF1& fu
     for (uint i=0; i<borders.size(); ++i)
     {
         const float x1 = 0;
-        const float x2 = 500;
+        const float x2 = 1;
         
         const float y1 = borders.at(i)[0] + borders.at(i)[1] * x1;
         const float y2 = borders.at(i)[0] + borders.at(i)[1] * x2;

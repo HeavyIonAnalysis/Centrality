@@ -21,6 +21,10 @@ float Getter::GetCentrality(float value) const
 
 float Getter::GetCentrality(float xvalue, float yvalue) const 
 {
+    xvalue /= xmax_;
+    yvalue /= ymax_;
+    
+    
     for (uint iborder=0; iborder<borders2d_.size()-1; ++iborder )
     {
         const float y1 = borders2d_.at(iborder)[0] + borders2d_.at(iborder)[1]*xvalue ;

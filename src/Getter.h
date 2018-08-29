@@ -37,14 +37,17 @@ public:
     void AddBorder2D( const std::array<float,2> &border2D ) { borders2d_.push_back(border2D); }
     const std::vector <std::array<float,2>>& GetBorders2D() const { return  borders2d_; };
     
+    void SetMax(float x, float y) { xmax_=x; ymax_=y; }
     
 private:
     
     TAxis borders_;
-    std::vector <std::array<float,2>> borders2d_;
-     
+    std::vector <std::array<float,2>> borders2d_;     
     std::vector<float> ranges_;
 
+    float xmax_{1.};
+    float ymax_{1.};    
+    
     bool isspectator_{false};
 
     ClassDef(Getter, 2);

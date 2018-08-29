@@ -13,23 +13,53 @@
 
 namespace Centrality {
 
+void BordersFinder2D::Init()
+{
+    fitname_ = "pol2";
+
+    for (int iBin=histo2d_.GetNbinsX(); iBin>=1; --iBin)
+    {
+        if ( histo2d_.Integral(iBin, iBin, 0, histo2d_.GetNbinsY()) >= 1. )
+        {
+            xmax_ = histo2d_.GetXaxis()->GetBinCenter(iBin);
+            break;
+        }
+    }
+    for (int iBin=histo2d_.GetNbinsY(); iBin>=1; --iBin)
+    {
+        if ( histo2d_.Integral(0, histo2d_.GetNbinsY(), iBin, iBin) >= 1. )
+        {
+            ymax_ = histo2d_.GetYaxis()->GetBinCenter(iBin);
+            break;
+        }
+    }
+    histo2d_.GetXaxis()->SetLimits(0, histo2d_.GetXaxis()->GetXmax()/xmax_);
+    histo2d_.GetYaxis()->SetLimits(0, histo2d_.GetYaxis()->GetXmax()/ymax_);
+}
+    
+
 std::unique_ptr<TH1F> BordersFinder2D::Convert()
-{    
+{
+    Init();
+    
     std::unique_ptr<TH1F> histo1d{new TH1F("histo1d", "", histo2d_.GetNbinsX(), histo2d_.GetXaxis()->GetXmin(), histo2d_.GetXaxis()->GetXmax())};
     
-    Fit2D("pol2");
+    Fit2D(fitname_);
     std::vector <double> par;
     for (int ipar=0; ipar<fit_->GetNpar(); ++ipar)
         par.push_back( fit_->GetParameter(ipar) );
         
     for (int iBin=1; iBin<=histo2d_.GetNbinsX(); ++iBin)
     {
-        if ( histo2d_.Integral(iBin, iBin, 0, histo2d_.GetNbinsY()) <= 1. ) continue;
+//         if ( histo2d_.Integral(iBin, iBin, 0, histo2d_.GetNbinsY()) <= 1. ) continue;
+                
+        const float x1 = iBin==1 ? -0.2 : histo2d_.GetXaxis()->GetBinCenter(iBin-1);
+        const float x2 = iBin==histo2d_.GetNbinsX() ? 1.2 : histo2d_.GetXaxis()->GetBinCenter(iBin);
+
+        const auto kb1 = FindNorm( par, x1);
+        const auto kb2 = FindNorm( par, x2);
         
-        const float x = histo2d_.GetXaxis()->GetBinCenter(iBin);
-        const auto kb = FindNorm( par, x);
-        
-        const float integral = FindIntegral(kb);
+        const float integral = FindIntegral(kb1, kb2);
 //         std::cout << integral << std::endl;
 
         histo1d->SetBinContent(iBin, integral);
@@ -37,7 +67,7 @@ std::unique_ptr<TH1F> BordersFinder2D::Convert()
     return std::move(histo1d);
 }
 
-float BordersFinder2D::FindIntegral( const std::array <float,2> &norm )
+float BordersFinder2D::FindIntegral( const std::array <float,2> &norm1, const std::array <float,2> &norm2 )
 {
     float sum{0.};
     
@@ -51,9 +81,10 @@ float BordersFinder2D::FindIntegral( const std::array <float,2> &norm )
             const float x = histo2d_.GetXaxis()->GetBinCenter(iBinX);
             const float y = histo2d_.GetYaxis()->GetBinCenter(iBinY);
 
-            const float ynorm = norm[0] + norm[1] * x;
+            const float ynorm1 = norm1[0] + norm1[1] * x;
+            const float ynorm2 = norm2[0] + norm2[1] * x;
             
-            if (y<ynorm)
+            if (y<ynorm1 && y>ynorm2)
                 sum += entries;
         }
     }
@@ -71,7 +102,8 @@ void BordersFinder2D::SaveBorders2D(std::string filename)
     
     getter.SetRanges(this->GetRanges());
     getter.IsSpectator(this->GetIsSpectator());
-
+    getter.SetMax(xmax_, ymax_);
+    
     std::vector <double> par;
     for (int ipar=0; ipar<fit_->GetNpar(); ++ipar)
         par.push_back( fit_->GetParameter(ipar) );
@@ -96,7 +128,7 @@ void BordersFinder2D::SaveBorders2D(std::string filename)
 void BordersFinder2D::Fit2D(const TString func)
 {
     std::unique_ptr<TProfile> prof{ histo2d_.ProfileX() };
-    fit_ = new TF1("fit", func, histo2d_.GetXaxis()->GetXmin(), histo2d_.GetXaxis()->GetXmax() );
+    fit_ = new TF1("fit", func, histo2d_.GetXaxis()->GetXmin(), histo2d_.GetXaxis()->GetXmax() );    
     prof->Fit(fit_, "Q");
 }
     

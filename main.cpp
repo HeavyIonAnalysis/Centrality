@@ -22,7 +22,6 @@ int main(int argc, char **argv) {
 
   std::unique_ptr <TFile> fIn {TFile::Open(argv[1], "read")};
   std::unique_ptr <TH1F> histo {(TH1F*) (fIn->Get(argv[2]))};
-
   std::unique_ptr <TH2F> histo2d {(TH2F*) (fIn->Get("hMEcorr"))};
   
   Centrality::BordersFinder2D conv2d;
@@ -33,7 +32,7 @@ int main(int argc, char **argv) {
   conv2d.SetHisto(*h1d);
   conv2d.SetRanges( 10,0,100 );   // number of bins, min, max value
 //   bf.SetRanges( {0,10,30,60,100} );  // centrality bins borders with array
-  conv2d.IsSpectator(true);  // true if impact parameter b correlated with estimator (spectators eneggy), false - anticorrelated (multiplicity of produced particles) 
+  conv2d.IsSpectator(false);  // true if impact parameter b correlated with estimator (spectators eneggy), false - anticorrelated (multiplicity of produced particles) 
 
   conv2d.FindBorders();
   
