@@ -18,9 +18,9 @@ public:
     void FindBorders();
     void SaveBorders(std::string filename);
 
-    
+
     void SetHisto(const TH1F &h)  { histo_ = h; }
-    const TH1F& GetHisto() const  { return histo_; }
+    TH1F& GetHisto() { return histo_; }   // not const to use Draw etc
     
     void SetNormalization (long int norm) { norm_ = norm; }
     long int GetNormalization () const { return norm_; }
@@ -36,6 +36,11 @@ public:
     }
     
     void IsSpectator(bool is=true) { isspectator_ = is; }
+    
+    const std::vector<float>& GetRanges() const { return ranges_; }
+    const std::vector<double>& GetBorders() const { return borders_; }
+    bool GetIsSpectator() const { return isspectator_; }
+    
     
 private:
     

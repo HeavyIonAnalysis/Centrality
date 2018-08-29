@@ -1,6 +1,6 @@
 #include "Getter.h"
 #include "BordersFinder.h"
-#include "Converter1D.h"
+#include "BordersFinder2D.h"
 
 #include <iostream>
 #include <vector>
@@ -25,25 +25,33 @@ int main(int argc, char **argv) {
 
   std::unique_ptr <TH2F> histo2d {(TH2F*) (fIn->Get("hMEcorr"))};
   
-  Centrality::Converter1D conv2d;
+  Centrality::BordersFinder2D conv2d;
   conv2d.SetHisto2D( std::move(*histo2d) );
-  conv2d.Convert();
   
+  std::unique_ptr<TH1F> h1d = conv2d.Convert();
 
-  if (false)
-  {
-  
-  Centrality::BordersFinder bf;
-  bf.SetHisto( *histo);
-  bf.SetRanges( 10,0,100 );   // number of bins, min, max value
+  conv2d.SetHisto(*h1d);
+  conv2d.SetRanges( 10,0,100 );   // number of bins, min, max value
 //   bf.SetRanges( {0,10,30,60,100} );  // centrality bins borders with array
-  bf.IsSpectator(true);  // true if impact parameter b correlated with estimator (spectators eneggy), false - anticorrelated (multiplicity of produced particles) 
+  conv2d.IsSpectator(true);  // true if impact parameter b correlated with estimator (spectators eneggy), false - anticorrelated (multiplicity of produced particles) 
 
-  bf.FindBorders();
+  conv2d.FindBorders();
   
   std::string outfilename = "test.root";
-  bf.SaveBorders(outfilename);
-  }
+  conv2d.SaveBorders2D(outfilename);
+
+
+//   Centrality::BordersFinder bf;
+//   bf.SetHisto(*h1d);
+//   bf.SetRanges( 10,0,100 );   // number of bins, min, max value
+// //   bf.SetRanges( {0,10,30,60,100} );  // centrality bins borders with array
+//   bf.IsSpectator(true);  // true if impact parameter b correlated with estimator (spectators eneggy), false - anticorrelated (multiplicity of produced particles) 
+// 
+//   bf.FindBorders();
+//   
+//   std::string outfilename = "test.root";
+//   bf.SaveBorders(outfilename);
+  
   auto end = std::chrono::system_clock::now();
   std::chrono::duration<double> elapsed_seconds = end - start;
   std::cout << "elapsed time: " << elapsed_seconds.count() << " s\n";

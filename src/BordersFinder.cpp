@@ -11,13 +11,13 @@ namespace Centrality {
 void BordersFinder::FindBorders()
 {
     if (ranges_.size() < 2) return;
-    if (norm_ == -1) norm_ = histo_.GetEntries();
+    if (norm_ == -1) norm_ = histo_.Integral(0, histo_.GetNbinsX());
     if (!isspectator_) std::reverse(std::begin(ranges_), std::end(ranges_));
     
     uint iSlice{0};
     long int entriesCurrent{0};
     
-    for (uint iBin=1; iBin<=histo_.GetNbinsX() && iSlice<ranges_.size() ; ++iBin)
+    for (int iBin=1; iBin<=histo_.GetNbinsX() && iSlice<ranges_.size() ; ++iBin)
     {
         const float step = isspectator_ ? ranges_.at(iSlice) : 100. - ranges_.at(iSlice);
         const long int entriesNeeeded = step/100. * norm_;
@@ -40,17 +40,17 @@ void BordersFinder::SaveBorders(std::string filename)
 {
     Getter getter;
     
-    if (borders_.size() < 2) return;
+    if (this->GetBorders().size() < 2) return;
     
     TFile *f = TFile::Open(filename.data(), "recreate");
     
-    getter.SetBorders(borders_);
-    getter.SetRanges(ranges_);
-    getter.IsSpectator(isspectator_);
+    getter.SetBorders(this->GetBorders());
+    getter.SetRanges(this->GetRanges());
+    getter.IsSpectator(this->GetIsSpectator());
 
     BordersFinderHelper h;
-    h.QA(getter, histo_);
-    h.PlotHisto(getter, histo_);
+    h.QA(getter, this->GetHisto());
+    h.PlotHisto(getter, this->GetHisto());
     
     getter.Write("centr_getter");
     

@@ -19,5 +19,18 @@ float Getter::GetCentrality(float value) const
     return centrality;
 }
 
+float Getter::GetCentrality(float xvalue, float yvalue) const 
+{
+    for (uint iborder=0; iborder<borders2d_.size()-1; ++iborder )
+    {
+        const float y1 = borders2d_.at(iborder)[0] + borders2d_.at(iborder)[1]*xvalue ;
+        const float y2 = borders2d_.at(iborder+1)[0] + borders2d_.at(iborder+1)[1]*xvalue ;
+        
+        if ( yvalue < y1 && yvalue > y2)
+            return 0.5 * ( ranges_.at(iborder-1) + ranges_.at(iborder) );
+    }
+    
+    return -1.;
+}
 
 }

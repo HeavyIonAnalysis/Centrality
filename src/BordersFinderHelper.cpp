@@ -37,7 +37,7 @@ void BordersFinderHelper::PlotHisto(const Getter& getter, TH1F& histo) const
     auto borders = getter.GetBorders();
     TLine *line;
 
-    for (uint i=0; i<borders.GetNbins(); ++i)
+    for (int i=0; i<borders.GetNbins(); ++i)
     {
         const float border = borders.GetBinLowEdge(i+1);
         const int height = histo.GetBinContent( histo.FindBin(border) );
@@ -50,6 +50,30 @@ void BordersFinderHelper::PlotHisto(const Getter& getter, TH1F& histo) const
     delete line;
 }
 
+void BordersFinderHelper::PlotHisto2D(const Getter& getter, TH2F& histo, TF1& func) const
+{
+    std::unique_ptr <TCanvas> c {new TCanvas("c", "", 1200, 800)};
+    histo.Draw("colz");
+    func.Draw("same");
+    
+    const auto& borders = getter.GetBorders2D();
+    TLine *line{nullptr};
+
+    for (uint i=0; i<borders.size(); ++i)
+    {
+        const float x1 = 0;
+        const float x2 = 500;
+        
+        const float y1 = borders.at(i)[0] + borders.at(i)[1] * x1;
+        const float y2 = borders.at(i)[0] + borders.at(i)[1] * x2;
+        
+        line = new TLine(x1, y1, x2 ,y2); 
+        line->Draw("same");
+    }
+
+    c->Write("histo");
+    delete line;
+}
 
     
 
