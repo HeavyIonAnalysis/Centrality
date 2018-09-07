@@ -50,8 +50,8 @@ private:
     TH1F histo_;
     long int norm_{-1};
         
-    std::vector<float> ranges_;
-    std::vector<double> borders_;
+    std::vector<float> ranges_{};
+    std::vector<double> borders_{};
     
     bool isspectator_{false};
     

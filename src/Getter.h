@@ -45,8 +45,8 @@ public:
 private:
     
     TAxis borders_;
-    std::vector <std::array<float,2>> borders2d_;     
-    std::vector<float> ranges_;
+    std::vector <std::array<float,2>> borders2d_{};     
+    std::vector<float> ranges_{};
 
     float xmax_{1.};
     float ymax_{1.};    
