@@ -1,6 +1,9 @@
-//
-// Created by Viktor Klochkov on 08.08.18.
-//
+/** @file   Getter.h
+    @class  Centrality::Getter
+    @author Viktor Klochkov (klochkov44@gmail.com)
+    @date   August 2018
+    @brief  Class to calculate centrality class
+*/
 
 #ifndef CENTRALITY_GETTER_H
 #define CENTRALITY_GETTER_H

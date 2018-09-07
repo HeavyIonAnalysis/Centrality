@@ -1,6 +1,9 @@
-//
-// Created by Viktor Klochkov on 08.08.18.
-//
+/** @file   BordersFinderHelper.h
+    @class  Centrality::BordersFinderHelper
+    @author Viktor Klochkov (klochkov44@gmail.com)
+    @date   August 2018
+    @brief  Class for centrality QA and plots producing
+*/
 
 #ifndef CENTRALITY_BORDERSFINDERHELPER_H
 #define CENTRALITY_BORDERSFINDERHELPER_H

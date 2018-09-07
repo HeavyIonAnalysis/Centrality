@@ -1,3 +1,9 @@
+/** @file   Fitter.h
+    @class  Glauber::Fitter
+    @author Viktor Klochkov (klochkov44@gmail.com)
+    @date   August 2018
+    @brief  Class to fit histo with Glauber based function
+*/
 
 #ifndef GlauberFitter_H
 #define GlauberFitter_H 1

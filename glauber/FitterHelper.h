@@ -1,3 +1,8 @@
+/** @file   FitterHelper.h
+    @author Viktor Klochkov (klochkov44@gmail.com)
+    @date   August 2018
+    @brief  Methods for fit QA
+*/
 
 #ifndef GlauberFitterHelper_H
 #define GlauberFitterHelper_H 1

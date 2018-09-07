@@ -1,6 +1,9 @@
-//
-// Created by Viktor Klochkov on 08.08.18.
-//
+/** @file   BordersFinder2D.h
+    @class  Centrality::BordersFinder2D
+    @author Viktor Klochkov (klochkov44@gmail.com)
+    @date   August 2018
+    @brief  Class to determine centrality for 2D case. Inherited from Centrality::BordersFinder.
+*/
 
 #ifndef CENTRALITY_BORDERSFINDER2D_H
 #define CENTRALITY_BORDERSFINDER2D_H
