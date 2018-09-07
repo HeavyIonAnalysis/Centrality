@@ -14,13 +14,18 @@
 
 ### General
 
-**main** has 2 arguments:
+**main** has 3 arguments:
   1. input file name
   2. input histo name
+  3. is input histo is 2D (false or true)
 
 Example how to run it with test input file:
 
-    ./main ../input/test_input.root hMreco
+    ./main ../input/test_input.root hMreco false
+
+or in case of 2D histogram
+
+    ./main ../input/test_input.root hMEcorr true
 
 To modify options (centrality ranges, detector type, etc) change corresponding lines in file main.cpp:
 
