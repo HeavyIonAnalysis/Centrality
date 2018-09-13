@@ -42,3 +42,6 @@ target_include_directories(main PUBLIC src)
 
 add_executable(glauber glauber/main.C)
 target_link_libraries(glauber ${ROOT_LIBRARIES} Centrality)
+
+install(FILES ${HEADERS} DESTINATION include)
+install(TARGETS Centrality DESTINATION lib)
