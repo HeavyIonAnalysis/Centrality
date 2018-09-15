@@ -8,6 +8,11 @@ namespace Centrality {
 
 float Getter::GetCentrality(float value) const 
 {
+    if (!isinitialized_) 
+    {
+        std::cout << "Centrality::Getter is not initialized!" << std::endl;
+        exit(-1);
+    }
     const int ibin = borders_.FindBin(value);    
     if ( ibin == 0 || ibin > borders_.GetNbins() )
         return -1;
@@ -21,9 +26,14 @@ float Getter::GetCentrality(float value) const
 
 float Getter::GetCentrality(float xvalue, float yvalue) const 
 {
+    if (!isinitialized2D_) 
+    {
+        std::cout << "Centrality::Getter is not initialized!" << std::endl;
+        exit(-1);
+    }
+    
     xvalue /= xmax_;
     yvalue /= ymax_;
-    
     
     for (uint iborder=0; iborder<borders2d_.size()-1; ++iborder )
     {

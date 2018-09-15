@@ -9,6 +9,7 @@ set(SOURCES
         src/BordersFinderHelper.cpp
         src/Getter.cpp
         src/BordersFinder2D.cpp
+        src/Container.cpp
         glauber/Fitter.cpp 
         glauber/FitterHelper.cpp 
         )

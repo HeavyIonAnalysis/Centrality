@@ -1,7 +1,7 @@
 /** @file   BordersFinder.h
     @class  Centrality::BordersFinder
     @author Viktor Klochkov (klochkov44@gmail.com)
-    @date   August 2018
+    @author Ilya Selyuzhenkov (ilya.selyuzhenkov@gmail.com)
     @brief  Class to determine centrality
 */
 
