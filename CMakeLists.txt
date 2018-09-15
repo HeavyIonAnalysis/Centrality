@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(Centrality)
 set(CMAKE_MACOSX_RPATH 1)
-set(CMAKE_cpp_STANDARD 14)
+set(CMAKE_cpp_STANDARD 11)
 set(CMAKE_BUILD_TYPE debug)
 
 set(SOURCES
