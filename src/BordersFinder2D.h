@@ -36,7 +36,7 @@ public:
     std::array <float,2> FindNorm (const std::vector <double> par, float x);
     float FindIntegral( const std::array <float,2> &norm1, const std::array <float,2> &norm2);
 
-    void SaveBorders2D(std::string filename);
+    void SaveBorders2D(const std::string &filename, const std::string &getter_name);
     
     /**
      *

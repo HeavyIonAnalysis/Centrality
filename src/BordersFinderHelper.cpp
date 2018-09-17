@@ -26,7 +26,13 @@ void BordersFinderHelper::QA(const Getter& getter, const TH1F& histo) const
             hCentr.Fill( getter.GetCentrality(Mult + (r->Rndm()-0.5)) );
         }
     }
-    hCentr.Write("qa_histo");
+    hCentr.Write(name_ + "_qa");
+    if (ispdf_)
+    {
+        std::unique_ptr <TCanvas> c {new TCanvas("c", "", 1200, 800)};
+        hCentr.Draw();
+        c->SaveAs(name_ + "_qa" + ".pdf");
+    }
 }
 
 void BordersFinderHelper::PlotHisto(const Getter& getter, TH1F& histo) const
@@ -46,7 +52,11 @@ void BordersFinderHelper::PlotHisto(const Getter& getter, TH1F& histo) const
         line->Draw("same");
     }
     c->SetLogy();
-    c->Write("histo");
+    c->Write(name_ + "_histo_1d");
+
+    if (ispdf_)
+        c->SaveAs(name_ + "_histo_1d" + ".pdf");
+
     delete line;
 }
 
@@ -71,7 +81,11 @@ void BordersFinderHelper::PlotHisto2D(const Getter& getter, TH2F& histo, TF1& fu
         line->Draw("same");
     }
 
-    c->Write("histo");
+    c->Write(name_ + "_histo_2d");
+    
+    if (ispdf_)
+        c->SaveAs(name_ + "_histo_2d" + ".pdf");
+
     delete line;
 }
 

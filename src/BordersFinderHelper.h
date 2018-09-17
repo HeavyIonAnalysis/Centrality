@@ -25,9 +25,12 @@ public:
     void PlotHisto(const Getter& getter, TH1F& histo) const;
     void PlotHisto2D(const Getter& getter, TH2F& histo, TF1& func) const;
 
-    
+    void SetName(const TString name) { name_ = name; }
+    void SetIsPdf(bool is = true) { ispdf_ = is; }
 private:
     
+    TString name_{"test"};
+    bool ispdf_{false};
 };
 
 }

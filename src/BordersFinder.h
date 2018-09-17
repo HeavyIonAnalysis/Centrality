@@ -19,7 +19,7 @@ public:
     BordersFinder(){}
     
     void FindBorders();
-    void SaveBorders(std::string filename);
+    void SaveBorders(const std::string &filename, const std::string &getter_name);
 
 
     void SetHisto(const TH1F &h)  { histo_ = h; }

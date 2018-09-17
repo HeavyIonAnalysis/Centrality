@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
                                     // false - anticorrelated (multiplicity of produced particles) 
 
         bf.FindBorders();
-        bf.SaveBorders(outfilename);
+        bf.SaveBorders(outfilename, "centr_getter_1d");
     }
     else if ( strcmp( argv[3], "true") == 0 )
     {
@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
                                     // false - anticorrelated (multiplicity of produced particles) 
         
         bf.FindBorders();
-        bf.SaveBorders2D(outfilename);
+        bf.SaveBorders2D(outfilename, "centr_getter_2d");
     }
         
     auto end = std::chrono::system_clock::now();

@@ -92,13 +92,13 @@ float BordersFinder2D::FindIntegral( const std::array <float,2> &norm1, const st
 }
 
 
-void BordersFinder2D::SaveBorders2D(std::string filename)
+void BordersFinder2D::SaveBorders2D(const std::string &filename, const std::string &getter_name)
 {
     Getter getter;
     
     if (this->GetBorders().size() < 2) return;
     
-    TFile *f = TFile::Open(filename.data(), "recreate");
+    std::unique_ptr<TFile> f{TFile::Open(filename.data(), "update")};
     
     getter.SetRanges(this->GetRanges());
     getter.IsSpectator(this->GetIsSpectator());
@@ -113,13 +113,16 @@ void BordersFinder2D::SaveBorders2D(std::string filename)
         const auto kb = FindNorm( par, iborder);
         getter.AddBorder2D(kb);
     }
+    getter.Write(getter_name.c_str());
 
+//     f->mkdir( ("dir_" + getter_name).c_str());
+//     f->cd( ("dir_" + getter_name).c_str() );
+    
     BordersFinderHelper h;
-//     h.QA(getter, this->GetHisto());
+    h.SetName(getter_name);
+    h.SetIsPdf(true);    
     h.PlotHisto(getter, this->GetHisto());
     h.PlotHisto2D(getter, histo2d_, *fit_);
-    
-    getter.Write("centr_getter2D");
     
     f->Close();
 }

@@ -36,23 +36,28 @@ void BordersFinder::FindBorders()
     }
 }
 
-void BordersFinder::SaveBorders(std::string filename)
+void BordersFinder::SaveBorders(const std::string &filename, const std::string &getter_name)
 {
     Getter getter;
     
     if (this->GetBorders().size() < 2) return;
     
-    TFile *f = TFile::Open(filename.data(), "recreate");
+    std::unique_ptr<TFile> f{TFile::Open(filename.data(), "update")};
     
     getter.SetBorders(this->GetBorders());
     getter.SetRanges(this->GetRanges());
     getter.IsSpectator(this->GetIsSpectator());
 
+    getter.Write(getter_name.c_str());
+    
+//     f->mkdir( ("dir_" + getter_name).c_str());
+//     f->cd( ("dir_" + getter_name).c_str() );
+
     BordersFinderHelper h;
+    h.SetName(getter_name);
+    h.SetIsPdf(true);    
     h.QA(getter, this->GetHisto());
     h.PlotHisto(getter, this->GetHisto());
-    
-    getter.Write("centr_getter");
     
     f->Close();
 }
