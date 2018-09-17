@@ -1,10 +1,10 @@
 build:
   stage: build
   script: 
-    source /home/vklochkov/Soft/root/root6/root-6.10.08/build/bin/thisroot.sh
-    mkdir build && cd ./build
-    cmake ../
-    make
+    - source /home/vklochkov/Soft/root/root6/root-6.10.08/build/bin/thisroot.sh
+    - mkdir build && cd ./build
+    - cmake ../
+    - make
 
 
 
