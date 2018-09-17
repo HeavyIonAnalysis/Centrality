@@ -29,6 +29,8 @@ public:
         return find != centrality_.end() ? find->second : -1;
     }
     
+    void Clear() { centrality_.clear(); }
+    
 private:
     
     std::map <uint, float> centrality_;
