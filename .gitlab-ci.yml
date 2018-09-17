@@ -12,9 +12,11 @@ build:
 test:
   stage: test
   script:
+  - cd build
   - ./main ../input/test_input.root hMreco false
   stage: test
   script:
+  - cd build
   - ./main ../input/test_input.root hMEcorr true
 #  stage: glauber
 #  script:
