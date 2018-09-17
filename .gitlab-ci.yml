@@ -8,16 +8,13 @@ build:
     - make
 
 
-# run tests using the binary built before
+# run tests
 test:
   stage: test
   script:
-  - cd build
-  - ./main ../input/test_input.root hMreco false
-  stage: test
-  script:
-  - cd build
-  - ./main ../input/test_input.root hMEcorr true
-#  stage: glauber
-#  script:
-#  - ./glauber 1.0 9 10 ../input/test_input.root hMEcorr true
+    - source /home/vklochkov/Soft/root/root6/root-6.10.08/build/bin/thisroot.sh
+    - mkdir build && cd ./build
+    - cmake ../
+    - make
+    - ./main ../input/test_input.root hMreco false
+    - ./main ../input/test_input.root hMEcorr true
