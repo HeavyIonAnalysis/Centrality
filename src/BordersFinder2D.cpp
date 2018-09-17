@@ -115,7 +115,7 @@ void BordersFinder2D::SaveBorders2D(std::string filename)
     }
 
     BordersFinderHelper h;
-    h.QA(getter, this->GetHisto());
+//     h.QA(getter, this->GetHisto());
     h.PlotHisto(getter, this->GetHisto());
     h.PlotHisto2D(getter, histo2d_, *fit_);
     
