@@ -18,3 +18,8 @@ test:
     - make
     - ./main ../input/test_input.root hMreco false
     - ./main ../input/test_input.root hMEcorr true
+    - hadd test.pdf *.pdf
+  artifacts:
+    paths:
+     - "test.pdf"
+
