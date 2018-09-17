@@ -18,8 +18,10 @@ test:
     - make
     - ./main ../input/test_input.root hMreco false
     - ./main ../input/test_input.root hMEcorr true
-    - convert *.pdf test.pdf
+    - convert *.pdf ../test.pdf
+    - cd ../macro
+    - root -l TestGetter.C
   artifacts:
     paths:
-     - "build/test.pdf"
+     - "test.pdf"
 
