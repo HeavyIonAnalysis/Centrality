@@ -1,0 +1,16 @@
+
+build:
+  stage: build
+  script: 
+    source ~/Soft/root/root6/root-6.10.08/build/bin/thisroot.sh
+    mkdir build && cd ./build
+    cmake ../
+    make
+
+
+
+# run tests using the binary built before
+# test:
+#   stage: test
+#   script:
+#     - ./runmytests.sh
