@@ -10,10 +10,10 @@ build:
 
 # run tests using the binary built before
 test:
-  stage: borders_1d
+  stage: test
   script:
   - ./main ../input/test_input.root hMreco false
-  stage: borders_2d
+  stage: test
   script:
   - ./main ../input/test_input.root hMEcorr true
 #  stage: glauber
