@@ -1,3 +1,4 @@
+# compile the project
 build:
   stage: build
   script: 
@@ -7,9 +8,14 @@ build:
     - make
 
 
-
 # run tests using the binary built before
-# test:
-#   stage: test
-#   script:
-#     - ./runmytests.sh
+test:
+  stage: borders_1d
+  script:
+  - ./main ../input/test_input.root hMreco false
+  stage: borders_2d
+  script:
+  - ./main ../input/test_input.root hMEcorr true
+#  stage: glauber
+#  script:
+#  - ./glauber 1.0 9 10 ../input/test_input.root hMEcorr true
