@@ -1,0 +1,20 @@
+# compile the project
+build:
+  stage: build
+  script: 
+    - source /home/vklochkov/Soft/root/root6/root-6.10.08/build/bin/thisroot.sh
+    - mkdir build && cd ./build
+    - cmake ../
+    - make
+
+
+# run tests
+test:
+  stage: test
+  script:
+    - source /home/vklochkov/Soft/root/root6/root-6.10.08/build/bin/thisroot.sh
+    - mkdir build && cd ./build
+    - cmake ../
+    - make
+    - ./main ../input/test_input.root hMreco false
+    - ./main ../input/test_input.root hMEcorr true
