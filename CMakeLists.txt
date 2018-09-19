@@ -3,6 +3,7 @@ project(Centrality)
 set(CMAKE_MACOSX_RPATH 1)
 set(CMAKE_cpp_STANDARD 11)
 set(CMAKE_BUILD_TYPE debug)
+set(PROJECT_VERSION 1.0)
 
 set(SOURCES
         src/BordersFinder.cpp
@@ -44,5 +45,83 @@ target_include_directories(main PUBLIC src)
 add_executable(glauber glauber/main.C)
 target_link_libraries(glauber ${ROOT_LIBRARIES} Centrality)
 
-install(FILES ${HEADERS} DESTINATION include)
-install(TARGETS Centrality DESTINATION lib)
+# install(FILES ${HEADERS} DESTINATION include)
+# install(TARGETS Centrality DESTINATION lib)
+
+# Packaging routine
+# For complete explanation
+# @see https://cmake.org/cmake/help/git-master/manual/cmake-packages.7.html#creating-packages
+include(GenerateExportHeader)
+
+
+generate_export_header(Centrality)
+set_property(TARGET Centrality PROPERTY VERSION ${PROJECT_VERSION})
+set_property(TARGET Centrality PROPERTY SOVERSION ${PROJECT_VERSION})
+set_property(TARGET Centrality PROPERTY INTERFACE_Centrality_MAJOR_VERSION 1)
+set_property(TARGET Centrality APPEND PROPERTY COMPATIBLE_INTERFACE_STRING INTERFACE_Centrality_MAJOR_VERSION)
+
+install(TARGETS Centrality EXPORT CentralityTargets
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        RUNTIME DESTINATION bin
+        INCLUDES DESTINATION include
+        )
+
+install(
+        FILES
+        ${HEADERS}
+        "${CMAKE_CURRENT_BINARY_DIR}/centrality_export.h"
+        DESTINATION
+        include
+        COMPONENT
+        Devel
+)
+
+install(
+        FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/${PCM_FILE_NAME}_rdict.pcm"
+        DESTINATION
+        lib
+        OPTIONAL
+)
+
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+        "${CMAKE_CURRENT_BINARY_DIR}/Centrality/CentralityConfigVersion.cmake"
+        VERSION ${PROJECT_VERSION}
+        COMPATIBILITY AnyNewerVersion
+)
+
+export(EXPORT CentralityTargets
+        FILE "${CMAKE_CURRENT_BINARY_DIR}/Centrality/CentralityTargets.cmake")
+
+set(ConfigPackageLocation lib/cmake/Centrality)
+
+set(Centrality_INCLUDE_DIR "include")
+set(Centrality_LIBRARY_DIR "lib")
+
+configure_package_config_file(
+        CentralityConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/Centrality/CentralityConfig.cmake
+        INSTALL_DESTINATION ${ConfigPackageLocation}
+        PATH_VARS Centrality_INCLUDE_DIR Centrality_LIBRARY_DIR
+        #  [NO_SET_AND_CHECK_MACRO]
+        #  [NO_CHECK_REQUIRED_COMPONENTS_MACRO]
+        #  [INSTALL_PREFIX <path>]
+)
+
+install(EXPORT CentralityTargets
+        FILE
+        CentralityTargets.cmake
+        DESTINATION
+        ${ConfigPackageLocation}
+        )
+
+install(FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/Centrality/CentralityConfig.cmake"
+        "${CMAKE_CURRENT_BINARY_DIR}/Centrality/CentralityConfigVersion.cmake"
+        DESTINATION
+        ${ConfigPackageLocation}
+        COMPONENT
+        Devel
+        )
+
