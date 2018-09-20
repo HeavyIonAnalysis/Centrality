@@ -18,6 +18,7 @@ test:
     - make
     - ./main ../input/test_input.root hMreco false
     - ./main ../input/test_input.root hMEcorr true
+    - ./glauber 1 10
     - convert *.pdf ../test.pdf
     - cd ../macro
     - root -l TestGetter.C
