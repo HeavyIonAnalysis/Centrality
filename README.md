@@ -42,8 +42,35 @@ Minimal example on how to obtain centrality for a given event:
     cd macro
     root -l TestGetter.C
 
-### Glauber
+### MC-Glauber fit
 
-HowTo for **glauber** is coming soon
+Glauber model based fitting procedure is similar to one used by ALICE collaboration:
 
-    ./glauber 0.9 10 10 200
+http://inspirehep.net/record/1215085
+
+Before running fitting procedure one needs to create MC-Glauber input file using software 
+(there is also a test file in input directory)
+
+https://tglaubermc.hepforge.org/downloads/
+
+Fitting function is
+```math
+   F(f, \mu, k) = N_A(f)  F_{NBD}(\mu, k)
+```
+where $`F_{NDB}`$ is Negative Binomial Distribution, $`N_A`$ is defined for example as: 
+```math
+   N_A(f) = f N_{part} + (1-f) N_{coll}
+```
+$`N_{part}`$ and $`N_{coll}`$ are parameters from MC-Glauber.
+
+To modify options (input files, fit function, fit ranges, etc) change corresponding lines in file glauber/main.cpp:
+
+**glauber** has 2 arguments:
+  1. f value
+  2. k value
+
+$`\mu`$ value is fitted automatically.
+
+### Doxygen documentation
+    doxygen Doxyfile
+File Doxygen/html/index.html with documentation will be created
