@@ -203,7 +203,7 @@ void Glauber::Fitter::FindMuGoldenSection (float *mu, float *chi2, float mu_min,
  * @param SigmaStep ??
  * @param nEvents
  */
-void Glauber::Fitter::FitGlauber (float *par, Float_t f0, Int_t k0, Int_t k1, Int_t nEvents)
+float Glauber::Fitter::FitGlauber (float *par, Float_t f0, Int_t k0, Int_t k1, Int_t nEvents)
 {
     float f_fit{-1};
     float mu_fit{-1}; 
@@ -228,45 +228,33 @@ void Glauber::Fitter::FitGlauber (float *par, Float_t f0, Int_t k0, Int_t k1, In
     tree->Branch("k",    &k,    "k/F");   
     tree->Branch("chi2", &chi2, "chi2/F");   
     tree->Branch("sigma",&sigma,"sigma/F");   
-    
-//     for (int i=0; i<nf; i++)
-//     {
-        f = f0;
-        for (int j=k0; j<k1; j++)
-        {
-            mu = fMaxValue / NancestorsMax(f) ;
-            k = j;
-            const float mu_min = 0.7*mu;
-            const float mu_max = 1.0*mu;
-            
-//             for (int imu=-10; imu<=5; imu++)
-//             {
-//                 const float mu_1 = (1. + 2 * imu/100.) * mu;
-//                 SetGlauberFitHisto (f, mu_1, k, nEvents, true);
-//                 chi2 = GetChi2();
-//                 std::cout << "f = " << f << " mu1 = " << mu_1 << " k = " << k << " chi2 = " << chi2 << std::endl; 
-//                 
-//             }
-            
-            FindMuGoldenSection (&mu, &chi2, mu_min, mu_max, f, k, nEvents, 10);
-            sigma = ( mu/k + 1 ) * mu;
-            h1 = fGlauberFitHisto;
-            
-            tree->Fill();
-            
-            if (chi2 < Chi2Min)
-            {
-                f_fit = f;
-                mu_fit = mu;
-                k_fit = k;
-                Chi2Min = chi2;
-                fBestFitHisto = fGlauberFitHisto;
-            }            
 
-        } 
-// //     }
+    f = f0;
+    for (int j=k0; j<k1; j++)
+    {
+        mu = fMaxValue / NancestorsMax(f) ;
+        k = j;
+        const float mu_min = 0.7*mu;
+        const float mu_max = 1.0*mu;
+
+        FindMuGoldenSection (&mu, &chi2, mu_min, mu_max, f, k, nEvents, 10);
+        sigma = ( mu/k + 1 ) * mu;
+        h1 = fGlauberFitHisto;
+        
+        tree->Fill();
+        
+        if (chi2 < Chi2Min)
+        {
+            f_fit = f;
+            mu_fit = mu;
+            k_fit = k;
+            Chi2Min = chi2;
+            fBestFitHisto = fGlauberFitHisto;
+        }            
+
+    } 
     
-    std::cout << " Total number of events = " << fGlauberFitHisto.Integral(0, fNbins) << std::endl;
+//    std::cout << " Total number of events = " << fGlauberFitHisto.Integral(0, fNbins) << std::endl;
     tree->Write();
     file->Write();
     file->Close();
@@ -274,12 +262,13 @@ void Glauber::Fitter::FitGlauber (float *par, Float_t f0, Int_t k0, Int_t k1, In
 //     tree->Delete(); 
 //     file->Delete(); 
 
-    std::cout << "f = " << f_fit << "    mu = " << mu_fit << "    k = " << k_fit << "    Chi2Min = " << Chi2Min << std::endl; 
+//    std::cout << "f = " << f_fit << "    mu = " << mu_fit << "    k = " << k_fit << "    Chi2Min = " << Chi2Min << std::endl; 
     
     par[0] = f_fit;
-    par[0] = mu_fit;
-    par[0] = k_fit;
+    par[1] = mu_fit;
+    par[2] = k_fit;
     
+    return Chi2Min;
 }
 
 /**

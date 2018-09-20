@@ -34,7 +34,7 @@ namespace Glauber
         void NormalizeGlauberFit ();
         void DrawHistos (Bool_t isSim = true, Bool_t isData = true, Bool_t isGlauber = false, Bool_t isNBD = false);
         
-        void FitGlauber (float *par, Float_t f0, Int_t k0, Int_t k1, Int_t nEvents);
+        float FitGlauber (float *par, Float_t f0, Int_t k0, Int_t k1, Int_t nEvents);
         void FindMuGoldenSection (Float_t *mu, Float_t *chi2, Float_t mu_min, Float_t mu_max, Float_t f, Float_t k, Int_t nEvents = 10000, Int_t nIter = 5);
         
         Float_t GetChi2 (void) const;
