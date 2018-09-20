@@ -230,7 +230,7 @@ float Glauber::Fitter::FitGlauber (float *par, Float_t f0, Int_t k0, Int_t k1, I
     tree->Branch("sigma",&sigma,"sigma/F");   
 
     f = f0;
-    for (int j=k0; j<k1; j++)
+    for (int j=k0; j<=k1; j++)
     {
         mu = fMaxValue / NancestorsMax(f) ;
         k = j;

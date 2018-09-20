@@ -42,7 +42,7 @@ add_executable(main main.cpp)
 target_link_libraries(main Centrality ${ROOT_LIBRARIES})
 target_include_directories(main PUBLIC src)
 
-add_executable(glauber glauber/main.C)
+add_executable(glauber glauber/main.cpp)
 target_link_libraries(glauber ${ROOT_LIBRARIES} Centrality)
 
 # install(FILES ${HEADERS} DESTINATION include)

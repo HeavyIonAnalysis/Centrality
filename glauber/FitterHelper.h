@@ -39,7 +39,7 @@ namespace Glauber
         /*const*/ TH1F hNpart = fit.GetNpartHisto();
         /*const*/ TH1F hBestFit = fit.GetBestFiHisto();
 
-        std::unique_ptr <TFile> fOut{TFile::Open("c.root", "recreate")}; 
+        std::unique_ptr <TFile> fOut{TFile::Open("glauber_qa.root", "recreate")}; 
 
         if (isSim){
             c1->cd(1);
@@ -86,6 +86,7 @@ namespace Glauber
         }
 
         c1->Write();
+        c1->SaveAs("glauber.pdf");
         fOut->Close();
     }
     
