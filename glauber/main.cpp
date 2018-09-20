@@ -27,23 +27,28 @@ int main(int argc, char *argv[])
     // Modify this part according to your needs
     // *****************************************
 
-    const Int_t min_bin = 50;
+    ///  |   mode    |   function for Na     |
+    ///  |   Default |  Npart + (1-f)*Ncoll  |
+    ///  |   PSD     |     f - Npart         |
+    ///  |   Npart   |     Npart^f           |
+    ///  |   Ncoll   |     Ncoll^f           |
     const TString mode = "Default";
     
-    const TString glauber_filename = "/home/vklochkov/Data/glauber/pbpb/30agev/glau_pbpb_ntuple_signn_31.0_7.6AGeV_CM_30AGeV_LC.root";
+    const TString glauber_filename = "../input/glauber_auau_sigma_30_100k.root";   // input files
+    const TString glauber_treename = "nt_Au_Au";
     const TString in_filename = "../input/test_input.root";
     const TString histoname = "hMreco";
 
-    const Int_t max_bin = 400;
-    const Int_t nevents = 199000;
+    const Int_t min_bin = 50;      // not fitting low multiplicity region due to trigger bias, etc
+    const Int_t max_bin = 10000;   // very large number to fit the whole histo
+    const Int_t nevents = 100000;
 
-    const TString treename = "nt_Pb_Pb";
     const TString outdir = ".";
     // *****************************************
     // *****************************************
 
     std::unique_ptr<TFile> glauber_file{ TFile::Open(glauber_filename, "read") };
-    std::unique_ptr<TTree> glauber_tree{ (TTree*) glauber_file->Get(treename) };
+    std::unique_ptr<TTree> glauber_tree{ (TTree*) glauber_file->Get(glauber_treename) };
 
     std::unique_ptr<TFile> f{TFile::Open(in_filename)};    
     TH1F *hdata = (TH1F*)f->Get(histoname);

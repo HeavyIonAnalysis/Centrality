@@ -28,7 +28,8 @@ Glauber::Fitter::Fitter(std::unique_ptr<TTree> tree)
 void Glauber::Fitter::Init(int nEntries)
 {
     if ( nEntries < 0 || nEntries > fSimTree->GetEntries() ){
-        std::cout << "Init: *** ERROR - Number of Entries < 0 or less that number of entries in input tree" << std::endl;
+        std::cout << "Init: *** ERROR - number of entries < 0 or less that number of entries in input tree" << std::endl;
+        std::cout << "Init: *** number of entries in input tree = " << fSimTree->GetEntries() << std::endl;        
         exit(EXIT_FAILURE);
     }
     
