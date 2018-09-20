@@ -72,7 +72,7 @@ install(
         ${HEADERS}
         "${CMAKE_CURRENT_BINARY_DIR}/centrality_export.h"
         DESTINATION
-        include
+        include/centrality
         COMPONENT
         Devel
 )
