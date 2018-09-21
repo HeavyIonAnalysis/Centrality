@@ -71,8 +71,8 @@ int main(int argc, char *argv[])
     
     Glauber::DrawHistos(fitter, true, true, true, true);
 
-    const float range[2] = {100, 160.};
-    std::unique_ptr<TH1F> hB(fitter.GetModelHisto (range, "Npart", par, 100000));
+    const float range[2] = {300, 350.};
+    std::unique_ptr<TH1F> hB(fitter.GetModelHisto (range, "B", par, 100000));
     hB->SaveAs( "b_test.root" );
     
     std::cout << "END!" << std::endl;

@@ -372,7 +372,6 @@ std::unique_ptr<TH1F> Glauber::Fitter::GetModelHisto (const float range[2], TStr
         for (int j=0; j<Na; ++j){
             nHits += (int)fNbdHisto.GetRandom();
         }
-//         nHits += random.Rndm();
         
         if ( nHits > range[0] && nHits < range[1] ){
             hModel->Fill(modelpar);
