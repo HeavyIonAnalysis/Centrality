@@ -141,10 +141,10 @@ void Glauber::Fitter::NormalizeGlauberFit ()
  *
  * @param mu mean value of negative binominal distribution (we are looking for it)
  * @param chi2 return value (indicates good match)
- * @param mu_min lower search edge
- * @param mu_max upper search edge
+ * @param mu_min lower search edge for mean value NBD
+ * @param mu_max upper search edge for mean value NBD
  * @param f parameter of Na
- * @param k ??
+ * @param k NBD parameter
  * @param nEvents
  * @param nIter
  */
@@ -197,11 +197,10 @@ void Glauber::Fitter::FindMuGoldenSection (float *mu, float *chi2, float mu_min,
 /**
  * Find the best match
  *
- * @param nf amount of f-steps
- * @param f0 lower edge (of what)
- * @param f1 upper edge (of what)
- * @param nsigma amount of sigma-steps
- * @param SigmaStep ??
+ * @param return value of best fit parameters
+ * @param f0 parameter of Na, for which chi2 will be calculated
+ * @param k0 lower search edge for NBD parameter
+ * @param k1 upper search edge for NBD parameter
  * @param nEvents
  */
 float Glauber::Fitter::FitGlauber (float *par, Float_t f0, Int_t k0, Int_t k1, Int_t nEvents)
@@ -254,17 +253,10 @@ float Glauber::Fitter::FitGlauber (float *par, Float_t f0, Int_t k0, Int_t k1, I
         }            
 
     } 
-    
-//    std::cout << " Total number of events = " << fGlauberFitHisto.Integral(0, fNbins) << std::endl;
     tree->Write();
     file->Write();
     file->Close();
-    
-//     tree->Delete(); 
-//     file->Delete(); 
 
-//    std::cout << "f = " << f_fit << "    mu = " << mu_fit << "    k = " << k_fit << "    Chi2Min = " << Chi2Min << std::endl; 
-    
     par[0] = f_fit;
     par[1] = mu_fit;
     par[2] = k_fit;
@@ -274,7 +266,7 @@ float Glauber::Fitter::FitGlauber (float *par, Float_t f0, Int_t k0, Int_t k1, I
 
 /**
  * Compare fGlauberFitHisto with fDataHisto
- * @return
+ * @return chi2 value
  */
 float Glauber::Fitter::GetChi2 () const 
 {
@@ -322,7 +314,7 @@ void Glauber::Fitter::SetNBDhist(float mu, float k)
  * @param n argument
  * @param mu mean
  * @param k argument
- * @return
+ * @return NBD for a given parameters
  */
 float Glauber::Fitter::NBD(float n, float mu, float k) const
 {
@@ -348,7 +340,14 @@ float Glauber::Fitter::NBD(float n, float mu, float k) const
 
     return F;
 }
-
+/**
+ * Creates histo with a given model parameter distribution
+ * @param range observable range
+ * @param name name of the MC-Glauber model parameter 
+ * @param par array with fit parameters
+ * @param Nevents
+ * @return pointer to the histogram 
+ */
 std::unique_ptr<TH1F> Glauber::Fitter::GetModelHisto (const float range[2], TString name, const float par[3], int nEvents)
 {    
     const float f =  par[0];

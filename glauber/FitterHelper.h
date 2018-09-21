@@ -1,6 +1,6 @@
 /** @file   FitterHelper.h
     @author Viktor Klochkov (klochkov44@gmail.com)
-    @date   August 2018
+    @author Ilya Selyuzhenkov (ilya.selyuzhenkov@gmail.com)
     @brief  Methods for fit QA
 */
 
