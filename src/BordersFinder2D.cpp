@@ -58,7 +58,7 @@ std::unique_ptr<TH1F> BordersFinder2D::Convert()
 //         if ( histo2d_.Integral(iBin, iBin, 0, histo2d_.GetNbinsY()) <= 1. ) continue;
                 
         const float x1 = iBin==1 ? -0.2 : histo2d_.GetXaxis()->GetBinCenter(iBin-1);
-        const float x2 = iBin==histo2d_.GetNbinsX() ? 1.2 : histo2d_.GetXaxis()->GetBinCenter(iBin);
+        const float x2 = histo2d_.GetXaxis()->GetBinCenter(iBin);
 
         const auto norm1 = FindNorm( par, x1);
         const auto norm2 = FindNorm( par, x2);
