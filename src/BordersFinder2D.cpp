@@ -27,7 +27,7 @@ void BordersFinder2D::Init()
     }
     for (int iBin=histo2d_.GetNbinsY(); iBin>=1; --iBin)
     {
-        if ( histo2d_.Integral(0, histo2d_.GetNbinsY(), iBin, iBin) >= 1. )
+        if ( histo2d_.Integral(0, histo2d_.GetNbinsX(), iBin, iBin) >= 1. )
         {
             ymax_ = histo2d_.GetYaxis()->GetBinCenter(iBin);
             break;
@@ -37,7 +37,11 @@ void BordersFinder2D::Init()
     histo2d_.GetYaxis()->SetLimits(0, histo2d_.GetYaxis()->GetXmax()/ymax_);
 }
     
-
+/**
+ * Converts 2D histo to 1D. Transformation is done moving along 
+ * fit to 2D distribution and counting number of entries perpendicular to it.
+ * @return pointer to 1D histo
+ */
 std::unique_ptr<TH1F> BordersFinder2D::Convert()
 {
     Init();
@@ -56,10 +60,10 @@ std::unique_ptr<TH1F> BordersFinder2D::Convert()
         const float x1 = iBin==1 ? -0.2 : histo2d_.GetXaxis()->GetBinCenter(iBin-1);
         const float x2 = iBin==histo2d_.GetNbinsX() ? 1.2 : histo2d_.GetXaxis()->GetBinCenter(iBin);
 
-        const auto kb1 = FindNorm( par, x1);
-        const auto kb2 = FindNorm( par, x2);
+        const auto norm1 = FindNorm( par, x1);
+        const auto norm2 = FindNorm( par, x2);
         
-        const float integral = FindIntegral(kb1, kb2);
+        const float integral = FindIntegral(norm1, norm2);
 //         std::cout << integral << std::endl;
 
         histo1d->SetBinContent(iBin, integral);
@@ -67,6 +71,12 @@ std::unique_ptr<TH1F> BordersFinder2D::Convert()
     return std::move(histo1d);
 }
 
+/**
+ * Find number of entries between lines norm1 and norm2
+ * @param norm1 first line parametrization y=a+bx
+ * @param norm2 seconsd line parametrization
+ * @return number of entries (integral)
+ */
 float BordersFinder2D::FindIntegral( const std::array <float,2> &norm1, const std::array <float,2> &norm2 )
 {
     float sum{0.};
@@ -144,7 +154,7 @@ void BordersFinder2D::Fit2D(const TString func)
  */
 std::array <float,2> BordersFinder2D::FindNorm (const std::vector <double> par, float x)
 {
-    std::array <float,2> kb;
+    std::array <float,2> ret;
     const float dx = (histo2d_.GetXaxis()->GetXmax() - histo2d_.GetXaxis()->GetXmin()) / 10000. ;
 
     /* left */
@@ -161,10 +171,10 @@ std::array <float,2> BordersFinder2D::FindNorm (const std::vector <double> par, 
         
     const float c = -cx*x - cy*polN(par, x);
     
-    kb[1] = -cx/cy;
-    kb[0] = -c/cy;    
-    return kb;
-}    
+    ret[0] = -c/cy;    
+    ret[1] = -cx/cy;
+    return ret;
+}
     
 
 }

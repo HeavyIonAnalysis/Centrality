@@ -25,17 +25,14 @@ public:
     
     BordersFinder2D(){}
         
-    
     void SetHisto2D(TH2F&& histo2d) { histo2d_ = histo2d; }
     TH2F&& GetHisto2D() { return std::move(histo2d_); }
     
     void Init();
     std::unique_ptr<TH1F> Convert();
     void Fit2D(const TString func);
-
     std::array <float,2> FindNorm (const std::vector <double> par, float x);
     float FindIntegral( const std::array <float,2> &norm1, const std::array <float,2> &norm2);
-
     void SaveBorders2D(const std::string &filename, const std::string &getter_name);
     
     /**
