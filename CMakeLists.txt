@@ -33,8 +33,13 @@ add_definitions(${ROOT_CXX_FLAGS})
 
 include_directories(${CMAKE_SOURCE_DIR} ${ROOT_INCLUDE_DIRS})
 
-ROOT_GENERATE_DICTIONARY(G__Centrality ${HEADERS} LINKDEF src/CentralityLinkDef.h)
-add_library(Centrality SHARED ${SOURCES} G__Centrality)
+set(DICT_FILE_NAME G__${PROJECT_NAME})
+set(PCM_FILE_NAME lib${PROJECT_NAME})
+
+
+
+ROOT_GENERATE_DICTIONARY(${DICT_FILE_NAME} ${HEADERS} LINKDEF src/CentralityLinkDef.h)
+add_library(Centrality SHARED ${SOURCES} ${DICT_FILE_NAME})
 target_link_libraries(Centrality ${ROOT_LIBRARIES})
 
 # Create a main program using the library
