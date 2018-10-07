@@ -27,9 +27,10 @@ Members description
 
 ## Namespaces
 
-The AnalysisTree software uses a few namespaces:
+The Centrality software uses a few namespaces:
 
-* Core
+* Centrality
+* Glauber
 * ...
 
 The selection of name spaces is reflected also in the directory structure for the packages.
