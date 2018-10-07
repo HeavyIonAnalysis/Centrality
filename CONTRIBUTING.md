@@ -94,30 +94,30 @@ In general, avoid abbreviations in variable and class names. Here is a list of a
  * NBD: Negative Binomial Distribution
  *  ...  
 
-# Const correctness and constness issues
+## Const correctness and constness issues
 It is of utmost importance that all classes, functions and methods respect the correct and logical use of const modifier. Methods that do not change class data members should be declared const. Function and method parameters should be declared const if they are not intended to be changed inside of the function body. This is even more true when references are passed through the parameters.
 
 In this respect the use of const_cast is strongly discouraged since it can unravel weird compiler bugs.
 
 The rule of a thumb for each programmer should be that first of all a new variable (if possible) is declared not before the value for it is available (i.e. no C-style declarations of variables at the beginning of the code block) and that every new local variable is declared const by default. A forward declaration of a local variable should be used only in special cases when its value will be known only after complex processing (possibly taking place inside of a nested scope).
 
-# NULL vs. nullptr
+## NULL vs. nullptr
 Note that NULL is a (macro) remainder from C and should be avoided. nullptr is meant as a replacement to NULL. nullptr provides a typesafe pointer value representing an empty (null) pointer. The general rule of thumb that I recommend is that you should start using nullptr whenever you would have used NULL in the past. Even better: avoid usage of pointers completely. Almost everything can be done with references instead and is more bug-resistant.
 
-# Pointer * and reference & placement
+## Pointer * and reference & placement
 The * and & modifiers are part of the type and there thus they belong:
 
     Core::Track& foo;
 
-# Constructor initializer list
+## Constructor initializer list
 If possible put it directly after member declaration in the header
 
     Double32_t energy_{0}; // track energy in GeV
 
-# Increment, decrement
+## Increment, decrement
 As default, only pre-increment (++i) and pre-decrement (--i) operators should be used, unless the post-increment/-decrement (i++) feature is explicitly required. The reason is that the post- versions require temporary storage of the previous value of a variable. The compiler will (most probably) optimize such waste away for the built-in types (int etc) but this does not happen for custom code of the various iterators (STL, Offline). The bad habit of placing ++ after the variables can be avoided by forcing yourself to use pre- versions of operators everywhere.
 
-# Forbidden practices
+## Forbidden practices
 Generally, the C/FORTRAN-hackish style should be avoided. In particular, the following practices are absolutely forbidden.
 
 Do not use fixed size C arrays when variable size arrays are needed, such as
