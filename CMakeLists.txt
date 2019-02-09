@@ -11,8 +11,8 @@ set(SOURCES
         src/Getter.cpp
         src/BordersFinder2D.cpp
         src/Container.cpp
-        glauber/Fitter.cpp 
-        glauber/FitterHelper.cpp 
+        glauber/Fitter.cpp
+        glauber/FitterHelper.cpp
         )
 
 string(REPLACE ".cpp" ".h" HEADERS "${SOURCES}")
@@ -23,6 +23,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 # Telling CMake where to find the ROOT installation.
 list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/lib")
+
+find_package(Boost REQUIRED COMPONENTS program_options)
 
 #---Locate the ROOT package and defines a number of variables (e.g. ROOT_INCLUDE_DIRS)
 find_package(ROOT REQUIRED COMPONENTS Core MathCore RIO Hist Tree)
@@ -37,15 +39,15 @@ set(DICT_FILE_NAME G__${PROJECT_NAME})
 set(PCM_FILE_NAME lib${PROJECT_NAME})
 
 
-
 ROOT_GENERATE_DICTIONARY(${DICT_FILE_NAME} ${HEADERS} LINKDEF src/CentralityLinkDef.h)
 add_library(Centrality SHARED ${SOURCES} ${DICT_FILE_NAME})
 target_link_libraries(Centrality ${ROOT_LIBRARIES})
 
 # Create a main program using the library
-add_executable(main main.cpp)
-target_link_libraries(main Centrality ${ROOT_LIBRARIES})
-target_include_directories(main PUBLIC src)
+add_executable(run_centrality_analysis run_centrality_analysis.cpp)
+target_link_libraries(run_centrality_analysis Centrality ${ROOT_LIBRARIES} ${Boost_LIBRARIES})
+target_include_directories(run_centrality_analysis PUBLIC src)
+target_include_directories(run_centrality_analysis PRIVATE ${Boost_INCLUDE_DIRS})
 
 add_executable(glauber glauber/main.cpp)
 target_link_libraries(glauber ${ROOT_LIBRARIES} Centrality)

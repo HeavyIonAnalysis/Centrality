@@ -16,13 +16,13 @@ class BordersFinder {
 
  public:
 
-  BordersFinder() {}
+  BordersFinder() = default;
 
   void FindBorders();
   void SaveBorders(const std::string &filename, const std::string &getter_name);
 
-  void SetHisto(const TH1F &h) { histo_ = h; }
-  TH1F &GetHisto() { return histo_; }   // not const to use Draw etc
+  void SetHisto(TH1 *h) { histo_ = h; }
+  TH1 *GetHisto() { return histo_; }   // not const to use Draw etc
 
   void SetNormalization(long int norm) { norm_ = norm; }
   long int GetNormalization() const { return norm_; }
@@ -50,7 +50,7 @@ class BordersFinder {
 
  private:
 
-  TH1F histo_;
+  TH1* histo_{};
   Double_t norm_{-1};
 
   std::vector<float> ranges_{};

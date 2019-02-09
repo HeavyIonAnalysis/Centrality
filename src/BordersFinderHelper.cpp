@@ -8,7 +8,7 @@
 
 namespace Centrality {
 
-void BordersFinderHelper::QA(const Getter& getter, const TH1F& histo) const
+void BordersFinderHelper::QA(const Getter& getter, const TH1* histo) const
 {
     auto ranges = getter.GetRanges();
     std::sort (ranges.begin(), ranges.end());
@@ -17,11 +17,11 @@ void BordersFinderHelper::QA(const Getter& getter, const TH1F& histo) const
     
     std::unique_ptr <TRandom> r {new TRandom};
         
-    for (Int_t iBin = 0; iBin<histo.GetNbinsX(); ++iBin )
+    for (Int_t iBin = 0; iBin<histo->GetNbinsX(); ++iBin )
     {
-        const Float_t Mult = histo.GetBinCenter(iBin+1);
+        double Mult = histo->GetBinCenter(iBin+1);
         
-        for (Int_t j = 0; j<histo.GetBinContent(iBin+1); ++j )
+        for (Int_t j = 0; j<histo->GetBinContent(iBin+1); ++j )
         {
             hCentr.Fill( getter.GetCentrality(Mult + (r->Rndm()-0.5)) );
         }
@@ -35,10 +35,10 @@ void BordersFinderHelper::QA(const Getter& getter, const TH1F& histo) const
     }
 }
 
-void BordersFinderHelper::PlotHisto(const Getter& getter, TH1F& histo) const
+void BordersFinderHelper::PlotHisto(const Getter& getter, TH1* histo) const
 {
     std::unique_ptr <TCanvas> c {new TCanvas("c", "", 1200, 800)};
-    histo.Draw();
+    histo->Draw();
     
     auto borders = getter.GetBorders();
     TLine *line;
@@ -46,7 +46,7 @@ void BordersFinderHelper::PlotHisto(const Getter& getter, TH1F& histo) const
     for (int i=0; i<borders.GetNbins(); ++i)
     {
         const float border = borders.GetBinLowEdge(i+1);
-        const int height = histo.GetBinContent( histo.FindBin(border) );
+        const int height = histo->GetBinContent( histo->FindBin(border) );
         
         line = new TLine(border, 0, border ,height); 
         line->Draw("same");
@@ -60,10 +60,10 @@ void BordersFinderHelper::PlotHisto(const Getter& getter, TH1F& histo) const
     delete line;
 }
 
-void BordersFinderHelper::PlotHisto2D(const Getter& getter, TH2F& histo, TF1& func) const
+void BordersFinderHelper::PlotHisto2D(const Getter& getter, TH2* histo, TF1& func) const
 {
     std::unique_ptr <TCanvas> c {new TCanvas("c", "", 1200, 800)};
-    histo.Draw("colz");
+    histo->Draw("colz");
     func.Draw("same");
     
     const auto& borders = getter.GetBorders2D();

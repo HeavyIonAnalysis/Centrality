@@ -14,10 +14,10 @@ void BordersFinder::FindBorders()
     using namespace std;
 
     if (ranges_.size() < 2) return;
-    if (norm_ == -1) norm_ = histo_.Integral(0, histo_.GetNbinsX());
+    if (norm_ == -1) norm_ = histo_->Integral(0, histo_->GetNbinsX());
     if (!isSpectator_) std::reverse(std::begin(ranges_), std::end(ranges_));
 
-    auto axis = histo_.GetXaxis();
+    auto axis = histo_->GetXaxis();
 
     double xLo = (applyLimits_)? xLo_ : axis->GetXmin();
     double xHi = (applyLimits_)? xHi_ : axis->GetXmax();
@@ -25,7 +25,7 @@ void BordersFinder::FindBorders()
 
     int n = axis->GetNbins();
 
-    double *histIntegral = histo_.GetIntegral();
+    double *histIntegral = histo_->GetIntegral();
     double x[n];
     for (int i = 0; i < n; ++i) {
         x[i] = axis->GetBinCenter(i+1);
@@ -94,8 +94,8 @@ void BordersFinder::SaveBorders(const std::string &filename, const std::string &
     BordersFinderHelper h;
     h.SetName(getter_name);
     h.SetIsPdf(true);    
-    h.QA(getter, this->GetHisto());
-    h.PlotHisto(getter, this->GetHisto());
+    h.QA(getter, GetHisto());
+    h.PlotHisto(getter, GetHisto());
     
     f->Close();
 }
