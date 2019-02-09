@@ -47,4 +47,33 @@ float Getter::GetCentrality(float xvalue, float yvalue) const
     return -1.;
 }
 
+Getter *Getter::Create1DGetter(std::vector<double> borders) {
+  typedef decltype(ranges_)::value_type Floating_t;
+
+  size_t n_borders = borders.size();
+  assert(n_borders > 2);
+
+  Floating_t range_max = 100.f;
+  Floating_t range_min = 0.f;
+  Floating_t range_step = (range_max - range_min)/(n_borders - 1);
+
+  decltype(ranges_) ranges(n_borders);
+  for (int i = 0; i < n_borders; ++i) {
+    auto rr = range_min + range_step*i;
+    ranges[i] = rr;
+
+    std::cout << rr << "%: " << borders[i] << std::endl;
+  }
+
+  TAxis ax_borders(static_cast<Int_t>(n_borders - 1), &(borders[0]));
+
+
+  auto getter = new Getter;
+  getter->ranges_ = std::move(ranges);
+  getter->borders_ = ax_borders;
+  getter->isinitialized_ = true;
+
+  return getter;
+}
+
 }
