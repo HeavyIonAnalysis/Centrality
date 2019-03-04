@@ -28,7 +28,7 @@ int main(int argc, char *argv[])
     // *****************************************
 
     ///  |   mode    |   function for Na     |
-    ///  |   Default |  Npart + (1-f)*Ncoll  |
+    ///  |   Default | f*Npart + (1-f)*Ncoll |
     ///  |   PSD     |     f - Npart         |
     ///  |   Npart   |     Npart^f           |
     ///  |   Ncoll   |     Ncoll^f           |
