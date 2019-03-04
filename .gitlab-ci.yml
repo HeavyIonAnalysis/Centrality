@@ -2,7 +2,7 @@
 build:
   stage: build
   script: 
-    - source /home/vklochkov/Soft/root/root6/root-6.10.08/build/bin/thisroot.sh
+    - source /sft/ROOT/root_v6.14.06.Linux-ubuntu18-x86_64-gcc7.3/build/bin/thisroot.sh
     - mkdir build && cd ./build
     - cmake ../
     - make
@@ -12,7 +12,7 @@ build:
 test:
   stage: test
   script:
-    - source /home/vklochkov/Soft/root/root6/root-6.10.08/build/bin/thisroot.sh
+    - source /sft/ROOT/root_v6.14.06.Linux-ubuntu18-x86_64-gcc7.3/build/bin/thisroot.sh
     - mkdir build && cd ./build
     - cmake ../
     - make
