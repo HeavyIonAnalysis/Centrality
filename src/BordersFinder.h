@@ -50,7 +50,7 @@ class BordersFinder {
 
  private:
 
-  TH1* histo_{};
+  TH1 *histo_{};
   Double_t norm_{-1};
 
   std::vector<float> ranges_{};

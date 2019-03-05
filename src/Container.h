@@ -12,31 +12,29 @@
 
 namespace Centrality {
 
-class Container{
+class Container {
 
-public:
-    
-    Container(){}
-    
-    void AddCentralityEstimator(uint num, float centrality)
-    {
-        centrality_.insert(std::make_pair(num, centrality));
-    }
-    
-    float GetCentrality(uint num) const 
-    { 
-        auto find = centrality_.find(num);        
-        return find != centrality_.end() ? find->second : -1;
-    }
-    
-    void Clear() { centrality_.clear(); }
-    
-private:
-    
-    std::map <uint, float> centrality_;
-    
+ public:
+
+  Container() {}
+
+  void AddCentralityEstimator(uint num, float centrality) {
+    centrality_.insert(std::make_pair(num, centrality));
+  }
+
+  float GetCentrality(uint num) const {
+    auto find = centrality_.find(num);
+    return find != centrality_.end() ? find->second : -1;
+  }
+
+  void Clear() { centrality_.clear(); }
+
+ private:
+
+  std::map<uint, float> centrality_;
+
 //     ClassDef(Container, 1);
-    
+
 };
 }
 
