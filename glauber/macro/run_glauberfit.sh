@@ -3,9 +3,9 @@
 #SBATCH -o out/%j.out.log
 #SBATCH -e error/%j.err.log
 #SBATCH --time=08:00:00
-#SBATCH --array=15-50
+#SBATCH --array=0-50
 
-INDEX=$(echo "$SLURM_ARRAY_TASK_ID * 0.02" | bc -l)
+F=$(echo "$SLURM_ARRAY_TASK_ID * 0.02" | bc -l)
 FILE=/lustre/nyx/cbm/users/klochkov/na61/pbpb/30agev/data/flow/psd_centr/pbpb_30agev_data_config/all_corrections/pi_neg_debug/qa.root
 
 K0=1
@@ -22,11 +22,11 @@ cd $OUT_DIR/$SLURM_ARRAY_TASK_ID
 
 cp $EXE_DIR/glauber ./
 
-echo $INDEX
+echo $F
 echo $NK
 echo $MULTMIN
 
-./glauber $INDEX $K0 $K1 $MULTMIN $FILE &> log.txt
+./glauber $F $K0 $K1 $MULTMIN $FILE &> log.txt
 
 rm glauber
 
