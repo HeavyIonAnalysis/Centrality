@@ -13,15 +13,15 @@ using namespace Glauber;
 
 int main(int argc, char *argv[])
 {
-    if (argc < 2)
+    if (argc < 3)
     {
         std::cout << "Wrong number of parameters! Executable usage:" << std::endl;
-        std::cout << "   ./glauber f0 k0" << std::endl;
+        std::cout << "   ./glauber f0 k0 k1" << std::endl;
         return -1;
     }
     const Float_t f0 = atof( argv[1]);
     const Int_t k0 = atoi( argv[2] );
-    const Int_t k1 = atoi( argv[2] );
+    const Int_t k1 = atoi( argv[3] );
     
     // *****************************************
     // Modify this part according to your needs
