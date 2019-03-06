@@ -67,7 +67,7 @@ void Glauber::Fitter::Init(int nEntries)
 float Glauber::Fitter::Nancestors(float f) const
 {
     if       (fMode == "Default")    return f*fNpart + (1-f)*fNcoll;
-    else if  (fMode == "PSD")        return f - fNpart;
+    else if  (fMode == "PSD")        return f - fNpart; // Looks strange...
     else if  (fMode == "Npart")      return TMath::Power(fNpart, f); 
     else if  (fMode == "Ncoll")      return TMath::Power(fNcoll, f);
     
