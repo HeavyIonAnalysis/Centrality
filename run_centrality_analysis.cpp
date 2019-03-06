@@ -16,6 +16,7 @@
 #include "TH2.h"
 
 #include <boost/program_options.hpp>
+#include <TBenchmark.h>
 
 int main(int argc, char **argv) {
   using namespace std;
@@ -23,32 +24,45 @@ int main(int argc, char **argv) {
   namespace po = boost::program_options;
 
 
-  auto start = std::chrono::system_clock::now();
+  TBenchmark benchmark;
+  benchmark.Start("centrality");
 
   vector<float> ranges{0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 70, 80, 90, 100};
 
   po::options_description opts("Centrality Analysis Options");
   opts.add_options()
+      // TODO help message
       ("help", "help message")
       ("input,i", po::value<string>()->required())
+      ("output,o", po::value<string>()->default_value("centrality.root"))
       ("histogram,h", po::value<string>()->required())
       ("mode,m", po::value<string>()->default_value("1D"))
       ("axis", po::value<string>()->default_value(""))
-      ("spectator,s", po::value<bool>()->default_value(false));
+      ("spectator,s", po::value<bool>()->default_value(false))
+      ("limits", po::value<vector<float> >()->multitoken());
 
   po::variables_map vm;
   po::store(po::parse_command_line(argc, argv, opts), vm);
   po::notify(vm);
 
   string input_file_name{vm["input"].as<string>()};
-  string output_file_name{"test.root"};
+  string output_file_name{vm["output"].as<string>()};
   string obj_name{vm["histogram"].as<string>()};
   string mode{vm["mode"].as<string>()};
   string axis{vm["axis"].as<string>()};
   bool isSpectator{vm["spectator"].as<bool>()};
 
+  vector<float > limits;
+  if (!vm["limits"].empty()) {
+    limits = vm["limits"].as<vector<float> >();
+  }
+
   Info(__func__, "Processing %s", input_file_name.c_str());
   unique_ptr<TFile> fInPtr{TFile::Open(input_file_name.c_str(), "read")};
+
+  if (!fInPtr) {
+    return 1;
+  }
 
   if (mode == "1D") {
     Info(__func__, "1D");
@@ -79,8 +93,13 @@ int main(int argc, char **argv) {
     Centrality::BordersFinder bf;
     bf.SetHisto(h);
 //        bf.SetRanges( 10,0,100 );   // number of bins, min, max value
-    bf.SetRanges({0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 70, 80, 90,
-                  100});  // centrality bins borders with array
+    bf.SetRanges(ranges);  // centrality bins borders with array
+
+    if (limits.size() >= 2) {
+      Info(__func__, "Setting limits (%f, %f)", limits[0], limits[1]);
+      bf.SetLimits(limits[0], limits[1]);
+    }
+
 //    bf.SetLimits(600, 8000);
     bf.IsSpectator(isSpectator);  // true if impact parameter b correlated with estimator (spectators energy),
     // false - anticorrelated (multiplicity of produced particles)
@@ -101,8 +120,8 @@ int main(int argc, char **argv) {
     Centrality::BordersFinder2D bf;
     bf.SetHisto2D(h2);
     auto h1d = bf.Convert();
-
     bf.SetHisto(h1d);
+
     bf.SetRanges(10, 0, 100);   // number of bins, min, max value
     //   bf.SetRanges( {0,10,30,60,100} );  // centrality bins borders with array
     bf.IsSpectator(isSpectator);  // true if impact parameter b correlated with estimator (spectators eneggy),
@@ -115,6 +134,9 @@ int main(int argc, char **argv) {
     Error(__func__, "Mode '%s' does not exists", mode.c_str());
     return 1;
   }
+
+  benchmark.Stop("centrality");
+  benchmark.Print("centrality");
 
   return 0;
 

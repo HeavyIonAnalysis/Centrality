@@ -16,20 +16,20 @@ namespace Centrality {
 void BordersFinder2D::Init() {
   fitname_ = "pol2";
 
-  for (int iBin = histo2d_->GetNbinsX(); iBin >= 1; --iBin) {
-    if (histo2d_->Integral(iBin, iBin, 0, histo2d_->GetNbinsY()) >= 1.) {
-      xmax_ = histo2d_->GetXaxis()->GetBinCenter(iBin);
+  for (int iBin = h2_->GetNbinsX(); iBin >= 1; --iBin) {
+    if (h2_->Integral(iBin, iBin, 0, h2_->GetNbinsY()) >= 1.) {
+      xmax_ = h2_->GetXaxis()->GetBinCenter(iBin);
       break;
     }
   }
-  for (int iBin = histo2d_->GetNbinsY(); iBin >= 1; --iBin) {
-    if (histo2d_->Integral(0, histo2d_->GetNbinsX(), iBin, iBin) >= 1.) {
-      ymax_ = histo2d_->GetYaxis()->GetBinCenter(iBin);
+  for (int iBin = h2_->GetNbinsY(); iBin >= 1; --iBin) {
+    if (h2_->Integral(0, h2_->GetNbinsX(), iBin, iBin) >= 1.) {
+      ymax_ = h2_->GetYaxis()->GetBinCenter(iBin);
       break;
     }
   }
-  histo2d_->GetXaxis()->SetLimits(0, histo2d_->GetXaxis()->GetXmax() / xmax_);
-  histo2d_->GetYaxis()->SetLimits(0, histo2d_->GetYaxis()->GetXmax() / ymax_);
+  h2_->GetXaxis()->SetLimits(0, h2_->GetXaxis()->GetXmax() / xmax_);
+  h2_->GetYaxis()->SetLimits(0, h2_->GetYaxis()->GetXmax() / ymax_);
 }
 
 /**
@@ -41,23 +41,23 @@ TH1D *BordersFinder2D::Convert() {
   Init();
 
   auto histo1d =
-      new TH1D("histo1d", "", histo2d_->GetNbinsX(), histo2d_->GetXaxis()->GetXmin(), histo2d_->GetXaxis()->GetXmax());
+      new TH1D("histo1d", "", h2_->GetNbinsX(), h2_->GetXaxis()->GetXmin(), h2_->GetXaxis()->GetXmax());
 
   Fit2D(fitname_);
   std::vector<double> par;
   for (int ipar = 0; ipar < fit_->GetNpar(); ++ipar)
     par.push_back(fit_->GetParameter(ipar));
 
-  for (int iBin = 1; iBin <= histo2d_->GetNbinsX(); ++iBin) {
-//         if ( histo2d_.Integral(iBin, iBin, 0, histo2d_.GetNbinsY()) <= 1. ) continue;
+  for (int iBin = 1; iBin <= h2_->GetNbinsX(); ++iBin) {
+//         if ( h2_.Integral(iBin, iBin, 0, h2_.GetNbinsY()) <= 1. ) continue;
 
-    const double x1 = iBin == 1 ? -0.2 : histo2d_->GetXaxis()->GetBinCenter(iBin - 1);
-    const double x2 = histo2d_->GetXaxis()->GetBinCenter(iBin);
+    const double x1 = iBin == 1 ? -0.2 : h2_->GetXaxis()->GetBinCenter(iBin - 1);
+    const double x2 = h2_->GetXaxis()->GetBinCenter(iBin);
 
     const auto norm1 = FindNorm(par, x1);
     const auto norm2 = FindNorm(par, x2);
 
-    const float integral = FindIntegral(norm1, norm2);
+    auto integral = FindIntegral(norm1, norm2);
 //         std::cout << integral << std::endl;
 
     histo1d->SetBinContent(iBin, integral);
@@ -71,22 +71,15 @@ TH1D *BordersFinder2D::Convert() {
  * @param norm2 second line parametrization
  * @return number of entries (integral)
  */
-float BordersFinder2D::FindIntegral(const std::array<float, 2> &norm1, const std::array<float, 2> &norm2) {
-  float sum{0.};
+double BordersFinder2D::FindIntegral(const FLinearPar &norm1, const FLinearPar &norm2) {
+  double sum{0.};
 
-  for (int iBinX = 1; iBinX <= histo2d_->GetNbinsX(); ++iBinX) {
-    for (int iBinY = 1; iBinY <= histo2d_->GetNbinsY(); ++iBinY) {
-      const double entries = histo2d_->GetBinContent(iBinX, iBinY);
+  for (int iBinX = 1; iBinX <= h2_->GetNbinsX(); ++iBinX) {
+    for (int iBinY = 1; iBinY <= h2_->GetNbinsY(); ++iBinY) {
+      const double entries = h2_->GetBinContent(iBinX, iBinY);
       if (entries == 0) continue;
 
-      const double x = histo2d_->GetXaxis()->GetBinCenter(iBinX);
-      const double y = histo2d_->GetYaxis()->GetBinCenter(iBinY);
-
-      const double ynorm1 = norm1[0] + norm1[1] * x;
-      const double ynorm2 = norm2[0] + norm2[1] * x;
-
-      if (y < ynorm1 && y > ynorm2)
-        sum += entries;
+      sum += entries*Intersection(iBinX, iBinY, norm1, norm2);
     }
   }
   return sum;
@@ -120,14 +113,14 @@ void BordersFinder2D::SaveBorders2D(const std::string &filename, const std::stri
   h.SetName(getter_name);
   h.SetIsPdf(true);
   h.PlotHisto(getter, this->GetHisto());
-  h.PlotHisto2D(getter, histo2d_, *fit_);
+  h.PlotHisto2D(getter, h2_, *fit_);
 
   f->Close();
 }
 
-void BordersFinder2D::Fit2D(const TString func) {
-  std::unique_ptr<TProfile> prof{histo2d_->ProfileX()};
-  fit_ = new TF1("fit", func, histo2d_->GetXaxis()->GetXmin(), histo2d_->GetXaxis()->GetXmax());
+void BordersFinder2D::Fit2D(const TString &func) {
+  std::unique_ptr<TProfile> prof{h2_->ProfileX()};
+  fit_ = new TF1("fit", func, h2_->GetXaxis()->GetXmin(), h2_->GetXaxis()->GetXmax());
   prof->Fit(fit_, "Q");
 }
 
@@ -139,7 +132,7 @@ void BordersFinder2D::Fit2D(const TString func) {
  */
 std::array<float, 2> BordersFinder2D::FindNorm(const std::vector<double> par, float x) {
   std::array<float, 2> ret;
-  const float dx = (histo2d_->GetXaxis()->GetXmax() - histo2d_->GetXaxis()->GetXmin()) / 10000.;
+  const float dx = (h2_->GetXaxis()->GetXmax() - h2_->GetXaxis()->GetXmin()) / 10000.;
 
   /* left */
   const float y1 = polN(par, x - dx);

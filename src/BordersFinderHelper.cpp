@@ -39,8 +39,8 @@ void BordersFinderHelper::PlotHisto(const Getter &getter, TH1 *histo) const {
   TLine *line;
 
   for (int i = 0; i < borders.GetNbins(); ++i) {
-    const float border = borders.GetBinLowEdge(i + 1);
-    const int height = histo->GetBinContent(histo->FindBin(border));
+    const double border = borders.GetBinLowEdge(i + 1);
+    const double height = histo->GetBinContent(histo->FindBin(border));
 
     line = new TLine(border, 0, border, height);
     line->Draw("same");
