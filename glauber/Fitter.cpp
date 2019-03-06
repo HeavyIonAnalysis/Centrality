@@ -235,7 +235,7 @@ float Glauber::Fitter::FitGlauber (float *par, Float_t f0, Int_t k0, Int_t k1, I
         mu = fMaxValue / NancestorsMax(f) ;
         k = j;
         const float mu_min = 0.7*mu;
-        const float mu_max = 1.0*mu;
+        const float mu_max = 1.3*mu;
 
         FindMuGoldenSection (&mu, &chi2, mu_min, mu_max, f, k, nEvents, 10);
         sigma = ( mu/k + 1 ) * mu;
