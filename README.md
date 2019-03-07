@@ -65,9 +65,11 @@ $`N_{part}`$ and $`N_{coll}`$ are parameters from MC-Glauber.
 
 To modify options (input files, fit function, fit ranges, etc) change corresponding lines in file glauber/main.cpp:
 
-**glauber** has 2 arguments:
+**glauber** has 3 arguments:
   1. f value
-  2. k value
+  2. k1 value
+  3. k2 value,
+  where k has values from k1 to k2 with step1
 
 $`\mu`$ value is fitted automatically.
 
