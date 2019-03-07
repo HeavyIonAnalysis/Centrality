@@ -60,8 +60,8 @@ void BordersFinderHelper::PlotHisto2D(const Getter &getter, TH2 *histo, TF1 &fun
   func.Draw("same");
 
   const auto &borders = getter.GetBorders2D();
-  TLine *line{nullptr};
 
+  TLine line;
   for (uint i = 0; i < borders.size(); ++i) {
     const float x1 = 0.;
     const float x2 = 1.;
@@ -69,8 +69,7 @@ void BordersFinderHelper::PlotHisto2D(const Getter &getter, TH2 *histo, TF1 &fun
     const float y1 = borders.at(i)[0] + borders.at(i)[1] * x1;
     const float y2 = borders.at(i)[0] + borders.at(i)[1] * x2;
 
-    line = new TLine(x1, y1, x2, y2);
-    line->Draw("same");
+    line.DrawLine(x1, y1, x2, y2);
   }
 
   c->Write(name_ + "_histo_2d");
@@ -78,7 +77,6 @@ void BordersFinderHelper::PlotHisto2D(const Getter &getter, TH2 *histo, TF1 &fun
   if (ispdf_)
     c->SaveAs(name_ + "_histo_2d" + ".pdf");
 
-  delete line;
 }
 
 }

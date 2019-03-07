@@ -36,6 +36,7 @@ int main(int argc, char **argv) {
       ("input,i", po::value<string>()->required())
       ("output,o", po::value<string>()->default_value("centrality.root"))
       ("histogram,h", po::value<string>()->required())
+      ("getter,g", po::value<string>()->default_value("centr_getter"))
       ("mode,m", po::value<string>()->default_value("1D"))
       ("axis", po::value<string>()->default_value(""))
       ("spectator,s", po::value<bool>()->default_value(false))
@@ -52,10 +53,12 @@ int main(int argc, char **argv) {
   string axis{vm["axis"].as<string>()};
   bool isSpectator{vm["spectator"].as<bool>()};
 
-  vector<float > limits;
+  vector<float> limits;
   if (!vm["limits"].empty()) {
     limits = vm["limits"].as<vector<float> >();
   }
+
+  string getter_name{vm["getter"].as<string>() + "_" + mode};
 
   Info(__func__, "Processing %s", input_file_name.c_str());
   unique_ptr<TFile> fInPtr{TFile::Open(input_file_name.c_str(), "read")};
@@ -92,20 +95,21 @@ int main(int argc, char **argv) {
 
     Centrality::BordersFinder bf;
     bf.SetHisto(h);
-//        bf.SetRanges( 10,0,100 );   // number of bins, min, max value
-    bf.SetRanges(ranges);  // centrality bins borders with array
+    bf.SetRanges(40, 0, 100);   // number of bins, min, max value
+//    bf.SetRanges(ranges);
+    // centrality bins borders with array
 
-    if (limits.size() >= 2) {
+    if (limits.size() == 2) {
       Info(__func__, "Setting limits (%f, %f)", limits[0], limits[1]);
       bf.SetLimits(limits[0], limits[1]);
     }
 
-//    bf.SetLimits(600, 8000);
-    bf.IsSpectator(isSpectator);  // true if impact parameter b correlated with estimator (spectators energy),
+    bf.IsSpectator(isSpectator);
+    // true if impact parameter b correlated with estimator (spectators energy),
     // false - anticorrelated (multiplicity of produced particles)
 
     bf.FindBorders();
-    bf.SaveBorders(output_file_name, "centr_getter_1d");
+    bf.SaveBorders(output_file_name, getter_name);
 
   } else if (mode == "2D") {
     Info(__func__, "2D");
@@ -122,13 +126,14 @@ int main(int argc, char **argv) {
     auto h1d = bf.Convert();
     bf.SetHisto(h1d);
 
-    bf.SetRanges(10, 0, 100);   // number of bins, min, max value
-    //   bf.SetRanges( {0,10,30,60,100} );  // centrality bins borders with array
-    bf.IsSpectator(isSpectator);  // true if impact parameter b correlated with estimator (spectators eneggy),
+//    bf.SetRanges(ranges);   // number of bins, min, max value
+    bf.SetRanges(40, 0, 100);   // number of bins, min, max value
+    bf.IsSpectator(isSpectator);
+    // true if impact parameter b correlated with estimator (spectators eneggy),
     // false - anticorrelated (multiplicity of produced particles)
 
     bf.FindBorders();
-    bf.SaveBorders2D(output_file_name, "centr_getter_2d");
+    bf.SaveBorders2D(output_file_name, getter_name);
 
   } else {
     Error(__func__, "Mode '%s' does not exists", mode.c_str());

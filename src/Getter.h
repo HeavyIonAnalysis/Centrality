@@ -16,11 +16,14 @@
 #include "TAxis.h"
 #include "TRandom.h"
 
+#include "BordersFinder2D.h"
+
 namespace Centrality {
 
 class Getter : public TObject {
 
  public:
+  typedef BordersFinder2D::FLinearPar Border2D;
 
   Getter() = default;
 
@@ -38,7 +41,7 @@ class Getter : public TObject {
   void SetRanges(const std::vector<float> &ranges) { ranges_ = ranges; }
   void IsSpectator(bool is = true) { isspectator_ = is; }
 
-  void AddBorder2D(const std::array<float, 2> &border2D) {
+  void AddBorder2D(const Border2D &border2D) {
     borders2d_.push_back(border2D);
     if (!isinitialized2D_) isinitialized2D_ = true;
   }
@@ -55,7 +58,7 @@ class Getter : public TObject {
  private:
 
   TAxis borders_;
-  std::vector<std::array<float, 2>> borders2d_{};
+  std::vector<Border2D> borders2d_{};
   std::vector<float> ranges_{};
 
   float xmax_{1.};
@@ -65,7 +68,7 @@ class Getter : public TObject {
   bool isinitialized_{false};
   bool isinitialized2D_{false};
 
- ClassDef(Getter, 2);
+ ClassDef(Getter, 2)
 
 };
 }

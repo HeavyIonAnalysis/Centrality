@@ -81,10 +81,6 @@ class BordersFinder2D : public BordersFinder {
     auto intersectionArea = 0.5*(dY1 + dY2)*(x2 - x1);
     auto intersectionRatio = intersectionArea/binArea;
 
-    if (intersectionRatio > 1.) {
-      throw std::logic_error("intersectionArea/binArea > 1");
-    }
-
     return intersectionRatio;
   }
 
