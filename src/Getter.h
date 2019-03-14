@@ -23,7 +23,7 @@ namespace Centrality {
 class Getter : public TObject {
 
  public:
-  typedef BordersFinder2D::FLinearPar Border2D;
+  typedef NormalInfo Border2D;
 
   Getter() = default;
 
@@ -46,7 +46,7 @@ class Getter : public TObject {
     if (!isinitialized2D_) isinitialized2D_ = true;
   }
 
-  const std::vector<std::array<float, 2>> &GetBorders2D() const { return borders2d_; };
+  const std::vector<Border2D> &GetBorders2D() const { return borders2d_; };
 
   void SetMax(float x, float y) {
     xmax_ = x;
@@ -68,7 +68,7 @@ class Getter : public TObject {
   bool isinitialized_{false};
   bool isinitialized2D_{false};
 
- ClassDef(Getter, 2)
+ ClassDef(Getter, 3)
 
 };
 }

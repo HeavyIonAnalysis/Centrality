@@ -31,8 +31,8 @@ float Getter::GetCentrality(float xvalue, float yvalue) const {
   yvalue /= ymax_;
 
   for (uint iborder = 0; iborder < borders2d_.size() - 1; ++iborder) {
-    const float y1 = borders2d_.at(iborder)[0] + borders2d_.at(iborder)[1] * xvalue;
-    const float y2 = borders2d_.at(iborder + 1)[0] + borders2d_.at(iborder + 1)[1] * xvalue;
+    double y1 = borders2d_.at(iborder).p0 + borders2d_.at(iborder).p1 * xvalue;
+    double y2 = borders2d_.at(iborder + 1).p0 + borders2d_.at(iborder + 1).p1 * xvalue;
 
     if (yvalue < y1 && yvalue > y2)
       return 0.5 * (ranges_.at(iborder - 1) + ranges_.at(iborder));

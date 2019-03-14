@@ -3,6 +3,7 @@
 #include "BordersFinderHelper.h"
 
 #include <iostream>
+#include <TCutG.h>
 
 #include "TProfile.h"
 #include "TMath.h"
@@ -12,6 +13,33 @@
 // ClassImp(Centrality::BordersFinder2D)
 
 namespace Centrality {
+
+
+template <int N>
+inline double pol(const double *xp, const double *pp) {
+  double x = xp[0];
+  double result = 0.;
+  double pow_x = 1.;
+  for (int i = 0; i < N; ++i) {
+    result += pp[i]*pow_x;
+    pow_x *= x;
+  }
+  return result;
+}
+
+template <int N>
+inline double d_pol(const double *xp, const double *pp) {
+  double x = xp[0];
+  double result = 0.;
+  double pow_x = 1.;
+
+  for (int i = 1; i < N; ++i) {
+    result += i*pp[i]*pow_x;
+    pow_x *= x;
+  }
+
+  return result;
+}
 
 void BordersFinder2D::Init() {
   fitname_ = "pol2";
@@ -44,9 +72,8 @@ TH1D *BordersFinder2D::Convert() {
       new TH1D("histo1d", "", h2_->GetNbinsX(), h2_->GetXaxis()->GetXmin(), h2_->GetXaxis()->GetXmax());
 
   Fit2D(fitname_);
-  std::vector<double> par;
-  for (int ipar = 0; ipar < fit_->GetNpar(); ++ipar)
-    par.push_back(fit_->GetParameter(ipar));
+  FitParams par{};
+  std::copy(fit_->GetParameters(), fit_->GetParameters() + N, par.begin());
 
   for (int iBin = 1; iBin <= h2_->GetNbinsX(); ++iBin) {
 //         if ( h2_.Integral(iBin, iBin, 0, h2_.GetNbinsY()) <= 1. ) continue;
@@ -58,7 +85,6 @@ TH1D *BordersFinder2D::Convert() {
     const auto norm2 = FindNorm(par, x2);
 
     auto integral = FindIntegral(norm1, norm2);
-//         std::cout << integral << std::endl;
 
     histo1d->SetBinContent(iBin, integral);
   }
@@ -67,21 +93,40 @@ TH1D *BordersFinder2D::Convert() {
 
 /**
  * Find number of entries between lines norm1 and norm2
- * @param norm1 first line parametrization y=a+bx
- * @param norm2 second line parametrization
+ * @param n1 first line parametrization y=a+bx
+ * @param n2 second line parametrization
  * @return number of entries (integral)
  */
-double BordersFinder2D::FindIntegral(const FLinearPar &norm1, const FLinearPar &norm2) {
-  double sum{0.};
+double BordersFinder2D::FindIntegral(const NormalInfo &n1, const NormalInfo &n2) {
 
-  for (int iBinX = 1; iBinX <= h2_->GetNbinsX(); ++iBinX) {
-    for (int iBinY = 1; iBinY <= h2_->GetNbinsY(); ++iBinY) {
-      const double entries = h2_->GetBinContent(iBinX, iBinY);
-      if (entries == 0) continue;
+  std::vector<double> xv{}, yv{};
 
-      sum += entries*Intersection(iBinX, iBinY, norm1, norm2);
+  double s = 100.1;
+
+  if (TMath::Abs(n1.p1 - n2.p1) < 1e-3) {
+    xv = {n1.xd(-s), n1.xd(s), n2.xd(s), n2.xd(-s)};
+    yv = {n1.yd(-s), n1.yd(s), n2.yd(s), n2.yd(-s)};
+  } else {
+    double xi = (n1.p0 - n2.p0)/(n2.p1 - n1.p1);
+    double yi = n1(xi);
+
+    double h = TMath::Sqrt(
+        TMath::Power((n1.y0 + n2.y0)*0.5 - yi, 2.) +
+        TMath::Power((n1.x0 + n2.x0)*0.5 - yi, 2.));
+
+
+    if (h < s) {
+      auto sign = ( yi < (n1.y0 + n2.y0)/2 )? 1 : -1;
+      xv = {n1.xd(sign*s), xi, n2.xd(sign*s)};
+      yv = {n1.yd(sign*s), yi, n2.yd(sign*s)};
+    } else {
+      xv = {n1.xd(-s), n1.xd(s), n2.xd(s), n2.xd(-s)};
+      yv = {n1.yd(-s), n1.yd(s), n2.yd(s), n2.yd(-s)};
     }
   }
+
+  TCutG area("temp", static_cast<int>(xv.size()), xv.data(), yv.data());
+  double sum = area.IntegralHist(h2_);
   return sum;
 }
 
@@ -96,9 +141,8 @@ void BordersFinder2D::SaveBorders2D(const std::string &filename, const std::stri
   getter.IsSpectator(this->GetIsSpectator());
   getter.SetMax(xmax_, ymax_);
 
-  std::vector<double> par;
-  for (int ipar = 0; ipar < fit_->GetNpar(); ++ipar)
-    par.push_back(fit_->GetParameter(ipar));
+  FitParams par{};
+  std::copy(fit_->GetParameters(), fit_->GetParameters() + N, par.begin());
 
   for (const auto &iborder : this->GetBorders()) {
     const auto kb = FindNorm(par, iborder);
@@ -120,37 +164,30 @@ void BordersFinder2D::SaveBorders2D(const std::string &filename, const std::stri
 
 void BordersFinder2D::Fit2D(const TString &func) {
   std::unique_ptr<TProfile> prof{h2_->ProfileX()};
-  fit_ = new TF1("fit", func, h2_->GetXaxis()->GetXmin(), h2_->GetXaxis()->GetXmax());
+  fit_ = new TF1("fit", pol<N>, 0.0, h2_->GetXaxis()->GetXmax(), N); // FIXME fit ranges
   prof->Fit(fit_, "Q");
 }
 
 /**
  *
- * @param par parameters of polinomial function
- * @param x argument
+ * @param par parameters of polynomial function
+ * @param x0 argument
  * @return a0 and a1 parameters y = a0 + a1 * x
  */
-std::array<float, 2> BordersFinder2D::FindNorm(const std::vector<double> par, float x) {
-  std::array<float, 2> ret;
-  const float dx = (h2_->GetXaxis()->GetXmax() - h2_->GetXaxis()->GetXmin()) / 10000.;
+NormalInfo BordersFinder2D::FindNorm(const FitParams &par, double x0) {
+  double xp[1] = {x0};
+  auto f = pol<N>(xp, par.data());
+  auto df = d_pol<N>(xp, par.data());
 
-  /* left */
-  const float y1 = polN(par, x - dx);
-  /* right */
-  const float y2 = polN(par, x + dx);
+  double df_threshold = 1e-2;
+  if (TMath::Abs(df) < df_threshold) {
+    Warning(__func__, "x0 = %f, |df| == %f < %f", x0, df, df_threshold);
+  }
 
-  // cx*x + cy*y + c == 0
+  auto p1 = -1./df;
+  auto p0 = f - p1*x0;
 
-  /* 1/df */
-  const float cx = 1 / (y2 - y1);
-  /* 1/2dx */
-  const float cy = 0.5 / dx;
-
-  const float c = -cx * x - cy * polN(par, x);
-
-  ret[0] = -c / cy;
-  ret[1] = -cx / cy;
-  return ret;
+  return {p0, p1, x0, f};
 }
 
 }

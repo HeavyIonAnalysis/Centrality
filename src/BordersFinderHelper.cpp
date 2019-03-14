@@ -61,14 +61,13 @@ void BordersFinderHelper::PlotHisto2D(const Getter &getter, TH2 *histo, TF1 &fun
 
   const auto &borders = getter.GetBorders2D();
 
+  double x1 = 0.;
+  double x2 = 1.;
+
   TLine line;
-  for (uint i = 0; i < borders.size(); ++i) {
-    const float x1 = 0.;
-    const float x2 = 1.;
-
-    const float y1 = borders.at(i)[0] + borders.at(i)[1] * x1;
-    const float y2 = borders.at(i)[0] + borders.at(i)[1] * x2;
-
+  for (const auto &border : borders) {
+    double y1 = border.p0 + border.p1 * x1;
+    double y2 = border.p0 + border.p1 * x2;
     line.DrawLine(x1, y1, x2, y2);
   }
 
