@@ -14,27 +14,26 @@
 
 namespace Centrality {
 
-
-template <int N>
+template<int N>
 inline double pol(const double *xp, const double *pp) {
   double x = xp[0];
   double result = 0.;
   double pow_x = 1.;
   for (int i = 0; i < N; ++i) {
-    result += pp[i]*pow_x;
+    result += pp[i] * pow_x;
     pow_x *= x;
   }
   return result;
 }
 
-template <int N>
+template<int N>
 inline double d_pol(const double *xp, const double *pp) {
   double x = xp[0];
   double result = 0.;
   double pow_x = 1.;
 
   for (int i = 1; i < N; ++i) {
-    result += i*pp[i]*pow_x;
+    result += i * pp[i] * pow_x;
     pow_x *= x;
   }
 
@@ -42,7 +41,6 @@ inline double d_pol(const double *xp, const double *pp) {
 }
 
 void BordersFinder2D::Init() {
-  fitname_ = "pol2";
 
   for (int iBin = h2_->GetNbinsX(); iBin >= 1; --iBin) {
     if (h2_->Integral(iBin, iBin, 0, h2_->GetNbinsY()) >= 1.) {
@@ -71,7 +69,7 @@ TH1D *BordersFinder2D::Convert() {
   auto histo1d =
       new TH1D("histo1d", "", h2_->GetNbinsX(), h2_->GetXaxis()->GetXmin(), h2_->GetXaxis()->GetXmax());
 
-  Fit2D(fitname_);
+  Fit2D("");
   FitParams par{};
   std::copy(fit_->GetParameters(), fit_->GetParameters() + N, par.begin());
 
@@ -101,24 +99,23 @@ double BordersFinder2D::FindIntegral(const NormalInfo &n1, const NormalInfo &n2)
 
   std::vector<double> xv{}, yv{};
 
-  double s = 100.1;
+  double s = 0.1;
 
   if (TMath::Abs(n1.p1 - n2.p1) < 1e-3) {
     xv = {n1.xd(-s), n1.xd(s), n2.xd(s), n2.xd(-s)};
     yv = {n1.yd(-s), n1.yd(s), n2.yd(s), n2.yd(-s)};
   } else {
-    double xi = (n1.p0 - n2.p0)/(n2.p1 - n1.p1);
+    double xi = (n1.p0 - n2.p0) / (n2.p1 - n1.p1);
     double yi = n1(xi);
 
     double h = TMath::Sqrt(
-        TMath::Power((n1.y0 + n2.y0)*0.5 - yi, 2.) +
-        TMath::Power((n1.x0 + n2.x0)*0.5 - yi, 2.));
-
+        TMath::Power((n1.y0 + n2.y0) * 0.5 - yi, 2.) +
+            TMath::Power((n1.x0 + n2.x0) * 0.5 - yi, 2.));
 
     if (h < s) {
-      auto sign = ( yi < (n1.y0 + n2.y0)/2 )? 1 : -1;
-      xv = {n1.xd(sign*s), xi, n2.xd(sign*s)};
-      yv = {n1.yd(sign*s), yi, n2.yd(sign*s)};
+      auto sign = (yi < (n1.y0 + n2.y0) / 2) ? 1 : -1;
+      xv = {n1.xd(sign * s), xi, n2.xd(sign * s)};
+      yv = {n1.yd(sign * s), yi, n2.yd(sign * s)};
     } else {
       xv = {n1.xd(-s), n1.xd(s), n2.xd(s), n2.xd(-s)};
       yv = {n1.yd(-s), n1.yd(s), n2.yd(s), n2.yd(-s)};
@@ -184,10 +181,28 @@ NormalInfo BordersFinder2D::FindNorm(const FitParams &par, double x0) {
     Warning(__func__, "x0 = %f, |df| == %f < %f", x0, df, df_threshold);
   }
 
-  auto p1 = -1./df;
-  auto p0 = f - p1*x0;
+  auto p1 = -1. / df;
+  auto p0 = f - p1 * x0;
 
   return {p0, p1, x0, f};
+}
+
+void BordersFinder2D::CropHist(double x1, double y1, double x2, double y2) {
+  std::vector<double> xv{x1, x2, x2, x1};
+  std::vector<double> yv{y1, y1, y2, y2};
+  TCutG frame("temp", static_cast<int>(xv.size()), xv.data(), yv.data());
+
+  for (int iBinX = 1; iBinX <= h2_->GetXaxis()->GetNbins(); ++iBinX) {
+    for (int iBinY = 1; iBinY <= h2_->GetYaxis()->GetNbins(); ++iBinY) {
+      int iBin = h2_->GetBin(iBinX, iBinY);
+      double xc = h2_->GetXaxis()->GetBinCenter(iBinX);
+      double yc = h2_->GetYaxis()->GetBinCenter(iBinY);
+      if (!frame.IsInside(xc, yc)) {
+        h2_->SetBinContent(iBin, 0);
+      }
+    }
+  }
+
 }
 
 }

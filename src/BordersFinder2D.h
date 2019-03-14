@@ -18,7 +18,7 @@
 
 namespace Centrality {
 
-constexpr int N = 3;
+constexpr int N = 5;
 typedef std::array<double, N> FitParams;
 
 struct NormalInfo {
@@ -54,13 +54,12 @@ class BordersFinder2D : public BordersFinder {
   NormalInfo FindNorm(const FitParams &par, double x0);
   double FindIntegral(const NormalInfo &n1, const NormalInfo &n2);
   void SaveBorders2D(const std::string &filename, const std::string &getter_name);
+  void CropHist(double x1, double y1, double x2, double y2);
 
  private:
 
   TH2 *h2_{};
   TF1 *fit_{nullptr};
-
-  TString fitname_{""};
 
   double xmax_{1.};
   double ymax_{1.};

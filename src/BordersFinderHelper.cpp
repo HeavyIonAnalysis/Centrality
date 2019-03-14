@@ -56,6 +56,7 @@ void BordersFinderHelper::PlotHisto(const Getter &getter, TH1 *histo) const {
 
 void BordersFinderHelper::PlotHisto2D(const Getter &getter, TH2 *histo, TF1 &func) const {
   std::unique_ptr<TCanvas> c{new TCanvas("c", "", 1200, 800)};
+  c->SetLogz();
   histo->Draw("colz");
   func.Draw("same");
 

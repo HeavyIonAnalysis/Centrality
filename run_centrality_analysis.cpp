@@ -123,6 +123,11 @@ int main(int argc, char **argv) {
 
     Centrality::BordersFinder2D bf;
     bf.SetHisto2D(h2);
+
+    if (limits.size() == 4) {
+      bf.CropHist(limits[0], limits[1], limits[2], limits[3]);
+    }
+
     auto h1d = bf.Convert();
     bf.SetHisto(h1d);
 
