@@ -209,6 +209,9 @@ float Glauber::Fitter::FitGlauber (float *par, Float_t f0, Int_t k0, Int_t k1, I
     float mu_fit{-1}; 
     float k_fit{-1};
     float Chi2Min {1e10};
+    
+    const int lowchibin = fFitMinBin;
+    const int highchibin = fFitMaxBin<fNbins ? fFitMaxBin : fNbins;
 
     const TString filename = Form ( "%s/fit_%4.2f_%d_%d_%d.root", fOutDirName.Data(), f0, k0, k1, fFitMinBin );
     
@@ -220,13 +223,14 @@ float Glauber::Fitter::FitGlauber (float *par, Float_t f0, Int_t k0, Int_t k1, I
     
     TH1F h1("h1", "", fNbins, 0, fMaxValue);
            
-    float f, mu, k, chi2, sigma;
+    float f, mu, k, chi2, chi2err, sigma;
 
     tree->Branch("histo", "TH1F", &h1);
     tree->Branch("f",    &f,    "f/F");   
     tree->Branch("mu",   &mu,   "mu/F");   
     tree->Branch("k",    &k,    "k/F");   
-    tree->Branch("chi2", &chi2, "chi2/F");   
+    tree->Branch("chi2", &chi2, "chi2/F");
+    tree->Branch("chi2err", &chi2err, "chi2err/F");
     tree->Branch("sigma",&sigma,"sigma/F");   
 
     f = f0;
@@ -235,22 +239,23 @@ float Glauber::Fitter::FitGlauber (float *par, Float_t f0, Int_t k0, Int_t k1, I
         mu = fMaxValue / NancestorsMax(f) ;
         k = j;
         const float mu_min = 0.7*mu;
-        const float mu_max = 1.3*mu;
+        const float mu_max = 1.1*mu;
 
         FindMuGoldenSection (&mu, &chi2, mu_min, mu_max, f, k, nEvents, 10);
         sigma = ( mu/k + 1 ) * mu;
         h1 = fGlauberFitHisto;
-        
-        tree->Fill();
-        
+                
         if (chi2 < Chi2Min)
         {
             f_fit = f;
             mu_fit = mu;
             k_fit = k;
             Chi2Min = chi2;
+            chi2err = 2.*TMath::Sqrt(chi2 / (highchibin - lowchibin + 1));
             fBestFitHisto = fGlauberFitHisto;
-        }            
+        }
+        
+        tree->Fill();
 
     } 
     tree->Write();

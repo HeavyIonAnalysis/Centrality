@@ -13,7 +13,7 @@ using namespace Glauber;
 
 int main(int argc, char *argv[])
 {
-    if (argc < 3)
+    if (argc < 4)
     {
         std::cout << "Wrong number of parameters! Executable usage:" << std::endl;
         std::cout << "   ./glauber f0 k0 k1" << std::endl;
@@ -34,14 +34,18 @@ int main(int argc, char *argv[])
     ///  |   Ncoll   |     Ncoll^f           |
     const TString mode = "Default";
     
-    const TString glauber_filename = "../input/glauber_auau_sigma_30_100k.root";   // input files
+    TString dir{"../"};
+    if (argc > 4)
+        dir = argv[4];
+
+    const TString glauber_filename = dir +  "/input/glauber_auau_sigma_30_10M.root";   // input files
     const TString glauber_treename = "nt_Au_Au";
-    const TString in_filename = "../input/test_input.root";
+    const TString in_filename = dir + "/input/test_input_urqmd_klo.root";
     const TString histoname = "hMreco";
 
     const Int_t min_bin = 50;      // not fitting low multiplicity region due to trigger bias, etc
     const Int_t max_bin = 10000;   // very large number to fit the whole histo
-    const Int_t nevents = 100000;
+    const Int_t nevents = 10000000;
 
     const TString outdir = ".";
     // *****************************************

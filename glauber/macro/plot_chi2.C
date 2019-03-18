@@ -4,8 +4,8 @@ void plot_chi2(TString InFileName)
 {
     gStyle->SetOptStat(0000);   
 
-    TString qa_filename = "/home/vklochkov/Data/na61/na61_30_qa.root";
-    TString histoname = "reco_info/hMreco";
+    TString qa_filename = "../../input/test_input.root";
+    TString histoname = "hMreco";
 
     std::unique_ptr<TFile> fqa{TFile::Open( qa_filename.Data() )};    
     TH1F *hData1 = (TH1F*)fqa->Get( histoname );
@@ -43,7 +43,7 @@ void plot_chi2(TString InFileName)
         y.push_back(k);
         z.push_back(chi2);
         
-//         if ( chi2 > 2.5 ) continue;
+//        if ( chi2 > 1.5 ) continue;
         
         if ( false )
         {
@@ -80,7 +80,7 @@ void plot_chi2(TString InFileName)
     g->SetTitle("#chi^{2} vs f, k; f; k; #chi^{2}");
     
 //     gPad->SetLogz();    
-    g->Draw("colz");
+    g->Draw("surf1");
     gPad->Update();
 
 }
