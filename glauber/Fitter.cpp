@@ -23,6 +23,7 @@ Glauber::Fitter::Fitter(std::unique_ptr<TTree> tree)
     
     fSimTree->SetBranchAddress("Npart", &fNpart);
     fSimTree->SetBranchAddress("Ncoll", &fNcoll);
+    fSimTree->SetBranchAddress("NpartA", &fNpartA);
 }
 
 void Glauber::Fitter::Init(int nEntries)
@@ -67,7 +68,7 @@ void Glauber::Fitter::Init(int nEntries)
 float Glauber::Fitter::Nancestors(float f) const
 {
     if       (fMode == "Default")    return f*fNpart + (1-f)*fNcoll;
-    else if  (fMode == "PSD")        return f - fNpart; // Looks strange...
+    else if  (fMode == "PSD")        return f - fNpart;
     else if  (fMode == "Npart")      return TMath::Power(fNpart, f); 
     else if  (fMode == "Ncoll")      return TMath::Power(fNcoll, f);
     
@@ -85,6 +86,18 @@ float Glauber::Fitter::NancestorsMax(float f) const
     else if  (fMode == "Ncoll")      return TMath::Power(NcollMax, f);
     
     return -1.;
+}
+
+float Glauber::Fitter::Nspectators() const
+{
+    const float A_Au = 197.;
+    return A_Au - fNpartA;
+}
+
+float Glauber::Fitter::NspectatorsMax() const
+{
+    const float A_Au = 197.;
+    return A_Au - 1.;
 }
 
 /*
@@ -115,6 +128,35 @@ void Glauber::Fitter::SetGlauberFitHisto (float f, float mu, float k, int n, Boo
         NormalizeGlauberFit();
 }
 
+/*
+ * take Glauber MC data from fSimTree
+ * simulate calorimiter response with gaussian 
+ */
+void Glauber::Fitter::SetGlauberFitHistoE (float mu, float sigma, int n, Bool_t Norm2Data)
+{
+    fGlauberFitHistoE = TH1F("glaubE", "", fNbins*1.3, 0, 1.3*fMaxValue);
+    fGlauberFitHistoE.SetName(Form("glaubE_%6.4f_%4.2f_%d", mu, sigma, n));
+    
+    for (int i=0; i<n; i++)
+    {
+        fSimTree->GetEntry(i);
+        const int Nsp = int(Nspectators());
+        
+        TF1 *func = new TF1("func", "gaus(0)", 0., 3.*mu*Nsp);
+        const float Mu = mu*Nsp;
+        const float Sigma = sigma*sqrt(1.*Nsp);
+        float par[3];
+        par[0] = 1./Sigma/sqrt(6.28);
+        par[1] = Mu;
+        par[2] = Sigma;
+        func -> SetParameters(par[0], par[1], par[2]);
+        
+        fGlauberFitHistoE.Fill(func -> GetRandom());
+    }
+    
+    if (Norm2Data)
+        NormalizeGlauberFitE();
+}
 
 void Glauber::Fitter::NormalizeGlauberFit ()
 {
@@ -136,6 +178,32 @@ void Glauber::Fitter::NormalizeGlauberFit ()
 //     std::cout << "Scale = " << Scale << std::endl;
     fGlauberFitHisto.Scale(ScaleFactor);    
 }
+
+/*
+ * the same as previous block, but for energy
+ * (not for multiplicity)
+ */
+void Glauber::Fitter::NormalizeGlauberFitE ()
+{
+    
+    int fGlauberFitHistoInt {0}; 
+    int fDataHistoInt {0};
+    
+    const int lowchibin = fFitMinBin;
+    const int highchibin = fFitMaxBin<fNbins ? fFitMaxBin : fNbins;
+    
+    for (int i=lowchibin; i<highchibin; i++)
+    {
+        fGlauberFitHistoInt += fGlauberFitHistoE.GetBinContent(i+1);
+        fDataHistoInt += fDataHisto.GetBinContent(i+1);
+    }
+
+    const float ScaleFactor = (float)fDataHistoInt/fGlauberFitHistoInt;
+    
+//     std::cout << "Scale = " << Scale << std::endl;
+    fGlauberFitHistoE.Scale(ScaleFactor);    
+}
+
 
 /**
  *
@@ -193,6 +261,57 @@ void Glauber::Fitter::FindMuGoldenSection (float *mu, float *chi2, float mu_min,
     /* take min(chi2) */
     *chi2 = (chi2_mu1 < chi2_mu2) ? chi2_mu1 : chi2_mu2;
 }
+
+/*
+ * the same as previous block, but for energy
+ * (not for multiplicity)
+ */
+void Glauber::Fitter::FindMuGoldenSectionE (float *mu, float *chi2, float mu_min, float mu_max, float sigma, int nEvents, int nIter)
+{
+    const float phi {(1+TMath::Sqrt(5))/2};
+
+    /* left */
+    float mu_1 = mu_max - (mu_max-mu_min)/phi;
+
+    /* right */
+    float mu_2 = mu_min + (mu_max-mu_min)/phi;
+    
+    SetGlauberFitHistoE (mu_1, sigma, nEvents);
+    float chi2_mu1 = GetChi2 ();
+    
+    SetGlauberFitHistoE (mu_2, sigma, nEvents);
+    float chi2_mu2 = GetChi2 ();
+    
+    for (int j=0; j<nIter; j++)
+    {        
+        if (chi2_mu1 > chi2_mu2)
+        {
+            mu_min = mu_1;
+            mu_1 = mu_2;
+            mu_2 = mu_min + (mu_max-mu_min)/phi;
+            chi2_mu1 = chi2_mu2;
+            SetGlauberFitHistoE (mu_2, sigma, nEvents);
+            chi2_mu2 = GetChi2E ();
+        }
+        else
+        {
+            mu_max = mu_2;
+            mu_2 = mu_1;
+            mu_1 = mu_max - (mu_max-mu_min)/phi; 
+            chi2_mu2 = chi2_mu1;
+            SetGlauberFitHistoE (mu_1, sigma, nEvents);
+            chi2_mu1 = GetChi2E ();            
+        }
+        
+        std::cout << "mu1 = " << mu_1 << " mu2 = " << mu_2 << " chi2_mu1 = " << chi2_mu1  << " chi2_mu2 = " << chi2_mu2 << std::endl;
+    }
+
+    /* take min(mu) */
+    *mu = (chi2_mu1 < chi2_mu2) ? mu_1 : mu_2;
+    /* take min(chi2) */
+    *chi2 = (chi2_mu1 < chi2_mu2) ? chi2_mu1 : chi2_mu2;
+}
+
 
 /**
  * Find the best match
@@ -269,6 +388,71 @@ float Glauber::Fitter::FitGlauber (float *par, Float_t f0, Int_t k0, Int_t k1, I
     return Chi2Min;
 }
 
+/*
+ * the same as previous block, but for energy
+ * (not for multiplicity)
+ */
+float Glauber::Fitter::FitGlauberE (float *par, Int_t k0, Int_t k1, Int_t nEvents)
+{
+    float mu_fit{-1}; 
+    float sigma_fit{-1};
+    float Chi2Min {1e10};
+    
+    const int lowchibin = fFitMinBin;
+    const int highchibin = fFitMaxBin<fNbins ? fFitMaxBin : fNbins;
+
+    const TString filename = Form ( "%s/fitE_%d_%d_%d.root", fOutDirName.Data(), k0, k1, fFitMinBin );
+    
+//     std::unique_ptr<TFile> file {TFile::Open(filename, "recreate")};    
+//     std::unique_ptr<TTree> tree {new TTree("test_tree", "tree" )};
+
+    TFile* file {TFile::Open(filename, "recreate")};    
+    TTree* tree {new TTree("test_tree", "tree" )};
+    
+    TH1F h1("h1", "", fNbins, 0, fMaxValue);
+           
+    float mu, sigma, chi2, chi2err;
+
+    tree->Branch("histo", "TH1F", &h1);
+    tree->Branch("mu",   &mu,   "mu/F");  
+    tree->Branch("sigma",&sigma,"sigma/F"); 
+    tree->Branch("chi2", &chi2, "chi2/F");
+    tree->Branch("chi2err", &chi2err, "chi2err/F");
+
+    mu = fMaxValue / NspectatorsMax();
+    
+    for (int j=k0; j<=k1; j++)
+    {
+        sigma = mu*0.2*j/10;
+        const float mu_min = 0.7*mu;
+        const float mu_max = 1.3*mu;
+
+        FindMuGoldenSection (&mu, &chi2, mu_min, mu_max, sigma, nEvents, 10);
+        h1 = fGlauberFitHisto;
+                
+        if (chi2 < Chi2Min)
+        {
+            mu_fit = mu;
+            sigma_fit = sigma;
+            Chi2Min = chi2;
+            chi2err = 2.*TMath::Sqrt(chi2 / (highchibin - lowchibin + 1));
+            fBestFitHisto = fGlauberFitHistoE;
+        }
+        
+        tree->Fill();
+
+    } 
+    tree->Write();
+    file->Write();
+    file->Close();
+
+    par[0] = mu_fit;
+    par[1] = sigma_fit;
+
+    
+    return Chi2Min;
+}
+
 /**
  * Compare fGlauberFitHisto with fDataHisto
  * @return chi2 value
@@ -292,6 +476,33 @@ float Glauber::Fitter::GetChi2 () const
     chi2 = chi2 / (highchibin - lowchibin + 1);
     return chi2;
 }
+
+/*
+ * the same as previous block, but for energy
+ * (not for multiplicity)
+ */
+float Glauber::Fitter::GetChi2E () const 
+{
+    float chi2 {0.0};
+    
+    const int lowchibin = fFitMinBin;
+    const int highchibin = fFitMaxBin<fNbins ? fFitMaxBin : fNbins;
+    
+    for (int i=lowchibin; i<=highchibin; ++i) 
+    {
+        if (fDataHisto.GetBinContent(i) < 1.0) continue;
+        const float error2 = TMath::Power(fDataHisto.GetBinError(i), 2) + TMath::Power(fGlauberFitHistoE.GetBinError(i), 2);
+        const float diff2 = TMath::Power((fGlauberFitHistoE.GetBinContent(i) - fDataHisto.GetBinContent(i)), 2) / error2;
+
+        chi2 += diff2;
+    }
+    
+    chi2 = chi2 / (highchibin - lowchibin + 1);
+    return chi2;
+}
+
+
+
 
 /**
  * Popuates histogram nbd_<mean>_<k> with values of NBD
@@ -387,6 +598,3 @@ std::unique_ptr<TH1F> Glauber::Fitter::GetModelHisto (const float range[2], TStr
     return std::move(hModel);
     
 }
-
-
-

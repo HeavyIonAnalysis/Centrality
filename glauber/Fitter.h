@@ -31,18 +31,25 @@ namespace Glauber
         
         void Init(int nEntries);
         void SetGlauberFitHisto (Float_t f, Float_t mu, Float_t k, Int_t n = 10000, Bool_t Norm2Data = true);
+        void SetGlauberFitHistoE (Float_t mu, Float_t sigma, Int_t n = 10000, Bool_t Norm2Data = true);
         void NormalizeGlauberFit ();
+        void NormalizeGlauberFitE ();
         void DrawHistos (Bool_t isSim = true, Bool_t isData = true, Bool_t isGlauber = false, Bool_t isNBD = false);
         
         float FitGlauber (float *par, Float_t f0, Int_t k0, Int_t k1, Int_t nEvents);
+        float FitGlauberE (float *par, Int_t k0, Int_t k1, Int_t nEvents);
         void FindMuGoldenSection (Float_t *mu, Float_t *chi2, Float_t mu_min, Float_t mu_max, Float_t f, Float_t k, Int_t nEvents = 10000, Int_t nIter = 5);
+        void FindMuGoldenSectionE (Float_t *mu, Float_t *chi2, Float_t mu_min, Float_t mu_max, Float_t sigma, Int_t nEvents = 10000, Int_t nIter = 5);
         
         Float_t GetChi2 (void) const;
+        Float_t GetChi2E(void) const;
         
         Float_t NBD(Float_t n, Float_t mu, Float_t k) const;
-        void SetNBDhist(Float_t mu, Float_t k);
+        void  SetNBDhist(Float_t mu, Float_t k);
         float Nancestors(float f) const;
         float NancestorsMax(float f) const;
+        float Nspectators() const;
+        float NspectatorsMax() const;
         
         std::unique_ptr<TH1F> GetModelHisto (const Float_t range[2], TString name, const Float_t par[3], Int_t nEvents);
         
@@ -60,12 +67,13 @@ namespace Glauber
 //         
 //         Getters
 //         
-        TH1F GetGlauberFitHisto () const { return fGlauberFitHisto; }
-        TH1F GetDataHisto ()       const { return fDataHisto;  }
-        TH1F GetNBDHisto ()        const { return fNbdHisto;   }
-        TH1F GetNpartHisto ()      const { return fNpartHisto; }
-        TH1F GetNcollHisto ()      const { return fNcollHisto;  }
-        TH1F GetBestFiHisto ()     const { return fBestFitHisto;  }
+        TH1F GetGlauberFitHisto ()  const { return fGlauberFitHisto; }
+        TH1F GetGlauberFitHistoE () const { return fGlauberFitHistoE; }
+        TH1F GetDataHisto ()        const { return fDataHisto;  }
+        TH1F GetNBDHisto ()         const { return fNbdHisto;   }
+        TH1F GetNpartHisto ()       const { return fNpartHisto; }
+        TH1F GetNcollHisto ()       const { return fNcollHisto;  }
+        TH1F GetBestFiHisto ()      const { return fBestFitHisto;  }
 
         
     private:
@@ -76,6 +84,7 @@ namespace Glauber
         TH1F fDataHisto; 
         TH1F fNbdHisto; 
         TH1F fGlauberFitHisto; 
+        TH1F fGlauberFitHistoE;
         TH1F fBestFitHisto;
         
         /* MC data */
@@ -83,6 +92,8 @@ namespace Glauber
         
         Float_t fNpart{-1.};
         Float_t fNcoll{-1.};
+        Float_t fNpartA{-1.};
+        Float_t fNspec{-1.};
 
         Float_t fMaxValue{-1.};
         
