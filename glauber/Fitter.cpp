@@ -152,6 +152,7 @@ void Glauber::Fitter::SetGlauberFitHistoE (float mu, float sigma, int n, Bool_t 
         func -> SetParameters(par[0], par[1], par[2]);
         
         fGlauberFitHistoE.Fill(func -> GetRandom());
+        delete func;
     }
     
     if (Norm2Data)
@@ -303,7 +304,7 @@ void Glauber::Fitter::FindMuGoldenSectionE (float *mu, float *chi2, float mu_min
             chi2_mu1 = GetChi2E ();            
         }
         
-        std::cout << "mu1 = " << mu_1 << " mu2 = " << mu_2 << " chi2_mu1 = " << chi2_mu1  << " chi2_mu2 = " << chi2_mu2 << std::endl;
+        std::cout << "1mu1 = " << mu_1 << " mu2 = " << mu_2 << " chi2_mu1 = " << chi2_mu1  << " chi2_mu2 = " << chi2_mu2 << std::endl;
     }
 
     /* take min(mu) */
@@ -420,6 +421,7 @@ float Glauber::Fitter::FitGlauberE (float *par, Int_t k0, Int_t k1, Int_t nEvent
     tree->Branch("chi2err", &chi2err, "chi2err/F");
 
     mu = fMaxValue / NspectatorsMax();
+    std::cout << fMaxValue << "\t" << NspectatorsMax() << std::endl;
     
     for (int j=k0; j<=k1; j++)
     {
@@ -427,7 +429,7 @@ float Glauber::Fitter::FitGlauberE (float *par, Int_t k0, Int_t k1, Int_t nEvent
         const float mu_min = 0.7*mu;
         const float mu_max = 1.3*mu;
 
-        FindMuGoldenSection (&mu, &chi2, mu_min, mu_max, sigma, nEvents, 10);
+        FindMuGoldenSectionE (&mu, &chi2, mu_min, mu_max, sigma, nEvents, 10);
         h1 = fGlauberFitHisto;
                 
         if (chi2 < Chi2Min)

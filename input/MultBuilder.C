@@ -79,7 +79,7 @@ void MultBuilder::Loop(float mu, int k, float f)
    if (fChain == 0) return;
    
    TRandom3 *rand = new TRandom3();
-   TH1F *histo = new TH1F("hMreco", "Mreco", 2000, 0, 1000);
+   TH1F *histo = new TH1F("hMreco", "Mreco", 1000, 0, 1000);
    
    int nmax = 0;
    do
@@ -120,7 +120,7 @@ void MultBuilder::Loop(float mu, int k, float f)
    
    histo -> Draw();
    
-   TFile histosave("test_input_00.root", "recreate");
+   TFile histosave("test_input_01.root", "recreate");
    histo -> Write();
    histosave.Close();
    

@@ -1,0 +1,10 @@
+{ decls }
+namespace Centrality {  }
+namespace Glauber {  }
+
+[ libCentrality.so ]
+# List of selected classes
+class Centrality::Getter
+class Glauber::Fitter
+header src/Getter.h
+header glauber/Fitter.h

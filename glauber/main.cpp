@@ -38,14 +38,15 @@ int main(int argc, char *argv[])
     if (argc > 4)
         dir = argv[4];
 
-    const TString glauber_filename = dir +  "/input/glauber_auau_sigma_30_10M.root";   // input files
+    const TString glauber_filename = dir +  "/input/glauber_auau_sigma_30_100k.root";   // input files
     const TString glauber_treename = "nt_Au_Au";
-    const TString in_filename = dir + "/input/test_input_urqmd_klo.root";
-    const TString histoname = "hMreco";
+    const TString in_filename = dir + "/input/test_input.root";
+    //const TString histoname = "hMreco";
+    const TString histoname = "hE";
 
-    const Int_t min_bin = 50;      // not fitting low multiplicity region due to trigger bias, etc
+    const Int_t min_bin = 0;      // not fitting low multiplicity region due to trigger bias, etc
     const Int_t max_bin = 10000;   // very large number to fit the whole histo
-    const Int_t nevents = 10000000;
+    const Int_t nevents = 100000;
 
     const TString outdir = ".";
     // *****************************************
@@ -68,10 +69,10 @@ int main(int argc, char *argv[])
     fitter.SetFitMaxBin(max_bin);
     fitter.SetOutDirName(outdir);
 
-    float par[3];
-    const float chi2 = fitter.FitGlauber(par, f0, k0, k1, nevents);
+    float par[2];
+    const float chi2 = fitter.FitGlauberE(par, k0, k1, nevents);
 
-    std::cout << "f = " << par[0] << "    mu = " << par[1] << "    k = " << par[2] << "    chi2 = " << chi2 << std::endl; 
+    std::cout << "mu = " << par[0] << "    sigma = " << par[1] << "    chi2 = " << chi2 << std::endl; 
     
     Glauber::DrawHistos(fitter, true, true, true, true);
 
