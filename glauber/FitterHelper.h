@@ -29,8 +29,8 @@ namespace Glauber
         std::unique_ptr <TPad> c1_4 {(TPad*) c1->GetListOfPrimitives()->FindObject("c1_4")};
 
         c1_1->SetLogy(1);
-        c1_2->SetLogy(1);
-        c1_4->SetLogy(1);
+        //c1_2->SetLogy(1);
+        //c1_4->SetLogy(1);
         
         /*const*/ TH1F hGlaub = fit.GetGlauberFitHisto();
         /*const*/ TH1F hData = fit.GetDataHisto();
@@ -63,7 +63,7 @@ namespace Glauber
             hData.Write();
             if (isGlauber){
                 hBestFit.SetLineColor (kRed);
-                hBestFit.Draw("same");
+                hBestFit.Draw("HIST");
                 
                 std::unique_ptr <TLegend>  legData { new TLegend(0.6,0.75,0.75,0.83) };
                 legData->AddEntry(&hBestFit ,"Fit", "l");    

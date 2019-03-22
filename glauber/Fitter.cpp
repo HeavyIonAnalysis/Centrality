@@ -7,6 +7,8 @@
 #include "TLegend.h"
 #include "TMath.h"
 #include "TRandom.h"
+#include <Math/ProbFunc.h>
+#include <TRandom3.h>
 
 ClassImp(Glauber::Fitter)
 
@@ -100,6 +102,14 @@ float Glauber::Fitter::NspectatorsMax() const
     return A_Au - 1.;
 }
 
+float Glauber::Fitter::Gauss_X(float mu, float sigma, float P, float step) const
+{
+    float x = step;
+    while(ROOT::Math::normal_cdf(x, sigma, mu)<P)
+        x = x+step;
+    return x - step/2;
+}
+
 /*
  * take Glauber MC data from fSimTree
  * Populate fGlauberFitHisto with NBD x Na
@@ -137,26 +147,22 @@ void Glauber::Fitter::SetGlauberFitHistoE (float mu, float sigma, int n, Bool_t 
     fGlauberFitHistoE = TH1F("glaubE", "", fNbins*1.3, 0, 1.3*fMaxValue);
     fGlauberFitHistoE.SetName(Form("glaubE_%6.4f_%4.2f_%d", mu, sigma, n));
     
+    TRandom3 *rand = new TRandom3();
+    
     for (int i=0; i<n; i++)
-    {
+    {   
         fSimTree->GetEntry(i);
         const int Nsp = int(Nspectators());
-        
-        TF1 *func = new TF1("func", "gaus(0)", 0., 3.*mu*Nsp);
         const float Mu = mu*Nsp;
-        const float Sigma = sigma*sqrt(1.*Nsp);
-        float par[3];
-        par[0] = 1./Sigma/sqrt(6.28);
-        par[1] = Mu;
-        par[2] = Sigma;
-        func -> SetParameters(par[0], par[1], par[2]);
+        const float Sigma = sigma*TMath::Sqrt(1.*Nsp);
         
-        fGlauberFitHistoE.Fill(func -> GetRandom());
-        delete func;
+        fGlauberFitHistoE.Fill(Gauss_X(Mu, Sigma, rand->Uniform(1), fGlauberFitHistoE.GetXaxis()->GetBinWidth(1)/100));
     }
     
     if (Norm2Data)
         NormalizeGlauberFitE();
+    
+    delete rand;
 }
 
 void Glauber::Fitter::NormalizeGlauberFit ()
@@ -227,6 +233,7 @@ void Glauber::Fitter::FindMuGoldenSection (float *mu, float *chi2, float mu_min,
     /* right */
     float mu_2 = mu_min + (mu_max-mu_min)/phi;
     
+    
     SetGlauberFitHisto (f, mu_1, k, nEvents);
     float chi2_mu1 = GetChi2 ();
     
@@ -276,12 +283,14 @@ void Glauber::Fitter::FindMuGoldenSectionE (float *mu, float *chi2, float mu_min
 
     /* right */
     float mu_2 = mu_min + (mu_max-mu_min)/phi;
-    
+        
     SetGlauberFitHistoE (mu_1, sigma, nEvents);
-    float chi2_mu1 = GetChi2 ();
-    
+    float chi2_mu1 = GetChi2E ();
+       
     SetGlauberFitHistoE (mu_2, sigma, nEvents);
-    float chi2_mu2 = GetChi2 ();
+    float chi2_mu2 = GetChi2E ();
+    
+    std::cout << "mu1 = " << mu_1 << " mu2 = " << mu_2 << " chi2_mu1 = " << chi2_mu1  << " chi2_mu2 = " << chi2_mu2 << std::endl;
     
     for (int j=0; j<nIter; j++)
     {        
@@ -304,7 +313,7 @@ void Glauber::Fitter::FindMuGoldenSectionE (float *mu, float *chi2, float mu_min
             chi2_mu1 = GetChi2E ();            
         }
         
-        std::cout << "1mu1 = " << mu_1 << " mu2 = " << mu_2 << " chi2_mu1 = " << chi2_mu1  << " chi2_mu2 = " << chi2_mu2 << std::endl;
+        std::cout << "mu1 = " << mu_1 << " mu2 = " << mu_2 << " chi2_mu1 = " << chi2_mu1  << " chi2_mu2 = " << chi2_mu2 << std::endl;
     }
 
     /* take min(mu) */
@@ -360,7 +369,7 @@ float Glauber::Fitter::FitGlauber (float *par, Float_t f0, Int_t k0, Int_t k1, I
         k = j;
         const float mu_min = 0.7*mu;
         const float mu_max = 1.1*mu;
-
+        
         FindMuGoldenSection (&mu, &chi2, mu_min, mu_max, f, k, nEvents, 10);
         sigma = ( mu/k + 1 ) * mu;
         h1 = fGlauberFitHisto;
@@ -425,12 +434,12 @@ float Glauber::Fitter::FitGlauberE (float *par, Int_t k0, Int_t k1, Int_t nEvent
     
     for (int j=k0; j<=k1; j++)
     {
-        sigma = mu*0.2*j/10;
+        sigma = 0.1*j;
         const float mu_min = 0.7*mu;
-        const float mu_max = 1.3*mu;
-
+        const float mu_max = 1.1*mu;
+        
         FindMuGoldenSectionE (&mu, &chi2, mu_min, mu_max, sigma, nEvents, 10);
-        h1 = fGlauberFitHisto;
+        h1 = fGlauberFitHistoE;
                 
         if (chi2 < Chi2Min)
         {

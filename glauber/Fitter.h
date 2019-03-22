@@ -50,6 +50,7 @@ namespace Glauber
         float NancestorsMax(float f) const;
         float Nspectators() const;
         float NspectatorsMax() const;
+        float Gauss_X(float mu, float sigma, float P, float step) const;
         
         std::unique_ptr<TH1F> GetModelHisto (const Float_t range[2], TString name, const Float_t par[3], Int_t nEvents);
         

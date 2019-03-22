@@ -13,15 +13,53 @@ using namespace Glauber;
 
 int main(int argc, char *argv[])
 {
-    if (argc < 4)
+    
+    bool flag;
+    TString letter = argv[1];
+    TString dir{"../"};
+    if(letter=="M" || letter=="m")
+        flag = false;
+    else
+        if(letter=="E" || letter=="e")
+            flag = true;
+        else
+        {
+            std::cout << argv[1] << std::endl;
+            std::cout << "Wrong first argument! Enter M for multiplicity fit and E for energy fit" << std::endl;
+            return -1;
+        }
+    
+    Float_t f0;
+    Int_t k0, k1;
+    
+    if(flag == false)
     {
-        std::cout << "Wrong number of parameters! Executable usage:" << std::endl;
-        std::cout << "   ./glauber f0 k0 k1" << std::endl;
-        return -1;
+        if (argc < 5)
+        {
+            std::cout << "Wrong number of parameters! Executable usage:" << std::endl;
+            std::cout << "   ./glauber M f0 k0 k1" << std::endl;
+            return -1;
+        }
+        f0 = atof( argv[2]);
+        k0 = atoi( argv[3] );
+        k1 = atoi( argv[4] );
+        if (argc > 5)
+            dir = argv[5];
     }
-    const Float_t f0 = atof( argv[1]);
-    const Int_t k0 = atoi( argv[2] );
-    const Int_t k1 = atoi( argv[3] );
+        
+    if(flag == true)
+    {
+        if(argc < 3)
+        {
+            std::cout << "Wrong number of parameters! Executable usage:" << std::endl;
+            std::cout << "    ./glauber E k0 k1" << std::endl;
+            return -1;
+        }
+        k0 = atoi( argv[2] );
+        k1 = atoi( argv[3] );
+        if (argc > 4)
+            dir = argv[4];
+    }   
     
     // *****************************************
     // Modify this part according to your needs
@@ -33,18 +71,19 @@ int main(int argc, char *argv[])
     ///  |   Npart   |     Npart^f           |
     ///  |   Ncoll   |     Ncoll^f           |
     const TString mode = "Default";
-    
-    TString dir{"../"};
-    if (argc > 4)
-        dir = argv[4];
 
-    const TString glauber_filename = dir +  "/input/glauber_auau_sigma_30_100k.root";   // input files
+    const TString glauber_filename = dir +  "/input/glauber_auau_sigma_30_10M.root";   // input files
     const TString glauber_treename = "nt_Au_Au";
-    const TString in_filename = dir + "/input/test_input.root";
-    //const TString histoname = "hMreco";
-    const TString histoname = "hE";
-
-    const Int_t min_bin = 0;      // not fitting low multiplicity region due to trigger bias, etc
+    const TString in_filename = dir + "/input/pure.urqmd.ana.root";
+    //const TString in_filename = dir + "/input/test_input_01.root";
+    
+    TString histoname;
+    if(flag == false)
+        histoname = "hMpure";
+    else
+        histoname = "hEpsd";
+    
+    const Int_t min_bin = 50;      // not fitting low multiplicity region due to trigger bias, etc
     const Int_t max_bin = 10000;   // very large number to fit the whole histo
     const Int_t nevents = 100000;
 
@@ -69,10 +108,18 @@ int main(int argc, char *argv[])
     fitter.SetFitMaxBin(max_bin);
     fitter.SetOutDirName(outdir);
 
-    float par[2];
-    const float chi2 = fitter.FitGlauberE(par, k0, k1, nevents);
-
-    std::cout << "mu = " << par[0] << "    sigma = " << par[1] << "    chi2 = " << chi2 << std::endl; 
+    float par[3];
+    float chi2;
+    if(flag == false)
+    {
+        chi2 = fitter.FitGlauber(par, f0, k0, k1, nevents);
+        std::cout << "f = " << par[0] << "    mu = " << par[1] << "    k = " << par[2] << "    chi2 = " << chi2 << std::endl;
+    }
+    else
+    {
+        chi2 = fitter.FitGlauberE(par, k0, k1, nevents);
+        std::cout << "mu = " << par[0] << "    sigma = " << par[1] << "    chi2 = " << chi2 << std::endl; 
+    }
     
     Glauber::DrawHistos(fitter, true, true, true, true);
 
