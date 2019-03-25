@@ -13,7 +13,7 @@ F=$(($SLURM_ARRAY_TASK_ID / $X))
 DIR=/lustre/nyx/cbm/users/$USER/soft/centrality/
 
 EXE_DIR=$DIR/build_qgsm/
-OUT_DIR=/lustre/nyx/cbm/users/$USER/fit/test_M/
+OUT_DIR=/lustre/nyx/cbm/users/$USER/fit/test_M/qgsm/
 
 source /lustre/nyx/cbm/users/klochkov/soft/root/root6/v6-12-06-cxx11/install/bin/thisroot.sh
 

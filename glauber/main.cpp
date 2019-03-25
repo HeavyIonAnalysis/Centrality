@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
     
     const Int_t min_bin = 50;      // not fitting low multiplicity region due to trigger bias, etc
     const Int_t max_bin = 10000;   // very large number to fit the whole histo
-    const Int_t nevents = 100000;
+    const Int_t nevents = 10000000;
 
     const TString outdir = ".";
     // *****************************************
