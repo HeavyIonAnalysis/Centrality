@@ -38,6 +38,9 @@ namespace Glauber
         /*const*/ TH1F hNcoll = fit.GetNcollHisto();
         /*const*/ TH1F hNpart = fit.GetNpartHisto();
         /*const*/ TH1F hBestFit = fit.GetBestFiHisto();
+        
+                  TH1F hBest2Data("hBest2Data", "hBest2Data", hData.GetNbinsX(), 0, hData.GetXaxis()->GetXmax());
+                  hBest2Data.Divide(&hBestFit, &hData);
 
         std::unique_ptr <TFile> fOut{TFile::Open("glauber_qa.root", "recreate")}; 
 
@@ -82,7 +85,8 @@ namespace Glauber
         
         if (isGlauber){
             c1->cd(4);
-            hBestFit.Draw();
+            hBest2Data.Draw();
+            hBest2Data.Write();
         }
 
         c1->Write();

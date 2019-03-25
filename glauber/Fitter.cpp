@@ -116,7 +116,8 @@ float Glauber::Fitter::Gauss_X(float mu, float sigma, float P, float step) const
  */
 void Glauber::Fitter::SetGlauberFitHisto (float f, float mu, float k, int n, Bool_t Norm2Data)
 {    
-    fGlauberFitHisto = TH1F("glaub", "", fNbins*1.3, 0, 1.3*fMaxValue);
+    //fGlauberFitHisto = TH1F("glaub", "", fNbins*1.3, 0, 1.3*fMaxValue);
+    fGlauberFitHisto = TH1F("glaub", "", fDataHisto.GetNbinsX(), 0, fDataHisto.GetXaxis()->GetXmax());
     fGlauberFitHisto.SetName(Form("glaub_%4.2f_%6.4f_%4.2f_%d", f, mu, k, n ));
     
     SetNBDhist(mu,  k);
@@ -144,7 +145,8 @@ void Glauber::Fitter::SetGlauberFitHisto (float f, float mu, float k, int n, Boo
  */
 void Glauber::Fitter::SetGlauberFitHistoE (float mu, float sigma, int n, Bool_t Norm2Data)
 {
-    fGlauberFitHistoE = TH1F("glaubE", "", fNbins*1.3, 0, 1.3*fMaxValue);
+    //fGlauberFitHistoE = TH1F("glaubE", "", fNbins*1.3, 0, 1.3*fMaxValue);
+    fGlauberFitHistoE = TH1F("glaubE", "", fDataHisto.GetNbinsX(), 0, fDataHisto.GetXaxis()->GetXmax());
     fGlauberFitHistoE.SetName(Form("glaubE_%6.4f_%4.2f_%d", mu, sigma, n));
     
     TRandom3 *rand = new TRandom3();
@@ -156,7 +158,7 @@ void Glauber::Fitter::SetGlauberFitHistoE (float mu, float sigma, int n, Bool_t 
         const float Mu = mu*Nsp;
         const float Sigma = sigma*TMath::Sqrt(1.*Nsp);
         
-        fGlauberFitHistoE.Fill(Gauss_X(Mu, Sigma, rand->Uniform(1), fGlauberFitHistoE.GetXaxis()->GetBinWidth(1)/100));
+        fGlauberFitHistoE.Fill(Gauss_X(Mu, Sigma, rand->Uniform(1), fGlauberFitHistoE.GetXaxis()->GetBinWidth(1)));
     }
     
     if (Norm2Data)

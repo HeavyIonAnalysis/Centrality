@@ -75,6 +75,7 @@ namespace Glauber
         TH1F GetNpartHisto ()       const { return fNpartHisto; }
         TH1F GetNcollHisto ()       const { return fNcollHisto;  }
         TH1F GetBestFiHisto ()      const { return fBestFitHisto;  }
+        //TH1F GetBest2DataHisto()    const { return fBest2DataHisto; }
 
         
     private:
@@ -87,6 +88,7 @@ namespace Glauber
         TH1F fGlauberFitHisto; 
         TH1F fGlauberFitHistoE;
         TH1F fBestFitHisto;
+        //TH1F fBest2DataHisto;
         
         /* MC data */
         std::unique_ptr<TTree> fSimTree{nullptr};

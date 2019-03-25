@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
 
     const TString glauber_filename = dir +  "/input/glauber_auau_sigma_30_10M.root";   // input files
     const TString glauber_treename = "nt_Au_Au";
-    const TString in_filename = dir + "/input/pure.urqmd.ana.root";
+    const TString in_filename = dir + "/input/pure.qgsm.ana.root";
     //const TString in_filename = dir + "/input/test_input_01.root";
     
     TString histoname;
@@ -85,7 +85,7 @@ int main(int argc, char *argv[])
     
     const Int_t min_bin = 50;      // not fitting low multiplicity region due to trigger bias, etc
     const Int_t max_bin = 10000;   // very large number to fit the whole histo
-    const Int_t nevents = 10000000;
+    const Int_t nevents = 1000000;
 
     const TString outdir = ".";
     // *****************************************
