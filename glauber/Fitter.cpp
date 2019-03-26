@@ -50,13 +50,11 @@ void Glauber::Fitter::Init(int nEntries)
     }
     std::cout << fSimTree->GetEntries() << std::endl;
     
-    fNbins = fDataHisto.GetNbinsX();
+    fNbins = fDataHisto.GetNbinsX();                                                                                                                             
 
-    while ( fDataHisto.GetBinContent(fNbins-1) == 0)
+    while ( fDataHisto.GetBinContent(fNbins) == 0)
         fNbins--;
-    
-    fNbins++;
-    
+        
     const float min = fDataHisto.GetXaxis()->GetXmin();
     const float max = fDataHisto.GetXaxis()->GetXmax();
     
