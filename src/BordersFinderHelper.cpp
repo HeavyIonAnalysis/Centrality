@@ -6,6 +6,10 @@
 #include "TCanvas.h"
 #include "TLine.h"
 
+#include "TStyle.h"
+
+
+
 namespace Centrality {
 
 void BordersFinderHelper::QA(const Getter& getter, const TH1F& histo) const
@@ -62,25 +66,50 @@ void BordersFinderHelper::PlotHisto(const Getter& getter, TH1F& histo) const
 
 void BordersFinderHelper::PlotHisto2D(const Getter& getter, TH2F& histo, TF1& func) const
 {
-    std::unique_ptr <TCanvas> c {new TCanvas("c", "", 1200, 800)};
+    gStyle->SetOptStat(0000);
+    
+    std::unique_ptr <TCanvas> c {new TCanvas("c", "", 1000, 1000)};
+    histo.GetXaxis()->SetRangeUser(0,1.1);
+    histo.GetYaxis()->SetRangeUser(0,1.1);
     histo.Draw("colz");
+    func.SetLineColor(kBlack);
     func.Draw("same");
     
     const auto& borders = getter.GetBorders2D();
     TLine *line{nullptr};
 
-    for (uint i=0; i<borders.size(); ++i)
+    for (uint i=0; i<borders.size()-1; ++i)
     {
-        const float x1 = 0.;
-        const float x2 = 1.;
+
+      float x1{0.};
+      float x2{1.};
+      float x{0.5};
+      
+      for(int iter=0; iter<10; ++iter)
+      {
+        x=(x1+x2)/2;
         
-        const float y1 = borders.at(i)[0] + borders.at(i)[1] * x1;
-        const float y2 = borders.at(i)[0] + borders.at(i)[1] * x2;
-        
-        line = new TLine(x1, y1, x2 ,y2); 
-        line->Draw("same");
+        if ( (func.Eval(x1) - borders.at(i)[0] - borders.at(i)[1] * x1) * (func.Eval(x) - borders.at(i)[0] - borders.at(i)[1] * x) < 0 )
+          x2=x;
+        else
+          x1=x;
+      }
+      x1 = x - 0.06*borders.at(i)[1];
+      x2 = x + 0.06*borders.at(i)[1];
+      if (x1 < 0) x1=0;
+      
+      float y1 = borders.at(i)[0] + borders.at(i)[1] * x1;
+      float y2 = borders.at(i)[0] + borders.at(i)[1] * x2;
+      
+//       if (y1 < 0) y1=0;
+      
+      line = new TLine(x1, y1, x2 ,y2); 
+      line->SetLineWidth(2);
+      line->SetLineColor(kRed);
+      line->Draw("same");
     }
 
+    c->SetLogz(true);
     c->Write(name_ + "_histo_2d");
     
     if (ispdf_)

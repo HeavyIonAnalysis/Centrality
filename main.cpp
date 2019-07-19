@@ -33,9 +33,9 @@ int main(int argc, char **argv) {
         std::unique_ptr <TH1F> histo {(TH1F*) (fIn->Get(argv[2]))};
         Centrality::BordersFinder bf;
         bf.SetHisto(*histo);
-        bf.SetRanges( 10,0,100 );   // number of bins, min, max value
+        bf.SetRanges( 20,0,100 );   // number of bins, min, max value
     //   bf.SetRanges( {0,10,30,60,100} );  // centrality bins borders with array
-        bf.IsSpectator(false);  // true if impact parameter b correlated with estimator (spectators eneggy), 
+        bf.IsSpectator(true);  // true if impact parameter b correlated with estimator (spectators eneggy), 
                                     // false - anticorrelated (multiplicity of produced particles) 
 
         bf.FindBorders();
@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
         std::unique_ptr<TH1F> h1d = bf.Convert();
         
         bf.SetHisto(*h1d);
-        bf.SetRanges( 10,0,100 );   // number of bins, min, max value
+        bf.SetRanges( 20,0,100 );   // number of bins, min, max value
         //   bf.SetRanges( {0,10,30,60,100} );  // centrality bins borders with array
         bf.IsSpectator(false);  // true if impact parameter b correlated with estimator (spectators eneggy), 
                                     // false - anticorrelated (multiplicity of produced particles) 
