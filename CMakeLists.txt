@@ -1,9 +1,29 @@
 cmake_minimum_required(VERSION 2.8)
 project(Centrality)
 set(CMAKE_MACOSX_RPATH 1)
-set(CMAKE_cpp_STANDARD 11)
-set(CMAKE_BUILD_TYPE debug)
 set(PROJECT_VERSION 1.0)
+
+if(NOT DEFINED CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 11)
+endif()
+
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+message(STATUS "Using C++${CMAKE_CXX_STANDARD}")
+
+# by default build optimized code with debug symbols
+if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set(CMAKE_BUILD_TYPE RELWITHDEBINFO)
+endif ()
+
+# in DEBUG mode make verbose Makefile
+if (CMAKE_BUILD_TYPE MATCHES DEBUG)
+    set(CMAKE_VERBOSE_MAKEFILE ON)
+endif ()
+
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -ggdb -DDEBUG -D__DEBUG -Wall")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "${CMAKE_CXX_FLAGS_RELEASE} -ggdb")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -ftree-vectorize -ffast-math -DNODEBUG")
+message(STATUS "Using CXX flags for ${CMAKE_BUILD_TYPE}: ${CMAKE_CXX_FLAGS_${CMAKE_BUILD_TYPE}}")
 
 set(SOURCES
         src/BordersFinder.cpp
