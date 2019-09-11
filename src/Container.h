@@ -16,7 +16,7 @@ class Container{
 
 public:
     
-    Container(){}
+    Container()= default;
     
     void AddCentralityEstimator(uint num, float centrality)
     {

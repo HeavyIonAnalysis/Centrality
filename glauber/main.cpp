@@ -5,11 +5,9 @@
 #include "FitterHelper.h"
 
 #include "TH1.h"
-#include "TH2.h"
 #include "TFile.h"
 #include "TLegend.h"
 #include "TH2.h"
-
 using namespace Glauber;
 
 int main(int argc, char *argv[])

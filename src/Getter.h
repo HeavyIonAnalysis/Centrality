@@ -8,7 +8,7 @@
 #ifndef CENTRALITY_GETTER_H
 #define CENTRALITY_GETTER_H
 
-#include <assert.h>
+#include <cassert>
 #include "vector"
 #include "array"
 

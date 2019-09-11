@@ -16,7 +16,7 @@ class BordersFinder {
 
  public:
 
-  BordersFinder() {}
+  BordersFinder() = default;
 
   void FindBorders();
   void SaveBorders(const std::string &filename, const std::string &getter_name);
@@ -25,7 +25,7 @@ class BordersFinder {
   TH1F &GetHisto() { return histo_; }   // not const to use Draw etc
 
   void SetNormalization(long int norm) { norm_ = norm; }
-  long int GetNormalization() const { return norm_; }
+  Double_t GetNormalization() const { return norm_; }
 
   void SetRanges(const std::vector<float> &ranges) { ranges_ = ranges; }
   void SetRanges(int n, float min, float max) {

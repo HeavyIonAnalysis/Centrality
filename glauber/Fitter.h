@@ -24,27 +24,27 @@ namespace Glauber
   public:
     
     /**   Default constructor   **/
-    Fitter() {};
-    Fitter(std::unique_ptr<TTree> tree) ;
+    Fitter() = default;;
+    explicit Fitter(std::unique_ptr<TTree> tree) ;
     /**   Destructor   **/
-    virtual ~Fitter(){};
+    virtual ~Fitter()= default;;
     
     void Init(int nEntries);
     void SetGlauberFitHisto (Float_t f, Float_t mu, Float_t k, Int_t n = 10000, Bool_t Norm2Data = true);
     void NormalizeGlauberFit ();
-    void DrawHistos (Bool_t isSim = true, Bool_t isData = true, Bool_t isGlauber = false, Bool_t isNBD = false);
+    void DrawHistos (Bool_t isSim = true, Bool_t isData = true, Bool_t isGlauber = false, Bool_t isNBD = false) {};
     
     float FitGlauber (float *par, Float_t f0, Int_t k0, Int_t k1, Int_t nEvents);
     void FindMuGoldenSection (Float_t *mu, Float_t *chi2, Float_t mu_min, Float_t mu_max, Float_t f, Float_t k, Int_t nEvents = 10000, Int_t nIter = 5);
     
-    Float_t GetChi2 (void) const;
+    Float_t GetChi2 () const;
     
     Float_t NBD(Float_t n, Float_t mu, Float_t k) const;
     void SetNBDhist(Float_t mu, Float_t k);
     float Nancestors(float f) const;
     float NancestorsMax(float f) const;
     
-    std::unique_ptr<TH1F> GetModelHisto (const Float_t range[2], TString name, const Float_t par[3], Int_t nEvents);
+    std::unique_ptr<TH1F> GetModelHisto (const Float_t range[2], const TString& name, const Float_t par[3], Int_t nEvents);
     
     //         
     //         Setters
@@ -54,8 +54,8 @@ namespace Glauber
     void SetFitMaxBin  (Int_t min)      { fFitMaxBin = min; }
     void SetNormMinBin  (Int_t min)     { fNormMinBin = min; }
     void SetBinSize  (Int_t size)        { fBinSize = size; }
-    void SetOutDirName (TString name)    { fOutDirName = name; }
-    void SetMode (const TString mode) { fMode = mode; }
+    void SetOutDirName (const TString& name)    { fOutDirName = name; }
+    void SetMode (const TString& mode) { fMode = mode; }
     
     //         
     //         Getters

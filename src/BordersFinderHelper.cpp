@@ -44,7 +44,7 @@ void BordersFinderHelper::PlotHisto(const Getter& getter, TH1F& histo) const
     std::unique_ptr <TCanvas> c {new TCanvas("c", "", 1200, 800)};
     histo.Draw();
     
-    auto borders = getter.GetBorders();
+    const auto& borders = getter.GetBorders();
     TLine *line;
 
     for (int i=0; i<borders.GetNbins(); ++i)

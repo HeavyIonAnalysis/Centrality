@@ -348,7 +348,7 @@ float Glauber::Fitter::NBD(float n, float mu, float k) const
  * @param Nevents
  * @return pointer to the histogram 
  */
-std::unique_ptr<TH1F> Glauber::Fitter::GetModelHisto (const float range[2], TString name, const float par[3], int nEvents)
+std::unique_ptr<TH1F> Glauber::Fitter::GetModelHisto (const float range[2], const TString& name, const float par[3], int nEvents)
 {    
   const float f =  par[0];
   const float mu = par[1];
