@@ -9,46 +9,44 @@
 
 namespace Centrality {
 
-void BordersFinder::FindBorders()
-{
-    using namespace std;
+void BordersFinder::FindBorders() {
+  using namespace std;
 
-    if (ranges_.size() < 2) return;
-    if (norm_ == -1) norm_ = histo_.Integral(0, histo_.GetNbinsX());
-    if (!isSpectator_) std::reverse(std::begin(ranges_), std::end(ranges_));
+  if (ranges_.size() < 2) return;
+  if (norm_ == -1) norm_ = histo_.Integral(0, histo_.GetNbinsX());
+  if (!isSpectator_) std::reverse(std::begin(ranges_), std::end(ranges_));
 
-    auto axis = histo_.GetXaxis();
+  auto axis = histo_.GetXaxis();
 
-    double xLo = (applyLimits_)? xLo_ : axis->GetXmin();
-    double xHi = (applyLimits_)? xHi_ : axis->GetXmax();
+  double xLo = (applyLimits_) ? xLo_ : axis->GetXmin();
+  double xHi = (applyLimits_) ? xHi_ : axis->GetXmax();
 
+  int n = axis->GetNbins();
 
-    int n = axis->GetNbins();
+  double *histIntegral = histo_.GetIntegral();
+  double x[n];
+  for (int i = 0; i < n; ++i) {
+    x[i] = axis->GetBinCenter(i + 1);
+  }
 
-    double *histIntegral = histo_.GetIntegral();
-    double x[n];
-    for (int i = 0; i < n; ++i) {
-        x[i] = axis->GetBinCenter(i+1);
-    }
+  TGraph intVsXGraph(n, x, histIntegral);
+  intVsXGraph.SetBit(TGraph::kIsSortedX);
 
-    TGraph intVsXGraph(n, x, histIntegral);
-    intVsXGraph.SetBit(TGraph::kIsSortedX);
+  TGraph xVsIntGraph(n, histIntegral, x);
+  xVsIntGraph.SetBit(TGraph::kIsSortedX);
 
-    TGraph xVsIntGraph(n, histIntegral, x);
-    xVsIntGraph.SetBit(TGraph::kIsSortedX);
+  double intLo = intVsXGraph.Eval(xLo);
+  double intHi = intVsXGraph.Eval(xHi);
+  double norm = intHi - intLo;
 
-    double intLo = intVsXGraph.Eval(xLo);
-    double intHi = intVsXGraph.Eval(xHi);
-    double norm = intHi - intLo;
+  auto cX = [=](double x) { return 100. / norm * (intVsXGraph.Eval(x) - intVsXGraph.Eval(xLo)); };
+  auto xC = [=](double c) { return xVsIntGraph.Eval((c / 100.) * norm + intLo); };
 
-    auto cX = [=] (double x) { return 100./norm*(intVsXGraph.Eval(x) - intVsXGraph.Eval(xLo)); };
-    auto xC = [=] (double c) { return xVsIntGraph.Eval((c/100.)*norm + intLo); };
-
-    for (auto cc : ranges_) {
-        double xx = isSpectator_? xC(cc) : xC(100 - cc);
-        cout << cc << "%" << ", border:" << xx << endl;
-        borders_.push_back(xx);
-    }
+  for (auto cc : ranges_) {
+    double xx = isSpectator_ ? xC(cc) : xC(100 - cc);
+    cout << cc << "%" << ", border:" << xx << endl;
+    borders_.push_back(xx);
+  }
 
 /*
     uint iSlice{0};
@@ -74,30 +72,29 @@ void BordersFinder::FindBorders()
 */
 }
 
-void BordersFinder::SaveBorders(const std::string &filename, const std::string &getter_name)
-{
-    Getter getter;
-    
-    if (this->GetBorders().size() < 2) return;
-    
-    std::unique_ptr<TFile> f{TFile::Open(filename.data(), "update")};
-    
-    getter.SetBorders(this->GetBorders());
-    getter.SetRanges(this->GetRanges());
-    getter.IsSpectator(this->GetIsSpectator());
+void BordersFinder::SaveBorders(const std::string &filename, const std::string &getter_name) {
+  Getter getter;
 
-    getter.Write(getter_name.c_str());
-    
+  if (this->GetBorders().size() < 2) return;
+
+  std::unique_ptr<TFile> f{TFile::Open(filename.data(), "update")};
+
+  getter.SetBorders(this->GetBorders());
+  getter.SetRanges(this->GetRanges());
+  getter.IsSpectator(this->GetIsSpectator());
+
+  getter.Write(getter_name.c_str());
+
 //     f->mkdir( ("dir_" + getter_name).c_str());
 //     f->cd( ("dir_" + getter_name).c_str() );
 
-    BordersFinderHelper h;
-    h.SetName(getter_name);
-    h.SetIsPdf(true);    
-    h.QA(getter, this->GetHisto());
-    h.PlotHisto(getter, this->GetHisto());
-    
-    f->Close();
+  BordersFinderHelper h;
+  h.SetName(getter_name);
+  h.SetIsPdf(true);
+  h.QA(getter, this->GetHisto());
+  h.PlotHisto(getter, this->GetHisto());
+
+  f->Close();
 }
 
 }
