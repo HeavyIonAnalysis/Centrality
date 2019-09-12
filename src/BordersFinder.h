@@ -27,8 +27,8 @@ class BordersFinder {
   void SetNormalization(long int norm) { norm_ = norm; }
   Double_t GetNormalization() const { return norm_; }
 
-  void SetRanges(const std::vector<float> &ranges) { ranges_ = ranges; }
-  void SetRanges(int n, float min, float max) {
+  void SetRanges(const std::vector<double> &ranges) { ranges_ = ranges; }
+  void SetRanges(int n, double min, double max) {
     ranges_.clear();
 //         ranges_.reserve(n+1);
 
@@ -44,7 +44,7 @@ class BordersFinder {
 
   void IsSpectator(bool is = true) { isSpectator_ = is; }
 
-  const std::vector<float> &GetRanges() const { return ranges_; }
+  const std::vector<double> &GetRanges() const { return ranges_; }
   const std::vector<double> &GetBorders() const { return borders_; }
   bool GetIsSpectator() const { return isSpectator_; }
 
@@ -53,7 +53,7 @@ class BordersFinder {
   TH1F histo_;
   Double_t norm_{-1};
 
-  std::vector<float> ranges_{};
+  std::vector<double> ranges_{};
   std::vector<double> borders_{};
 
   bool isSpectator_{false};

@@ -5,7 +5,7 @@ ClassImp(Centrality::Getter)
 
 namespace Centrality {
 
-float Getter::GetCentrality(float value) const {
+double Getter::GetCentrality(double value) const {
   if (!isinitialized_) {
     std::cout << "Centrality::Getter is not initialized!" << std::endl;
     exit(-1);
@@ -16,12 +16,12 @@ float Getter::GetCentrality(float value) const {
 
 //     std::cout << value << " " << ranges_.at(ibin-1) << "  " << ranges_.at(ibin) << std::endl; 
 
-  const float centrality = 0.5 * (ranges_.at(ibin - 1) + ranges_.at(ibin));
+  const double centrality = 0.5 * (ranges_.at(ibin - 1) + ranges_.at(ibin));
 
   return centrality;
 }
 
-float Getter::GetCentrality(float xvalue, float yvalue) const {
+double Getter::GetCentrality(double xvalue, double yvalue) const {
   if (!isinitialized2D_) {
     std::cout << "Centrality::Getter is not initialized!" << std::endl;
     exit(-1);
@@ -31,8 +31,8 @@ float Getter::GetCentrality(float xvalue, float yvalue) const {
   yvalue /= ymax_;
 
   for (uint iborder = 0; iborder < borders2d_.size() - 1; ++iborder) {
-    const float y1 = borders2d_.at(iborder)[0] + borders2d_.at(iborder)[1] * xvalue;
-    const float y2 = borders2d_.at(iborder + 1)[0] + borders2d_.at(iborder + 1)[1] * xvalue;
+    const double y1 = borders2d_.at(iborder)[0] + borders2d_.at(iborder)[1] * xvalue;
+    const double y2 = borders2d_.at(iborder + 1)[0] + borders2d_.at(iborder + 1)[1] * xvalue;
 
     if (yvalue < y1 && yvalue > y2)
       return 0.5 * (ranges_.at(iborder - 1) + ranges_.at(iborder));
@@ -42,17 +42,17 @@ float Getter::GetCentrality(float xvalue, float yvalue) const {
 }
 
 Getter *Getter::Create1DGetter(std::vector<double> borders) {
-  typedef decltype(ranges_)::value_type Floating_t;
+  typedef decltype(ranges_)::value_type doubleing_t;
 
   size_t n_borders = borders.size();
   assert(n_borders > 2);
 
-  Floating_t range_max = 100.f;
-  Floating_t range_min = 0.f;
-  Floating_t range_step = (range_max - range_min) / (n_borders - 1);
+  doubleing_t range_max = 100.f;
+  doubleing_t range_min = 0.f;
+  doubleing_t range_step = (range_max - range_min) / (n_borders - 1);
 
   decltype(ranges_) ranges(n_borders);
-  for (int i = 0; i < n_borders; ++i) {
+  for (uint i = 0; i < n_borders; ++i) {
     auto rr = range_min + range_step * i;
     ranges[i] = rr;
 

@@ -18,11 +18,11 @@ class Container {
 
   Container() = default;
 
-  void AddCentralityEstimator(uint num, float centrality) {
+  void AddCentralityEstimator(uint num, double centrality) {
     centrality_.insert(std::make_pair(num, centrality));
   }
 
-  float GetCentrality(uint num) const {
+  double GetCentrality(uint num) const {
     auto find = centrality_.find(num);
     return find != centrality_.end() ? find->second : -1;
   }
@@ -31,7 +31,7 @@ class Container {
 
  private:
 
-  std::map<uint, float> centrality_;
+  std::map<uint, double> centrality_;
 
 //     ClassDef(Container, 1);
 

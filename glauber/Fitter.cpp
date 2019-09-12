@@ -51,8 +51,8 @@ void Glauber::Fitter::Init(int nEntries) {
 
   fNbins++;
 
-  const float min = fDataHisto.GetXaxis()->GetXmin();
-  const float max = fDataHisto.GetXaxis()->GetXmax();
+  const auto min = fDataHisto.GetXaxis()->GetXmin();
+  const auto max = fDataHisto.GetXaxis()->GetXmax();
 
   fMaxValue = min + (max - min) * fNbins / fDataHisto.GetNbinsX();
 
@@ -61,7 +61,7 @@ void Glauber::Fitter::Init(int nEntries) {
 
 }
 
-float Glauber::Fitter::Nancestors(float f) const {
+double Glauber::Fitter::Nancestors(double f) const {
   if (fMode == "Default") return f * fNpart + (1 - f) * fNcoll;
   else if (fMode == "PSD") return f - fNpart;
   else if (fMode == "Npart") return TMath::Power(fNpart, f);
@@ -70,7 +70,7 @@ float Glauber::Fitter::Nancestors(float f) const {
   return -1.;
 }
 
-float Glauber::Fitter::NancestorsMax(float f) const {
+double Glauber::Fitter::NancestorsMax(double f) const {
   const int NpartMax = fNpartHisto.GetXaxis()->GetXmax();  // some magic
   const int NcollMax = fNcollHisto.GetXaxis()->GetXmax(); //TODO
 
@@ -86,7 +86,7 @@ float Glauber::Fitter::NancestorsMax(float f) const {
  * take Glauber MC data from fSimTree
  * Populate fGlauberFitHisto with NBD x Na
  */
-void Glauber::Fitter::SetGlauberFitHisto(float f, float mu, float k, int n, Bool_t Norm2Data) {
+void Glauber::Fitter::SetGlauberFitHisto(double f, double mu, double k, int n, Bool_t Norm2Data) {
   fGlauberFitHisto = TH1F("glaub", "", fNbins * 1.3, 0, 1.3 * fMaxValue);
   fGlauberFitHisto.SetName(Form("glaub_%4.2f_%6.4f_%4.2f_%d", f, mu, k, n));
 
@@ -97,7 +97,7 @@ void Glauber::Fitter::SetGlauberFitHisto(float f, float mu, float k, int n, Bool
     fSimTree->GetEntry(i);
     const int Na = int(Nancestors(f));
 
-    float nHits{0.};
+    double nHits{0.};
     for (int j = 0; j < Na; j++) {
       nHits += int(htemp->GetRandom());
     }
@@ -121,7 +121,7 @@ void Glauber::Fitter::NormalizeGlauberFit() {
     fDataHistoInt += fDataHisto.GetBinContent(i + 1);
   }
 
-  const float ScaleFactor = (float) fDataHistoInt / fGlauberFitHistoInt;
+  const double ScaleFactor = (double) fDataHistoInt / fGlauberFitHistoInt;
 
   //     std::cout << "Scale = " << Scale << std::endl;
   fGlauberFitHisto.Scale(ScaleFactor);
@@ -138,27 +138,27 @@ void Glauber::Fitter::NormalizeGlauberFit() {
  * @param nEvents
  * @param nIter
  */
-void Glauber::Fitter::FindMuGoldenSection(float *mu,
-                                          float *chi2,
-                                          float mu_min,
-                                          float mu_max,
-                                          float f,
-                                          float k,
+void Glauber::Fitter::FindMuGoldenSection(double *mu,
+                                          double *chi2,
+                                          double mu_min,
+                                          double mu_max,
+                                          double f,
+                                          double k,
                                           int nEvents,
                                           int nIter) {
-  const float phi{(1 + TMath::Sqrt(5)) / 2};
+  const double phi{(1. + TMath::Sqrt(5)) / 2.};
 
   /* left */
-  float mu_1 = mu_max - (mu_max - mu_min) / phi;
+  double mu_1 = mu_max - (mu_max - mu_min) / phi;
 
   /* right */
-  float mu_2 = mu_min + (mu_max - mu_min) / phi;
+  double mu_2 = mu_min + (mu_max - mu_min) / phi;
 
   SetGlauberFitHisto(f, mu_1, k, nEvents);
-  float chi2_mu1 = GetChi2();
+  double chi2_mu1 = GetChi2();
 
   SetGlauberFitHisto(f, mu_2, k, nEvents);
-  float chi2_mu2 = GetChi2();
+  double chi2_mu2 = GetChi2();
 
   for (int j = 0; j < nIter; j++) {
     if (chi2_mu1 > chi2_mu2) {
@@ -196,11 +196,11 @@ void Glauber::Fitter::FindMuGoldenSection(float *mu,
  * @param k1 upper search edge for NBD parameter
  * @param nEvents
  */
-float Glauber::Fitter::FitGlauber(float *par, Float_t f0, Int_t k0, Int_t k1, Int_t nEvents) {
-  float f_fit{-1};
-  float mu_fit{-1};
-  float k_fit{-1};
-  float Chi2Min{1e10};
+double Glauber::Fitter::FitGlauber(double *par, double f0, Int_t k0, Int_t k1, Int_t nEvents) {
+  double f_fit{-1};
+  double mu_fit{-1};
+  double k_fit{-1};
+  double Chi2Min{1e10};
 
   const TString filename = Form("%s/fit_%4.2f_%d_%d_%d.root", fOutDirName.Data(), f0, k0, k1, fFitMinBin);
 
@@ -212,7 +212,7 @@ float Glauber::Fitter::FitGlauber(float *par, Float_t f0, Int_t k0, Int_t k1, In
 
   TH1F h1("h1", "", fNbins, 0, fMaxValue);
 
-  float f, mu, k, chi2, sigma;
+  double f, mu, k, chi2, sigma;
 
   tree->Branch("histo", "TH1F", &h1);
   tree->Branch("f", &f, "f/F");
@@ -225,8 +225,8 @@ float Glauber::Fitter::FitGlauber(float *par, Float_t f0, Int_t k0, Int_t k1, In
   for (int j = k0; j <= k1; j++) {
     mu = fMaxValue / NancestorsMax(f);
     k = j;
-    const float mu_min = 0.7 * mu;
-    const float mu_max = 1.0 * mu;
+    const double mu_min = 0.7 * mu;
+    const double mu_max = 1.0 * mu;
 
     FindMuGoldenSection(&mu, &chi2, mu_min, mu_max, f, k, nEvents, 10);
     sigma = (mu / k + 1) * mu;
@@ -258,16 +258,16 @@ float Glauber::Fitter::FitGlauber(float *par, Float_t f0, Int_t k0, Int_t k1, In
  * Compare fGlauberFitHisto with fDataHisto
  * @return chi2 value
  */
-float Glauber::Fitter::GetChi2() const {
-  float chi2{0.0};
+double Glauber::Fitter::GetChi2() const {
+  double chi2{0.0};
 
   const int lowchibin = fFitMinBin;
   const int highchibin = fFitMaxBin < fNbins ? fFitMaxBin : fNbins;
 
   for (int i = lowchibin; i <= highchibin; ++i) {
     if (fDataHisto.GetBinContent(i) < 1.0) continue;
-    const float error2 = TMath::Power(fDataHisto.GetBinError(i), 2) + TMath::Power(fGlauberFitHisto.GetBinError(i), 2);
-    const float diff2 = TMath::Power((fGlauberFitHisto.GetBinContent(i) - fDataHisto.GetBinContent(i)), 2) / error2;
+    const double error2 = TMath::Power(fDataHisto.GetBinError(i), 2) + TMath::Power(fGlauberFitHisto.GetBinError(i), 2);
+    const double diff2 = TMath::Power((fGlauberFitHisto.GetBinContent(i) - fDataHisto.GetBinContent(i)), 2) / error2;
 
     chi2 += diff2;
   }
@@ -281,7 +281,7 @@ float Glauber::Fitter::GetChi2() const {
  * @param mu
  * @param k
  */
-void Glauber::Fitter::SetNBDhist(float mu, float k) {
+void Glauber::Fitter::SetNBDhist(double mu, double k) {
   // Interface for TH1F.
   const int nBins = (mu + 1.) * 3 < 10 ? 10 : (mu + 1.) * 3;
 
@@ -289,7 +289,7 @@ void Glauber::Fitter::SetNBDhist(float mu, float k) {
   fNbdHisto.SetName(Form("nbd_%f_%f", mu, k));
 
   for (int i = 0; i < nBins; ++i) {
-    const float val = NBD(i, mu, k);
+    const double val = NBD(i, mu, k);
     if (val > 1e-10) fNbdHisto.SetBinContent(i + 1, val);
     //         std::cout << "val " << val << std::endl;    
   }
@@ -302,10 +302,10 @@ void Glauber::Fitter::SetNBDhist(float mu, float k) {
  * @param k argument
  * @return NBD for a given parameters
  */
-float Glauber::Fitter::NBD(float n, float mu, float k) const {
+double Glauber::Fitter::NBD(double n, double mu, double k) const {
   // Compute NBD.
-  float F;
-  float f;
+  double F;
+  double f;
 
   if (n + k > 100.0) {
     // log method for handling large numbers
@@ -330,29 +330,25 @@ float Glauber::Fitter::NBD(float n, float mu, float k) const {
  * @param Nevents
  * @return pointer to the histogram 
  */
-std::unique_ptr<TH1F> Glauber::Fitter::GetModelHisto(const float range[2],
+std::unique_ptr<TH1F> Glauber::Fitter::GetModelHisto(const double range[2],
                                                      const TString &name,
-                                                     const float par[3],
+                                                     const double par[3],
                                                      int nEvents) {
-  const float f = par[0];
-  const float mu = par[1];
-  const float k = par[2];
+  const double f = par[0];
+  const double mu = par[1];
+  const double k = par[2];
 
-  float modelpar{-999.};
+  double modelpar{-999.};
   fSimTree->SetBranchAddress(name, &modelpar);
 
   SetNBDhist(mu, k);
-
-  //     TRandom random;  
-  //     random.SetSeed(mu*k);
-
   std::unique_ptr<TH1F> hModel(new TH1F("hModel", "name", 100, fSimTree->GetMinimum(name), fSimTree->GetMaximum(name)));
 
 #pragma omp parallel for
   for (int i = 0; i < nEvents; i++) {
     fSimTree->GetEntry(i);
     const int Na = int(Nancestors(f));
-    float nHits{0.};
+    double nHits{0.};
     for (int j = 0; j < Na; ++j) {
       nHits += (int) fNbdHisto.GetRandom();
     }
@@ -362,7 +358,7 @@ std::unique_ptr<TH1F> Glauber::Fitter::GetModelHisto(const float range[2],
     }
   }
 
-  return std::move(hModel);
+  return hModel;
 
 }
 

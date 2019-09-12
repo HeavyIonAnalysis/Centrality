@@ -30,8 +30,8 @@ class BordersFinder2D : public BordersFinder {
   void Init();
   std::unique_ptr<TH1F> Convert();
   void Fit2D(const TString &func);
-  std::array<float, 2> FindNorm(const std::vector<double> &par, float x);
-  float FindIntegral(const std::array<float, 2> &norm1, const std::array<float, 2> &norm2);
+  std::array<double, 2> FindNorm(const std::vector<double> &par, double x);
+  double FindIntegral(const std::array<double, 2> &norm1, const std::array<double, 2> &norm2);
   void SaveBorders2D(const std::string &filename, const std::string &getter_name);
 
   /**
@@ -41,9 +41,9 @@ class BordersFinder2D : public BordersFinder {
    * @param N order
    * @return
    */
-  static float polN(const std::vector<double> &par, float x) {
-    float res{0.};
-    float xn{1.};
+  static double polN(const std::vector<double> &par, double x) {
+    double res{0.};
+    double xn{1.};
     for (const auto ipar : par) {
       res += ipar * xn;
       xn *= x;
@@ -58,8 +58,8 @@ class BordersFinder2D : public BordersFinder {
 
   TString fitname_{""};
 
-  float xmax_{1.};
-  float ymax_{1.};
+  double xmax_{1.};
+  double ymax_{1.};
 
 //     ClassDef(BordersFinder2D, 1);
 

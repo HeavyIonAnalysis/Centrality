@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
     std::cout << "   ./glauber f0 k0" << std::endl;
     return -1;
   }
-  const Float_t f0 = atof(argv[1]);
+  const double_t f0 = atof(argv[1]);
   const Int_t k0 = atoi(argv[2]);
   const Int_t k1 = atoi(argv[2]);
 
@@ -61,11 +61,11 @@ int main(int argc, char *argv[]) {
   fitter.SetFitMaxBin(max_bin);
   fitter.SetOutDirName(outdir);
 
-  float par[3];
+  double par[3];
 
   auto start = std::chrono::system_clock::now();
 
-  const float chi2 = fitter.FitGlauber(par, f0, k0, k1, nevents);
+  const double chi2 = fitter.FitGlauber(par, f0, k0, k1, nevents);
 
   auto end = std::chrono::system_clock::now();
   std::chrono::duration<double> elapsed_seconds = end - start;
@@ -75,7 +75,7 @@ int main(int argc, char *argv[]) {
 
   Glauber::DrawHistos(fitter, true, true, true, true);
 
-  const float range[2] = {300, 350.};
+  const double range[2] = {300, 350.};
   std::unique_ptr<TH1F> hB(fitter.GetModelHisto(range, "B", par, 100000));
   hB->SaveAs("b_test.root");
 

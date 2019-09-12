@@ -71,19 +71,19 @@ std::unique_ptr<TH1F> BordersFinder2D::Convert() {
  * @param norm2 seconsd line parametrization
  * @return number of entries (integral)
  */
-float BordersFinder2D::FindIntegral(const std::array<float, 2> &norm1, const std::array<float, 2> &norm2) {
-  float sum{0.};
+double BordersFinder2D::FindIntegral(const std::array<double, 2> &norm1, const std::array<double, 2> &norm2) {
+  double sum{0.};
 
   for (int iBinX = 1; iBinX <= histo2d_.GetNbinsX(); ++iBinX) {
     for (int iBinY = 1; iBinY <= histo2d_.GetNbinsY(); ++iBinY) {
-      const float entries = histo2d_.GetBinContent(iBinX, iBinY);
+      const auto entries = histo2d_.GetBinContent(iBinX, iBinY);
       if (entries == 0) continue;
 
-      const float x = histo2d_.GetXaxis()->GetBinCenter(iBinX);
-      const float y = histo2d_.GetYaxis()->GetBinCenter(iBinY);
+      const auto x = histo2d_.GetXaxis()->GetBinCenter(iBinX);
+      const auto y = histo2d_.GetYaxis()->GetBinCenter(iBinY);
 
-      const float ynorm1 = norm1[0] + norm1[1] * x;
-      const float ynorm2 = norm2[0] + norm2[1] * x;
+      const auto ynorm1 = norm1[0] + norm1[1] * x;
+      const auto ynorm2 = norm2[0] + norm2[1] * x;
 
       if (y < ynorm1 && y > ynorm2)
         sum += entries;
@@ -137,23 +137,23 @@ void BordersFinder2D::Fit2D(const TString &func) {
  * @param x argument
  * @return a0 and a1 parameters y = a0 + a1 * x
  */
-std::array<float, 2> BordersFinder2D::FindNorm(const std::vector<double> &par, float x) {
-  std::array<float, 2> ret{};
+std::array<double, 2> BordersFinder2D::FindNorm(const std::vector<double> &par, double x) {
+  std::array<double, 2> ret{};
   const auto dx = (histo2d_.GetXaxis()->GetXmax() - histo2d_.GetXaxis()->GetXmin()) / 10000.;
 
   /* left */
-  const float y1 = polN(par, x - dx);
+  const auto y1 = polN(par, x - dx);
   /* right */
-  const float y2 = polN(par, x + dx);
+  const auto y2 = polN(par, x + dx);
 
   // cx*x + cy*y + c == 0
 
   /* 1/df */
-  const float cx = 1 / (y2 - y1);
+  const auto cx = 1 / (y2 - y1);
   /* 1/2dx */
-  const float cy = 0.5 / dx;
+  const auto cy = 0.5 / dx;
 
-  const float c = -cx * x - cy * polN(par, x);
+  const auto c = -cx * x - cy * polN(par, x);
 
   ret[0] = -c / cy;
   ret[1] = -cx / cy;

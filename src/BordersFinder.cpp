@@ -54,14 +54,14 @@ void BordersFinder::FindBorders() {
     
     for (int iBin=1; iBin<=histo_.GetNbinsX() && iSlice<ranges_.size() ; ++iBin)
     {
-        const float step = isSpectator_ ? ranges_.at(iSlice) : 100. - ranges_.at(iSlice);
+        const double step = isSpectator_ ? ranges_.at(iSlice) : 100. - ranges_.at(iSlice);
         const long int entriesNeeeded = step/100. * norm_;
         entriesCurrent += histo_.GetBinContent(iBin);
         
         if (entriesCurrent >= entriesNeeeded)
         {
-            const float ratio = histo_.GetBinContent(iBin)>0 ? (entriesCurrent - entriesNeeeded) / histo_.GetBinContent(iBin) : 0;
-            const float border = histo_.GetBinLowEdge(iBin) + histo_.GetBinWidth(iBin) * ratio;
+            const double ratio = histo_.GetBinContent(iBin)>0 ? (entriesCurrent - entriesNeeeded) / histo_.GetBinContent(iBin) : 0;
+            const double border = histo_.GetBinLowEdge(iBin) + histo_.GetBinWidth(iBin) * ratio;
             
             borders_.push_back(border);
             

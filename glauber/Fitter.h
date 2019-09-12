@@ -28,28 +28,28 @@ class Fitter {
   virtual ~Fitter() = default;;
 
   void Init(int nEntries);
-  void SetGlauberFitHisto(Float_t f, Float_t mu, Float_t k, Int_t n = 10000, Bool_t Norm2Data = true);
+  void SetGlauberFitHisto(double f, double mu, double k, Int_t n = 10000, Bool_t Norm2Data = true);
   void NormalizeGlauberFit();
-  void DrawHistos(Bool_t isSim = true, Bool_t isData = true, Bool_t isGlauber = false, Bool_t isNBD = false) {};
+//  void DrawHistos(Bool_t isSim = true, Bool_t isData = true, Bool_t isGlauber = false, Bool_t isNBD = false) {};
 
-  float FitGlauber(float *par, Float_t f0, Int_t k0, Int_t k1, Int_t nEvents);
-  void FindMuGoldenSection(Float_t *mu,
-                           Float_t *chi2,
-                           Float_t mu_min,
-                           Float_t mu_max,
-                           Float_t f,
-                           Float_t k,
+  double FitGlauber(double *par, double f0, Int_t k0, Int_t k1, Int_t nEvents);
+  void FindMuGoldenSection(double *mu,
+                           double *chi2,
+                           double mu_min,
+                           double mu_max,
+                           double f,
+                           double k,
                            Int_t nEvents = 10000,
                            Int_t nIter = 5);
 
-  Float_t GetChi2() const;
+  double GetChi2() const;
 
-  Float_t NBD(Float_t n, Float_t mu, Float_t k) const;
-  void SetNBDhist(Float_t mu, Float_t k);
-  float Nancestors(float f) const;
-  float NancestorsMax(float f) const;
+  double NBD(double n, double mu, double k) const;
+  void SetNBDhist(double mu, double k);
+  double Nancestors(double f) const;
+  double NancestorsMax(double f) const;
 
-  std::unique_ptr<TH1F> GetModelHisto(const Float_t range[2], const TString &name, const Float_t par[3], Int_t nEvents);
+  std::unique_ptr<TH1F> GetModelHisto(const double range[2], const TString &name, const double par[3], Int_t nEvents);
 
   //
   //         Setters
@@ -85,10 +85,10 @@ class Fitter {
   /* MC data */
   std::unique_ptr<TTree> fSimTree{nullptr};
 
-  Float_t fNpart{-1.};
-  Float_t fNcoll{-1.};
+  double fNpart{-1.};
+  double fNcoll{-1.};
 
-  Float_t fMaxValue{-1.};
+  double fMaxValue{-1.};
 
   Int_t fNbins{-1};
   Int_t fBinSize{-1};
