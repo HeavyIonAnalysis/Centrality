@@ -42,7 +42,7 @@ void plot_chi2(TString InFileName) {
     y.push_back(k);
     z.push_back(chi2);
 
-//         if ( chi2 > 2.5 ) continue;
+    //         if ( chi2 > 2.5 ) continue;
 
     if (false) {
       TCanvas *c1 = new TCanvas("c1", "c1", 1200, 800);
@@ -66,9 +66,9 @@ void plot_chi2(TString InFileName) {
 
     }
 
-//         Int_t jj;
-//         std::cin >> jj;
-//         if (jj == 0) break;
+    //         Int_t jj;
+    //         std::cin >> jj;
+    //         if (jj == 0) break;
   }
 
   TCanvas *c1 = new TCanvas("c1", "c1", 800, 800);
@@ -77,7 +77,7 @@ void plot_chi2(TString InFileName) {
   g->SetName("#chi^{2} vs f, k");
   g->SetTitle("#chi^{2} vs f, k; f; k; #chi^{2}");
 
-//     gPad->SetLogz();    
+  //     gPad->SetLogz();
   g->Draw("colz");
   gPad->Update();
 
