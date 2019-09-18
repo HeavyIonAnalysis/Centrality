@@ -61,15 +61,15 @@ void Chi2(TString InFileName)
     g->Draw("colz");
 
     float F,K;
-    for (double xx=X; (xx<=X+0.2 && xx<=g->GetXmax()); xx+=0.001) {
-    	for (double yy=Y; (yy<=Y+10.0 && yy<=g->GetYmax()); yy+=0.001) if (TMath::Abs(g->Interpolate(xx,yy)-CHI2)<DELTA) {
+    for (double xx=X; (xx<=X+0.2 && xx<=g->GetXmax()); xx+=0.01) {
+    	for (double yy=Y; (yy<=Y+10.0 && yy<=g->GetYmax()); yy+=0.01) if (TMath::Abs(g->Interpolate(xx,yy)-CHI2)<DELTA) {
 		if (TMath::Abs(xx-f_min)>f_delta) f_delta=TMath::Abs(xx-f_min); 
 		if (TMath::Abs(yy-k_min)>k_delta) k_delta=TMath::Abs(yy-k_min);
 		F=1e10; K=1e10;
 		for (Int_t ii=0; ii<n; ii++) {tree->GetEntry(ii); if (TMath::Abs(f-xx)<=F && TMath::Abs(k-yy)<=K && (TMath::Abs(mu-mu_min))>mu_delta) mu_delta=TMath::Abs(mu-mu_min);}
 		DELTA=TMath::Abs(g->Interpolate(xx,yy)-CHI2);
 		}
-	for (double yy=Y; (yy>=Y-10.0 && yy>=g->GetYmin()); yy-=0.001) if (TMath::Abs(g->Interpolate(xx,yy)-CHI2)<DELTA) {
+	for (double yy=Y; (yy>=Y-10.0 && yy>=g->GetYmin()); yy-=0.01) if (TMath::Abs(g->Interpolate(xx,yy)-CHI2)<DELTA) {
 		if (TMath::Abs(xx-f_min)>f_delta) f_delta=TMath::Abs(xx-f_min); 
 		if (TMath::Abs(yy-k_min)>k_delta) k_delta=TMath::Abs(yy-k_min);
 		F=1e10; K=1e10;
@@ -78,15 +78,15 @@ void Chi2(TString InFileName)
 		}
 	}
 
-    for (double xx=X; (xx>=X-0.2 && xx>=g->GetXmin()); xx-=0.001) {
-    	for (double yy=Y; (yy<=Y+2.0 || yy<=g->GetYmax()); yy+=0.001) if (TMath::Abs(g->Interpolate(xx,yy)-CHI2)<DELTA) {
+    for (double xx=X; (xx>=X-0.2 && xx>=g->GetXmin()); xx-=0.01) {
+    	for (double yy=Y; (yy<=Y+2.0 || yy<=g->GetYmax()); yy+=0.01) if (TMath::Abs(g->Interpolate(xx,yy)-CHI2)<DELTA) {
 		if (TMath::Abs(xx-f_min)>f_delta) f_delta=TMath::Abs(xx-f_min); 
 		if (TMath::Abs(yy-k_min)>k_delta) k_delta=TMath::Abs(yy-k_min);
 		F=1e10; K=1e10;
 		for (Int_t ii=0; ii<n; ii++) {tree->GetEntry(ii); if (TMath::Abs(f-xx)<=F && TMath::Abs(k-yy)<=K && (TMath::Abs(mu-mu_min))>mu_delta) mu_delta=TMath::Abs(mu-mu_min);}
 		DELTA=TMath::Abs(g->Interpolate(xx,yy)-CHI2);
 		}
-	for (double yy=Y; (yy>=Y-2.0 && yy>=g->GetYmin()); yy-=0.001) if (TMath::Abs(g->Interpolate(xx,yy)-CHI2)<DELTA) {
+	for (double yy=Y; (yy>=Y-2.0 && yy>=g->GetYmin()); yy-=0.01) if (TMath::Abs(g->Interpolate(xx,yy)-CHI2)<DELTA) {
 		if (TMath::Abs(xx-f_min)>f_delta) f_delta=TMath::Abs(xx-f_min); 
 		if (TMath::Abs(yy-k_min)>k_delta) k_delta=TMath::Abs(yy-k_min);
 		F=1e10; K=1e10;
