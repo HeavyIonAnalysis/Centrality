@@ -29,9 +29,9 @@ void Glauber::Fitter::Init(std::unique_ptr<TTree> tree)
 	it0++;
     }
 
-    if ( nEvents < 0 || nEvents > fSimTree->GetEntries() )
+    if ( fnEvents < 0 || fnEvents > fSimTree->GetEntries() )
     {
-        std::cout << "Init: *** ERROR - number of entries < 0 or less that number of entries in input tree" << std::endl;
+        std::cout << "Init: *** ERROR - number of entries < 0 or less than number of entries in input tree" << std::endl;
         std::cout << "Init: *** number of entries in input tree = " << fSimTree->GetEntries() << std::endl;        
         exit(EXIT_FAILURE);
     }
@@ -49,7 +49,7 @@ void Glauber::Fitter::Init(std::unique_ptr<TTree> tree)
     std::map <TString, const int>::iterator it2=Glauber_ParametersMax.begin();
     for (int j=0; j<kGP; j++) 
     {
-    	for (int i=0; i<kGP; i++) if (gGlauberParameters[i].name == it2->first) Glauber_Parameters_Histos.insert( std::pair<TString, TH1F*> ((it2->first), new TH1F (Form("%s_Histo", (gGlauberParameters[i].name).Data()), Form("%s;%s;counts", (gGlauberParameters[i].title).Data(), (gGlauberParameters[i].axis_title).Data()), 1.3*((it2->second)-(it1->second)+1)/gGlauberParameters[i].bin_value, 1.3*it1->second, 1.3*it2->second)) );
+    	for (int i=0; i<kGP; i++) if (gGlauberParameters[i].name == it2->first) Glauber_Parameters_Histos.insert( std::pair<TString, TH1F*> ((it2->first), new TH1F (Form("%s_Histo", (gGlauberParameters[i].name).Data()), Form("%s;%s;counts", (gGlauberParameters[i].title).Data(), (gGlauberParameters[i].axis_title).Data()), 1.3*((it2->second)-(it1->second))/gGlauberParameters[i].bin_value, 1.3*it1->second, 1.3*it2->second)) );
     	it1++;
 	it2++;
     }
@@ -58,7 +58,7 @@ void Glauber::Fitter::Init(std::unique_ptr<TTree> tree)
     it1=Glauber_ParametersMin.begin();
     it2=Glauber_ParametersMax.begin();		
     std::map <TString, TH1F*>::iterator it3=Glauber_Parameters_Histos.begin();
-    for (int i=0; i<nEvents; i++)
+    for (int i=0; i<fnEvents; i++)
     {
        	fSimTree->GetEntry(i);
 	it0=Glauber_Parameters.begin();
@@ -91,7 +91,7 @@ void Glauber::Fitter::Init(std::unique_ptr<TTree> tree)
     it3=Glauber_Parameters_Histos.begin();
     for (int j=0; j<kGP; j++) 
     {
-	for (int i=0; i<kGP; i++) if (gGlauberParameters[i].name == it2->first) Glauber_Parameters_VS_Multiplicity_Histos.insert( std::pair<TString, TH2F*> ((it2->first), new TH2F (Form("%s_VS_Multiplicity_Histo", (gGlauberParameters[i].name).Data()), Form("%s VS Multiplicity;Multiplicity;%s", (gGlauberParameters[i].title).Data(), (gGlauberParameters[i].axis_title).Data()), 1.3*fNbins, 0, 1.3*fMaxValue, 1.3*((it2->second)-(it1->second)+1)/gGlauberParameters[i].bin_value, 1.3*it1->second, 1.3*it2->second)) );
+	for (int i=0; i<kGP; i++) if (gGlauberParameters[i].name == it2->first) Glauber_Parameters_VS_Multiplicity_Histos.insert( std::pair<TString, TH2F*> ((it2->first), new TH2F (Form("%s_VS_Multiplicity_Histo", (gGlauberParameters[i].name).Data()), Form("%s VS Multiplicity;Multiplicity;%s", (gGlauberParameters[i].title).Data(), (gGlauberParameters[i].axis_title).Data()), 1.3*fNbins, 0, 1.3*fMaxValue, 1.3*((it2->second)-(it1->second))/gGlauberParameters[i].bin_value, 1.3*it1->second, 1.3*it2->second)) );
     	it1++;
 	it2++;
     }
@@ -102,7 +102,7 @@ void Glauber::Fitter::Init(std::unique_ptr<TTree> tree)
     it3=Glauber_Parameters_Histos.begin();
     for (int j=0; j<kGP; j++) 
     {
-	for (int i=0; i<kGP; i++) if (gGlauberParameters[i].name == it2->first) Glauber_Parameters_VS_Multiplicity_BestHistos.insert( std::pair<TString, TH2F*> ((it2->first), new TH2F (Form("%s_VS_Multiplicity_BestHisto", (gGlauberParameters[i].name).Data()), Form("%s VS Multiplicity;Multiplicity;%s", (gGlauberParameters[i].title).Data(), (gGlauberParameters[i].axis_title).Data()), 1.3*fNbins, 0, 1.3*fMaxValue, 1.3*((it2->second)-(it1->second)+1)/gGlauberParameters[i].bin_value, 1.3*it1->second, 1.3*it2->second)) );
+	for (int i=0; i<kGP; i++) if (gGlauberParameters[i].name == it2->first) Glauber_Parameters_VS_Multiplicity_BestHistos.insert( std::pair<TString, TH2F*> ((it2->first), new TH2F (Form("%s_VS_Multiplicity_BestHisto", (gGlauberParameters[i].name).Data()), Form("%s VS Multiplicity;Multiplicity;%s", (gGlauberParameters[i].title).Data(), (gGlauberParameters[i].axis_title).Data()), 1.3*fNbins, 0, 1.3*fMaxValue, 1.3*((it2->second)-(it1->second))/gGlauberParameters[i].bin_value, 1.3*it1->second, 1.3*it2->second)) );
     	it1++;
 	it2++;
     }
@@ -148,7 +148,7 @@ void Glauber::Fitter::SetGlauberFitHisto (float f, float mu, float k, Bool_t Nor
     SetNBDhist(mu,  k);
 
     std::unique_ptr<TH1F> htemp {(TH1F*)fNbdHisto.Clone("htemp")}; // WTF??? Not working without pointer
-    for (int i=0; i<nEvents; i++)
+    for (int i=0; i<fnEvents; i++)
     {
         fSimTree->GetEntry(i);
         const int Na = int(Nancestors(f));
@@ -202,7 +202,7 @@ void Glauber::Fitter::NormalizeGlauberFit ()
  * @param f parameter of Na
  * @param k NBD parameter
  */
-void Glauber::Fitter::FindMuGoldenSection (float *mu, float *chi2, float*chi2_error, float mu_min, float mu_max, float f, float k, int n)
+void Glauber::Fitter::FindMuGoldenSection (TTree *tree, float *mu, float *chi2, float*chi2_error, int *n, float *sigma, float mu_min, float mu_max, float f, float k )
 {
     const float phi {(1+TMath::Sqrt(5))/2};
 
@@ -216,12 +216,27 @@ void Glauber::Fitter::FindMuGoldenSection (float *mu, float *chi2, float*chi2_er
     SetGlauberFitHisto (f, mu_1, k);
     float chi2_mu1 = GetChi2 ();
     float chi2_mu1_error = GetChi2Error ();
+    
+    *mu = mu_1;
+    *chi2 = chi2_mu1;
+    *chi2_error = chi2_mu1;
+    *sigma = ( (*mu)/k + 1 ) * (*mu);
+    tree->Fill();
+    std::cout << "n = " << (*n) << " f = "  << f << " k = " << k << " mu = " << (*mu) << " chi2 = " << (*chi2)  << " chi2_error = " << (*chi2_error) << std::endl;
 
     SetGlauberFitHisto (f, mu_2, k);
     float chi2_mu2 = GetChi2 ();
     float chi2_mu2_error = GetChi2Error ();
     
-    for (int j=0; j<fnIter; j++)
+    *mu = mu_2;
+    *chi2 = chi2_mu2;
+    *chi2_error = chi2_mu2;
+    *sigma = ( (*mu)/k + 1 ) * (*mu);
+    *n = *n + 1;
+    tree->Fill();
+    std::cout << "n = " << (*n) << " f = "  << f << " k = " << k << " mu = " << (*mu) << " chi2 = " << (*chi2)  << " chi2_error = " << (*chi2_error) << std::endl;
+    
+    for (int j=0; j<fnMuIter; j++)
     {        
         if (chi2_mu1 > chi2_mu2)
         {
@@ -232,6 +247,12 @@ void Glauber::Fitter::FindMuGoldenSection (float *mu, float *chi2, float*chi2_er
             SetGlauberFitHisto (f, mu_2, k);
             chi2_mu2 = GetChi2 ();
 	    chi2_mu2_error = GetChi2Error ();
+            *n = *n + 1;
+            *mu = mu_2;
+            *chi2 = chi2_mu2;
+            *chi2_error = chi2_mu2;
+            *sigma = ( (*mu)/k + 1 ) * (*mu);
+            tree->Fill();
         }
         else
         {
@@ -241,10 +262,16 @@ void Glauber::Fitter::FindMuGoldenSection (float *mu, float *chi2, float*chi2_er
             chi2_mu2 = chi2_mu1;
             SetGlauberFitHisto (f, mu_1, k);
             chi2_mu1 = GetChi2 (); 
-  	    chi2_mu1_error = GetChi2Error ();           
+  	    chi2_mu1_error = GetChi2Error ();
+            *n = *n + 1;
+            *mu = mu_2;
+            *chi2 = chi2_mu2;
+            *chi2_error = chi2_mu2;
+            *sigma = ( (*mu)/k + 1 ) * (*mu);
+            tree->Fill();
         }
         
-        std::cout << "n = " << n+j << " f = "  << f << " k = " << k << " mu1 = " << mu_1 << " mu2 = " << mu_2 << " chi2_mu1 = " << chi2_mu1  << " chi2_mu2 = " << chi2_mu2 << std::endl;
+        std::cout << "n = " << (*n) << " f = "  << f << " k = " << k << " mu = " << (*mu) << " chi2 = " << (*chi2)  << " chi2_error = " << (*chi2_error) << std::endl;
     }
 
     /* take min(mu) */
@@ -256,15 +283,43 @@ void Glauber::Fitter::FindMuGoldenSection (float *mu, float *chi2, float*chi2_er
 }
 
 /**
+ *
+ * @param mu mean value of negative binominal distribution (we are looking for it)
+ * @param chi2 return value (indicates good match)
+ * @param mu_min lower search edge for mean value NBD
+ * @param mu_max upper search edge for mean value NBD
+ * @param f parameter of Na
+ * @param k NBD parameter
+ */
+void Glauber::Fitter::FindMuIteration (TTree *tree, float mu, float *chi2, float *chi2_error, int *n, float *sigma, float f, float k)
+{
+    float chi2_best=1e10, chi2_error_best=1e10;
+    SetGlauberFitHisto (f, mu, k);
+    *sigma = ( mu/k + 1 ) * mu;
+    for (int fRange = fMinFitRange; fRange < (fMaxMultiplicity-fMinMultiplicity); fRange = fRange + fMultiplicityStep)
+        for (int fRangeCenter = fMinMultiplicity+fRange/2; fRangeCenter < (fMaxMultiplicity-fRange/2); fRangeCenter = fRangeCenter + fMultiplicityStep) {
+            fFitMinBin = fRangeCenter - fRange/2;
+            fFitMaxBin = fRangeCenter + fRange/2;
+            *chi2 = GetChi2 ();
+            *chi2_error = GetChi2Error ();
+            tree->Fill();
+            std::cout << "n = " << (*n) << " f = "  << f << " k = " << k << " mu = " << mu << " FitMinBin = " << fFitMinBin << " FitMaxBin = " << fFitMaxBin << " chi2 = " << (*chi2)  << " chi2_error = " << (*chi2_error) << std::endl;
+            *n = *n + 1;
+            if ((*chi2) < chi2_best) { chi2_best=(*chi2); chi2_error_best=(*chi2_error); }
+        }
+        
+    /* take min(chi2) */
+    *chi2 = chi2_best;
+    /* take min(chi2_error) */
+    *chi2_error = chi2_error_best;
+}
+
+/**
  * Find the best match
  *
  * @param return value of best fit parameters
- * @param f0 lower search edge for parameter of Na, for which chi2 will be calculated
- * @param f1 upper search edge for parameter of Na, for which chi2 will be calculated
- * @param k0 lower search edge for NBD parameter
- * @param k1 upper search edge for NBD parameter
  */
-float Glauber::Fitter::FitGlauber (float *par, Float_t f0, Float_t f1, Int_t k0, Int_t k1)
+float Glauber::Fitter::FitGlauber (float *par)
 {
     float f_fit{-1};
     float mu_fit{-1}; 
@@ -281,7 +336,11 @@ float Glauber::Fitter::FitGlauber (float *par, Float_t f0, Float_t f1, Int_t k0,
     TTree* tree {new TTree("test_tree", "tree" )};
            
     float f, mu, k, chi2, chi2_error, sigma;
-
+    int n=1;
+    
+    tree->Branch("n",    &n,    "n/F");
+    tree->Branch("MinBin",    &fFitMinBin,    "fFitMinBin/F");
+    tree->Branch("MaxBin",    &fFitMaxBin,    "fFitMaxBin/F");
     tree->Branch("f",    &f,    "f/F");   
     tree->Branch("mu",   &mu,   "mu/F");   
     tree->Branch("k",    &k,    "k/F");   
@@ -289,22 +348,21 @@ float Glauber::Fitter::FitGlauber (float *par, Float_t f0, Float_t f1, Int_t k0,
     tree->Branch("chi2_error", &chi2_error, "chi2_error/F");
     tree->Branch("sigma",&sigma,"sigma/F");   
 
-    int n=1;
-    for (float i=f0; i<=f1; i=i+0.1000000)
+    
+    
+    for (float i=f_fMin; i<=f_fMax; i=i+f_fStep)
     {
-	    f=i;
-	    for (int j=k0; j<=k1; j++)
+	    f = i;
+	    for (float j=f_kMin; j<=f_kMax; j=j+f_kStep)
 	    {
 		mu = fMaxValue / NancestorsMax(f) ;
 		k = j;
-		const float mu_min = 0.7*mu;
-		const float mu_max = 1.0*mu;
+		const float mu_min = f_MuMinPercentage*mu;
+		const float mu_max = f_MuMaxPercentage*mu;
 
-		FindMuGoldenSection (&mu, &chi2, &chi2_error, mu_min, mu_max, f, k, n);
-		n=n+fnIter;
-		sigma = ( mu/k + 1 ) * mu;
-		
-		tree->Fill();
+		if (fFit_Mode == "GoldenSection")  FindMuGoldenSection (tree, &mu, &chi2, &chi2_error, &n, &sigma, mu_min, mu_max, f, k);
+                else if (fFit_Mode == "Iteration") for (float mu=mu_min; mu<=mu_max; mu=mu+f_muStep) FindMuIteration (tree, mu, &chi2, &chi2_error, &n, &sigma, f, k);
+                else std::cout << "ERROR: ILLIGAL MU FINDING MODE" << std::endl;
 		
 		if (chi2 < Chi2Min)
 		{
@@ -472,7 +530,7 @@ std::unique_ptr<TH1F> Glauber::Fitter::GetModelHisto (const float range[2], TStr
 
     std::unique_ptr<TH1F> hModel(new TH1F ("hModel", "name", 100, fSimTree->GetMinimum(name),  fSimTree->GetMaximum(name)) );
 
-    for (int i=0; i<nEvents; i++)
+    for (int i=0; i<fnEvents; i++)
     {
         fSimTree->GetEntry(i);
         const int Na = int(Nancestors(f));
