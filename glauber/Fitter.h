@@ -4,7 +4,6 @@
     @author Ilya Selyuzhenkov (ilya.selyuzhenkov@gmail.com)
     @brief  Class to fit histo with Glauber based function
 */
-
 #ifndef GlauberFitter_H
 #define GlauberFitter_H 1
 
@@ -94,8 +93,9 @@ namespace Glauber
         void NormalizeGlauberFit ();																// Function for normilize model histogram with data histogram
         void DrawHistos (Bool_t isSim = true, Bool_t isData = true, Bool_t isGlauber = false, Bool_t isNBD = false);						// Function for drawing output histograms and creating output files
         
-        float FitGlauber (float *par, Float_t f0, Float_t f1, Int_t k0, Int_t k1);										// Main function for fitting
-        void FindMuGoldenSection (Float_t *mu, Float_t *chi2, float*chi2_error, Float_t mu_min, Float_t mu_max, Float_t f, Float_t k, int n=0);			// Function that find mu by iteration it to the minimum of chi2
+        float FitGlauber (float *par);										                                                // Main function for fitting
+        void FindMuGoldenSection (TTree *tree, float *mu, float *chi2, float *chi2_error, int *n, float *sigma, float mu_min, float mu_max, float f, float k);			// Function that find mu by iteration it to the minimum of chi2
+        void FindMuIteration (TTree *tree, float mu, float *chi2, float *chi2_error, int *n, float *sigma, float f, float k);			// Function that find mu by iteration it to the minimum of chi2
         
         Float_t GetChi2 (void) const;																// Function for chi2 counting
 	Float_t GetChi2Error (void) const;															// Function for chi2 error counting
@@ -112,19 +112,33 @@ namespace Glauber
 //         Setters
 //         
         void SetInputHisto (const TH1F &h)   { fDataHisto = h; }												// Setting of data histogram
-        void SetFitMinBin  (Int_t min)      { fFitMinBin = min; }												// Setting of not fitting low multiplicity region due to trigger bias, etc
-        void SetFitMaxBin  (Int_t max)      { fFitMaxBin = max; }												// Setting of very large number to fit the whole histo
-        void SetnIter  (Int_t nIter)     { fnIter = nIter; }													// Setting of number of iterations of finding better mu (with same f and k)
+        void SetFitMinBin  (Int_t min)      { fFitMinBin = min; }												// Setting of minimal bin for fitting
+        void SetFitMaxBin  (Int_t max)      { fFitMaxBin = max; }												// Setting of maximal bin for fitting
+        void SetnMuIter (Int_t nMuIter)     { fnMuIter = nMuIter; }												// Setting of number of iterations of finding better mu (with same f and k)
         void SetOutDirName (const TString name)    { fOutDirName = name; }											// Setting of the name of directory for output files
 	void SetOutFileIDName (const TString name) { fOutFileIDName = name; }											// Setting of ID of output files (ending of all output files of one job will have same ID)
 	void SetAncestor_Mode (const TString Ancestor_Mode) { fAncestor_Mode = Ancestor_Mode; }									// Setting of the mode for counting ancestors
 	void SetFitFunction_Mode (const TString FitFunction_Mode) { fFitFunction_Mode = FitFunction_Mode; }							// Setting of the mode for fitting function (COMING SOON)
+	void SetFit_Mode (const TString Fit_Mode) { fFit_Mode = Fit_Mode; }							                                // Setting of the mode for fitting procedure ("GoldenSection" or "Iteration")
 	void SetGlauber_filename (const TString Glauber_filename) { fGlauber_filename = Glauber_filename; }							// Setting of input file with Glauber Tree
 	void SetGlauber_treename (const TString Glauber_treename) { fGlauber_treename = Glauber_treename; }							// Setting of the name of tree with GlauberMC model
 	void SetDataHisto_filename (const TString DataHisto_filename) { fDataHisto_filename = DataHisto_filename; }						// Setting of input file with data histo
 	void SetDataHisto_name (const TString DataHisto_name) { fDataHisto_name = DataHisto_name; }								// Setting of the name of data histo
 	void SetMassNumber (Float_t A) { fA = A; }														// Setting of mass number of projectile nucleus
-	void SetNEvents (Int_t Events) { nEvents = Events; }													// Setting of number of events that you need from GlauberMC
+	void SetNEvents (Int_t Events) { fnEvents = Events; }													// Setting of number of events that you need from GlauberMC 
+	void SetMultiplicityStep ( Int_t MultiplicityStep ) { fMultiplicityStep = MultiplicityStep; };								// Setting of step of variating lower and upper multiplicity range
+	void SetMinMultiplicity ( Int_t MinMultiplicity ) { fMinMultiplicity = MinMultiplicity; };								// Setting of not fitting low multiplicity region due to trigger bias, etc
+	void SetMaxMultiplicity ( Int_t MaxMultiplicity ) { fMaxMultiplicity = MaxMultiplicity; };								// Setting of very large number to fit the whole histo
+	void SetMinFitRange ( Int_t MinFitRange ) { fMinFitRange = MinFitRange; };										// Setting of minimal multiplicity range for fitting
+	void Set_kMin ( Float_t kMin ) { f_kMin = kMin; };													// Setting of lower parameter k
+	void Set_kMax ( Float_t kMax ) { f_kMax = kMax; };													// Setting of upper parameter k
+	void Set_kStep ( Float_t kStep ) { f_kStep = kStep; };													// Setting of step of variating of parameter k
+	void Set_fMin ( Float_t fMin ) { f_fMin = fMin; };													// Setting of lower parameter f
+	void Set_fMax ( Float_t fMax ) { f_fMax = fMax; };													// Setting of upper parameter f
+        void Set_fStep ( Float_t fStep ) { f_fStep = fStep; };													// Setting of step of variating of parameter f
+	void Set_muStep ( Float_t muStep ) { f_muStep = muStep; };											        // Setting of step of variating of parameter mu
+	void Set_MuMinPercentage ( Float_t MuMinPercentage ) { f_MuMinPercentage = MuMinPercentage; };								// Setting of lower mu in percent of mu=(MaxMultiplicity/MaxAncestors) for first iteration
+	void Set_MuMaxPercentage ( Float_t MuMaxPercentage ) { f_MuMaxPercentage = MuMaxPercentage; };								// Setting of upper mu in percent of mu=(MaxMultiplicity/MaxAncestors) for first iteration
  
 //         
 //         Getters
@@ -134,8 +148,20 @@ namespace Glauber
 	TString GetGlauber_treename () { return fGlauber_treename; }												// Returns the name of tree with
 	TString GetDataHisto_filename () { return fDataHisto_filename; }											// Returns input file with data histo
 	TString GetDataHisto_name () { return fDataHisto_name; }												// Returns the name of data histo
+
 	Int_t GetFitMinBin  ()   const   { return fFitMinBin; }													// Returns not fitting low multiplicity region due to trigger bias, etc
         Int_t GetFitMaxBin  ()   const   { return fFitMaxBin; }													// Returns very large number to fit the whole histo
+	Int_t GetMultiplicityStep ()   const   { return fMultiplicityStep; };									                // Returns step of variating lower and upper multiplicity range
+	Int_t GetMinMultiplicity ()   const   { return fMinMultiplicity; };									                // Returns not fitting low multiplicity region due to trigger bias, etc
+	Int_t GetMaxMultiplicity ()   const   { return fMaxMultiplicity; };									                // Returns very large number to fit the whole histo
+	Int_t GetMinFitRange ()   const   { return fMinFitRange; };											        // Returns minimal multiplicity range for fitting
+	Float_t Get_kMin ()   const   { return f_kMin; };													// Returns lower parameter k
+	Float_t Get_kMax ()   const   { return f_kMax; };													// Returns upper parameter k
+	Float_t Get_kStep ()   const   { return f_kStep; };													// Returns step of variating of parameter 
+	Float_t Get_fMin ()   const   { return f_fMin; };													// Returns lower parameter f
+	Float_t Get_fMax ()   const   { return f_fMax; };													// Returns upper parameter f
+	Float_t Get_fStep ()   const   { return f_fStep; };													// Returns step of variating of parameter f
+	Float_t Get_muStep ()   const   { return f_muStep; };													// Returns step of variating of parameter mu
 	   
         TH1F GetGlauberFitHisto () const { return fGlauberFitHisto; }												// Returns model histogtam
 	TH1F GetBestFitHisto ()    const { return fBestFitHisto;  }												// Returns model histogtam with minimal chi2
@@ -221,14 +247,29 @@ namespace Glauber
         
         Int_t fNbins{-1	};
         
-        Int_t fFitMinBin{-1};
-        Int_t fFitMaxBin{-1};
-	Int_t nEvents;
+	Int_t fnEvents;
 
-	Int_t fnIter;
+	Int_t fnMuIter{2};
+	
+	Int_t fFitMinBin{-1};
+        Int_t fFitMaxBin{-1};
+	Int_t fMultiplicityStep{1};
+	Int_t fMinMultiplicity{1};
+	Int_t fMaxMultiplicity{100};
+	Int_t fMinFitRange{4};
+	Float_t f_kMin{1.0};
+	Float_t f_kMax{1.0};
+	Float_t f_kStep{0.2};
+	Float_t f_fMin{0.0};
+	Float_t f_fMax{1.0};
+	Float_t f_fStep{0.1};
+        Float_t f_muStep{0.01};
+	Float_t f_MuMinPercentage{0.7};
+	Float_t f_MuMaxPercentage{1.0};
         
         TString fAncestor_Mode{"Default"};
 	TString fFitFunction_Mode{"NBD"};
+        TString fFit_Mode{"GoldenSection"};
 	TString fGlauber_filename{""};
 	TString fGlauber_treename{""};
 	TString fDataHisto_filename{""};
