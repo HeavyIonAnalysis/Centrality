@@ -19,8 +19,8 @@ int main(int argc, char **argv) {
   
   auto start = std::chrono::system_clock::now();
   ROOT::EnableImplicitMT(2);
-  
-  if (argc < 3)
+
+  if(argc <= 3)
   {
     std::cout << "Not enough arguments! Please use:" << std::endl;
     std::cout << "   ./main filename histoname is2d" << std::endl;

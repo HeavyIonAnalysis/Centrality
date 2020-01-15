@@ -150,3 +150,5 @@ install(FILES
         Devel
         )
 
+install(TARGETS glauber RUNTIME DESTINATION bin)
+install(TARGETS main RUNTIME DESTINATION bin)
