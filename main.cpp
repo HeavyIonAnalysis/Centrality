@@ -16,33 +16,35 @@
 #include "TH2.h"
 
 int main(int argc, char **argv) {
-  
+
   auto start = std::chrono::system_clock::now();
   ROOT::EnableImplicitMT(2);
 
-  if(argc <= 3)
-  {
+  if(argc <= 4) {
     std::cout << "Not enough arguments! Please use:" << std::endl;
-    std::cout << "   ./main filename histoname is2d" << std::endl;
-    return -1;
+    std::cout << "   ./main filename histoname is_spectator is2d" << std::endl;
+    return - 1;
   }
-  
-  std::unique_ptr <TFile> fIn {TFile::Open(argv[1], "read")};
+
+  const char* filename{argv[1]};
+  const char* histoname{argv[2]};
+  const bool is_spectator = strcmp(argv[3], "true") == 0;
+  const bool is_2d = strcmp(argv[4], "true") == 0;
+
+  std::unique_ptr<TFile> fIn{TFile::Open(filename, "read")};
   std::string outfilename = "test.root";
-  if ( strcmp( argv[3], "false") == 0 )
-  {
-    std::unique_ptr <TH1F> histo {(TH1F*) (fIn->Get(argv[2]))};
+  if(! is_2d) {
+    std::unique_ptr<TH1F> histo{(TH1F*) (fIn->Get(histoname))};
     Centrality::BordersFinder bf;
     bf.SetHisto(*histo);
-    bf.SetRanges( 20,0,100 );   // number of bins, min, max value
+    bf.SetRanges(20, 0, 100);   // number of bins, min, max value
     //   bf.SetRanges( {0,10,30,60,100} );  // centrality bins borders with array
-    bf.IsSpectator(true);  // true if impact parameter b correlated with estimator (spectators eneggy), 
+    bf.IsSpectator(is_spectator);  // true if impact parameter b correlated with estimator (spectators eneggy),
     // false - anticorrelated (multiplicity of produced particles) 
-    
+
     bf.FindBorders();
     bf.SaveBorders(outfilename, "centr_getter_1d");
-  }
-  else if ( strcmp( argv[3], "true") == 0 )
+  } else
   {
     std::unique_ptr <TH2F> histo2d {(TH2F*) (fIn->Get(argv[2]))};
     Centrality::BordersFinder2D bf;
