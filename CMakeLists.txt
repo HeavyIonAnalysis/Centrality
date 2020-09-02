@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.5)
 project(Centrality)
 set(CMAKE_MACOSX_RPATH 1)
 set(PROJECT_VERSION 1.0)
@@ -59,6 +59,18 @@ set(PCM_FILE_NAME lib${PROJECT_NAME})
 ROOT_GENERATE_DICTIONARY(${DICT_FILE_NAME} ${HEADERS} LINKDEF src/CentralityLinkDef.h)
 add_library(Centrality SHARED ${SOURCES} ${DICT_FILE_NAME})
 target_link_libraries(Centrality ${ROOT_LIBRARIES})
+add_custom_command(
+        TARGET Centrality POST_BUILD
+        COMMAND ${CMAKE_COMMAND} ARGS -E make_directory ${CMAKE_BINARY_DIR}/include/centrality
+        COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${HEADERS} ${CMAKE_BINARY_DIR}/include/centrality/
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+target_include_directories(Centrality
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
+        PUBLIC
+            $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
+            $<INSTALL_INTERFACE:include>
+        )
 
 # Create a main program using the library
 add_executable(main main.cpp)
