@@ -51,7 +51,6 @@ find_package(ROOT REQUIRED COMPONENTS Core MathCore RIO Hist Tree)
 include(${ROOT_USE_FILE})
 add_definitions(${ROOT_CXX_FLAGS})
 
-include_directories(${CMAKE_SOURCE_DIR} ${ROOT_INCLUDE_DIRS})
 
 set(DICT_FILE_NAME G__${PROJECT_NAME})
 set(PCM_FILE_NAME lib${PROJECT_NAME})
@@ -71,6 +70,7 @@ set(GLAUBER_SOURCES
 
 string(REPLACE ".cpp" ".h" GLAUBER_HEADERS "${GLAUBER_SOURCES}")
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 ROOT_GENERATE_DICTIONARY(${DICT_FILE_NAME} ${CENTRALITY_HEADERS} ${GLAUBER_HEADERS} LINKDEF src/CentralityLinkDef.h)
 add_library(Centrality SHARED ${CENTRALITY_SOURCES} ${DICT_FILE_NAME})
 target_link_libraries(Centrality ${ROOT_LIBRARIES})
