@@ -72,7 +72,7 @@ string(REPLACE ".cpp" ".h" GLAUBER_HEADERS "${GLAUBER_SOURCES}")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 ROOT_GENERATE_DICTIONARY(${DICT_FILE_NAME} ${CENTRALITY_HEADERS} ${GLAUBER_HEADERS} LINKDEF src/CentralityLinkDef.h)
-add_library(Centrality SHARED ${CENTRALITY_SOURCES} ${DICT_FILE_NAME})
+add_library(Centrality SHARED ${CENTRALITY_SOURCES} ${GLAUBER_SOURCES} ${DICT_FILE_NAME})
 target_link_libraries(Centrality ${ROOT_LIBRARIES})
 add_custom_command(
         TARGET Centrality POST_BUILD
@@ -101,9 +101,7 @@ add_executable(main main.cpp)
 target_link_libraries(main Centrality ${ROOT_LIBRARIES})
 target_include_directories(main PUBLIC src)
 
-
-
-add_executable(glauber glauber/main.cpp ${GLAUBER_SOURCES})
+add_executable(glauber glauber/main.cpp)
 target_link_libraries(glauber ${ROOT_LIBRARIES} Centrality)
 
 
