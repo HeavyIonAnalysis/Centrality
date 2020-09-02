@@ -56,19 +56,43 @@ include_directories(${CMAKE_SOURCE_DIR} ${ROOT_INCLUDE_DIRS})
 set(DICT_FILE_NAME G__${PROJECT_NAME})
 set(PCM_FILE_NAME lib${PROJECT_NAME})
 
-ROOT_GENERATE_DICTIONARY(${DICT_FILE_NAME} ${HEADERS} LINKDEF src/CentralityLinkDef.h)
-add_library(Centrality SHARED ${SOURCES} ${DICT_FILE_NAME})
+set(CENTRALITY_SOURCES
+        src/BordersFinder.cpp
+        src/BordersFinderHelper.cpp
+        src/Getter.cpp
+        src/BordersFinder2D.cpp)
+
+string(REPLACE ".cpp" ".h" CENTRALITY_HEADERS "${CENTRALITY_SOURCES}")
+
+set(GLAUBER_SOURCES
+        glauber/Fitter.cpp
+        glauber/FitterHelper.cpp
+        )
+
+string(REPLACE ".cpp" ".h" GLAUBER_HEADERS "${GLAUBER_SOURCES}")
+
+ROOT_GENERATE_DICTIONARY(${DICT_FILE_NAME} ${CENTRALITY_HEADERS} ${GLAUBER_HEADERS} LINKDEF src/CentralityLinkDef.h)
+add_library(Centrality SHARED ${CENTRALITY_SOURCES} ${DICT_FILE_NAME})
 target_link_libraries(Centrality ${ROOT_LIBRARIES})
 add_custom_command(
         TARGET Centrality POST_BUILD
         COMMAND ${CMAKE_COMMAND} ARGS -E make_directory ${CMAKE_BINARY_DIR}/include/centrality
-        COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${HEADERS} ${CMAKE_BINARY_DIR}/include/centrality/
+        COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${CENTRALITY_HEADERS} ${CMAKE_BINARY_DIR}/include/centrality/
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
+add_custom_command(
+        TARGET Centrality POST_BUILD
+        COMMAND ${CMAKE_COMMAND} ARGS -E make_directory ${CMAKE_BINARY_DIR}/include/glauber
+        COMMAND ${CMAKE_COMMAND} ARGS -E copy_if_different ${GLAUBER_HEADERS} ${CMAKE_BINARY_DIR}/include/glauber/
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
 target_include_directories(Centrality
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
         PUBLIC
             $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
+        # backward compatibility
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
             $<INSTALL_INTERFACE:include>
         )
 
@@ -77,8 +101,11 @@ add_executable(main main.cpp)
 target_link_libraries(main Centrality ${ROOT_LIBRARIES})
 target_include_directories(main PUBLIC src)
 
-add_executable(glauber glauber/main.cpp)
+
+
+add_executable(glauber glauber/main.cpp ${GLAUBER_SOURCES})
 target_link_libraries(glauber ${ROOT_LIBRARIES} Centrality)
+
 
 # install(FILES ${HEADERS} DESTINATION include)
 # install(TARGETS Centrality DESTINATION lib)
