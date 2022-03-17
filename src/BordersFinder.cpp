@@ -26,7 +26,7 @@ void BordersFinder::FindBorders() {
   double *histIntegral = histo_.GetIntegral();
   double x[n];
   for (int i = 0; i < n; ++i) {
-    x[i] = axis->GetBinCenter(i + 1);
+    x[i] = axis->GetBinLowEdge(i + 1);
   }
 
   TGraph intVsXGraph(n, x, histIntegral);
