@@ -1,3 +1,7 @@
+/* Copyright (C) 2022, Universität Tübingen
+SPDX-License-Identifier: GPL-3.0-only
+Authors: Viktor Klochkov */
+
 #include "CentralityFiller.hpp"
 
 #include "TFile.h"
@@ -20,7 +24,7 @@ CentralityFiller::CentralityFiller(const std::string& file, const std::string& g
 void CentralityFiller::Init() {
   auto man = TaskManager::GetInstance();
   auto chain = man->GetChain();
-  input_ = chain->GetBranch(input_name_);
+  input_ = chain->GetBranchObject(input_name_);
 
   is_event_header_ = input_.GetBranchType() == DetType::kEventHeader;
 

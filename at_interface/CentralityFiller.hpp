@@ -1,3 +1,7 @@
+/* Copyright (C) 2022, Universität Tübingen
+SPDX-License-Identifier: GPL-3.0-only
+Authors: Viktor Klochkov */
+
 #ifndef CENTRALITY_AT_INTERFACE_CENTRALITYFILLER_HPP_
 #define CENTRALITY_AT_INTERFACE_CENTRALITYFILLER_HPP_
 

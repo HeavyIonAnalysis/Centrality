@@ -1,10 +1,15 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.14)
 project(Centrality)
 set(CMAKE_MACOSX_RPATH 1)
 set(PROJECT_VERSION 1.0)
 
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
+option(Centrality_BUNDLED_AT "Build AnalysisTree" OFF)
+option(Centrality_BUILD_TESTS "Build tests for the Centrality" ON)
+
 if(NOT DEFINED CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 11)
+  set(CMAKE_CXX_STANDARD 17)
 endif()
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -26,28 +31,27 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -ftree-vectorize -ffast-math -DNO
 set(CMAKE_CXX_FLAGS_Release "-O3 -march=native -ftree-vectorize -ffast-math -DNODEBUG")
 message(STATUS "Using CXX flags for ${CMAKE_BUILD_TYPE}: ${CMAKE_CXX_FLAGS_${CMAKE_BUILD_TYPE}}")
 
-
 # Telling CMake where to find the ROOT installation.
 list(APPEND CMAKE_PREFIX_PATH $ENV{ROOTSYS})
 list(APPEND CMAKE_PREFIX_PATH ${ROOTSYS})
 
 #---Locate the ROOT package and defines a number of variables (e.g. ROOT_INCLUDE_DIRS)
 find_package(ROOT REQUIRED COMPONENTS Core MathCore RIO Hist Tree)
-find_package(AnalysisTree QUIET)
 
 # Define useful ROOT functions and macros (e.g. ROOT_GENERATE_DICTIONARY)
 message(STATUS "Using ROOT: ${ROOT_VERSION} <${ROOT_CONFIG}>")
 include_directories(${CMAKE_SOURCE_DIR} ${ROOT_INCLUDE_DIR} ${ROOT_INCLUDE_DIRS})
 include(${ROOT_USE_FILE})
 
-if (NOT AnalysisTree_FOUND)
-    message(STATUS "AnalysisTree is not found")
-else ()
+include(AnalysisTree)
+
+if (AnalysisTree_FOUND OR Centrality_BUNDLED_AT)
     add_subdirectory(at_interface)
 endif ()
 
 add_subdirectory(src)
 add_subdirectory(tasks)
+include(TestsSetupCentrality)
 
 install(
         FILES
