@@ -10,9 +10,9 @@
 
 #include "TH1.h"
 
-namespace Centrality{
+namespace Centrality {
 
-class BordersFinder{
+class BordersFinder {
 
  public:
   BordersFinder() = default;
@@ -31,7 +31,7 @@ class BordersFinder{
     ranges_.clear();
     //         ranges_.reserve(n+1);
 
-    for(int i = 0; i <= n; ++i) {
+    for (int i = 0; i <= n; ++i) {
       ranges_.push_back(min + i * (max - min) / n);
     }
   }

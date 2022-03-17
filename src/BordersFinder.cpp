@@ -7,7 +7,7 @@
 
 #include "TFile.h"
 
-namespace Centrality{
+namespace Centrality {
 
 void BordersFinder::FindBorders() {
   using namespace std;
@@ -76,7 +76,7 @@ void BordersFinder::FindBorders() {
 void BordersFinder::SaveBorders(const std::string& filename, const std::string& getter_name) {
   Getter getter;
 
-  if(this->GetBorders().size() < 2) { return; }
+  if (this->GetBorders().size() < 2) { return; }
 
   std::unique_ptr<TFile> f{TFile::Open(filename.data(), "update")};
 

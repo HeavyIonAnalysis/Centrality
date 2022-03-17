@@ -15,7 +15,7 @@
 
 #include "Fitter.hpp"
 
-namespace Glauber{
+namespace Glauber {
 inline void DrawHistos(const Fitter& fit, Bool_t isSim, Bool_t isData, Bool_t isGlauber, Bool_t isNBD) {
   std::unique_ptr<TCanvas> c1{new TCanvas("c1", "canvas", 1500, 900)};
 
@@ -38,7 +38,7 @@ inline void DrawHistos(const Fitter& fit, Bool_t isSim, Bool_t isData, Bool_t is
 
   std::unique_ptr<TFile> fOut{TFile::Open("glauber_qa.root", "recreate")};
 
-  if(isSim) {
+  if (isSim) {
     c1->cd(1);
     hNcoll.SetLineColor(2);
 
@@ -54,11 +54,11 @@ inline void DrawHistos(const Fitter& fit, Bool_t isSim, Bool_t isData, Bool_t is
     hNpart.Write();
   }
 
-  if(isData) {
+  if (isData) {
     c1->cd(2);
     hData.Draw();
     hData.Write();
-    if(isGlauber) {
+    if (isGlauber) {
       hBestFit.SetLineColor(kRed);
       hBestFit.Draw("same");
 
@@ -70,13 +70,13 @@ inline void DrawHistos(const Fitter& fit, Bool_t isSim, Bool_t isData, Bool_t is
     }
   }
 
-  if(isNBD) {
+  if (isNBD) {
     c1->cd(3);
     hNBD.Draw();
     hNBD.Write();
   }
 
-  if(isGlauber) {
+  if (isGlauber) {
     c1->cd(4);
     hBestFit.Draw();
   }

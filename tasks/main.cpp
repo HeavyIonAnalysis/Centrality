@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
   auto start = std::chrono::system_clock::now();
   ROOT::EnableImplicitMT(2);
 
-  if(argc <= 4) {
+  if (argc <= 4) {
     std::cout << "Not enough arguments! Please use:" << std::endl;
     std::cout << "   ./main filename histoname is_spectator is2d" << std::endl;
     return -1;
@@ -32,7 +32,7 @@ int main(int argc, char** argv) {
 
   std::unique_ptr<TFile> fIn{TFile::Open(filename, "read")};
   std::string outfilename = "test.root";
-  if(!is_2d) {
+  if (!is_2d) {
     std::unique_ptr<TH1F> histo{(TH1F*) (fIn->Get(histoname))};
     Centrality::BordersFinder bf;
     bf.SetHisto(*histo);

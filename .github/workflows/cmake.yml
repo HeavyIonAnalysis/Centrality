@@ -1,0 +1,60 @@
+name: CMake
+
+on:
+  push:
+    branches: [ master, actions ]
+  pull_request:
+    branches: [ master ]
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Debug
+
+permissions:
+  id-token: write
+  contents: read    # This is required for actions/checkout@v2
+
+jobs:
+  build_fedora35_root_6_24_cpp17:
+    container: rootproject/root:6.24.06-fedora35
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Configure CMake
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+    - name: Test
+      run: cd ${{github.workspace}}/build && ctest -C ${{env.BUILD_TYPE}}
+
+  build_fedora34_root_6_22_cpp17:
+    container: rootproject/root:6.22.08-fedora34
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Configure CMake
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      - name: Test
+        run: cd ${{github.workspace}}/build && ctest -C ${{env.BUILD_TYPE}}
+
+  build_ubuntu20_root_6_20_cpp11:
+    container: rootproject/root:6.20.08-ubuntu20.04
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install git
+        run: apt-get update && apt-get install -y git
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Configure CMake
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      - name: Build
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      - name: Test
+        run: cd ${{github.workspace}}/build && ctest -C ${{env.BUILD_TYPE}}

@@ -1,5 +1,5 @@
-build/*
-install/*
+*build*/*
+install*/*
 Doxygen/*
 
 # Created by .ignore support plugin (hsz.mobi)

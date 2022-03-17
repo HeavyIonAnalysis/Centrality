@@ -1,5 +1,5 @@
-#include "CentralityFiller.hpp"
 #include "AnalysisTree/TaskManager.hpp"
+#include "CentralityFiller.hpp"
 
 using namespace AnalysisTree;
 
@@ -21,7 +21,7 @@ void fill_centrality(const std::string& filelist, const std::string& centrality_
 }
 
 int main(int argc, char** argv) {
-  if(argc <= 2) {
+  if (argc <= 2) {
     std::cout << "Not enough arguments! Please use:" << std::endl;
     std::cout << "   ./fill_centrality filelist centrality_file" << std::endl;
     return EXIT_FAILURE;

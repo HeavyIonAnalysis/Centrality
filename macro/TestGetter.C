@@ -1,4 +1,4 @@
-enum eEstimators{
+enum eEstimators {
   kPsd = 0,
   kTracks,
   kTracksPsd2D,
@@ -13,7 +13,7 @@ void TestGetter(const TString file = "../build/test.root") {
 
   Centrality::Container cont;
 
-  for(uint iEvent = 0; iEvent < 1; ++iEvent) {
+  for (uint iEvent = 0; iEvent < 1; ++iEvent) {
     const float value1 = 150.;
     const float value2 = 20.;
 

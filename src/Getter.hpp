@@ -16,9 +16,9 @@
 #include "TObject.h"
 #include "TRandom.h"
 
-namespace Centrality{
+namespace Centrality {
 
-class Getter : public TObject{
+class Getter : public TObject {
 
  public:
   Getter() = default;
@@ -39,7 +39,7 @@ class Getter : public TObject{
 
   void AddBorder2D(const std::array<double, 2>& border2D) {
     borders2d_.push_back(border2D);
-    if(!isinitialized2D_) { isinitialized2D_ = true; }
+    if (!isinitialized2D_) { isinitialized2D_ = true; }
   }
 
   const std::vector<std::array<double, 2>>& GetBorders2D() const { return borders2d_; };
@@ -63,7 +63,7 @@ class Getter : public TObject{
   bool isinitialized_{false};
   bool isinitialized2D_{false};
 
- ClassDef(Getter, 2);
+  ClassDef(Getter, 2);
 };
 }// namespace Centrality
 
