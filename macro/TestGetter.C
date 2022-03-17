@@ -5,16 +5,15 @@ enum eEstimators{
   nEstimators
 };
 
-void TestGetter(const TString file = "../build/test.root" )
-{
+void TestGetter(const TString file = "../build/test.root") {
   std::unique_ptr<TFile> f{TFile::Open(file, "read")};
 
-  std::unique_ptr<Centrality::Getter> getter1d{(Centrality::Getter *) f->Get("centr_getter_1d")};
-  std::unique_ptr<Centrality::Getter> getter2d{(Centrality::Getter *) f->Get("centr_getter_2d")};
+  std::unique_ptr<Centrality::Getter> getter1d{(Centrality::Getter*) f->Get("centr_getter_1d")};
+  std::unique_ptr<Centrality::Getter> getter2d{(Centrality::Getter*) f->Get("centr_getter_2d")};
 
   Centrality::Container cont;
 
-  for (uint iEvent = 0; iEvent < 1; ++iEvent) {
+  for(uint iEvent = 0; iEvent < 1; ++iEvent) {
     const float value1 = 150.;
     const float value2 = 20.;
 

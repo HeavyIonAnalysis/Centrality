@@ -8,31 +8,30 @@
 #ifndef CENTRALITY_BORDERSFINDER2D_H
 #define CENTRALITY_BORDERSFINDER2D_H
 
-#include "BordersFinder.h"
+#include "BordersFinder.hpp"
 
-#include "vector"
 #include "array"
+#include "vector"
 
-#include "TH2.h"
 #include "TF1.h"
+#include "TH2.h"
 
-namespace Centrality {
+namespace Centrality{
 
-class BordersFinder2D : public BordersFinder {
+class BordersFinder2D : public BordersFinder{
 
  public:
-
   BordersFinder2D() = default;
 
-  void SetHisto2D(TH2F &&histo2d) { histo2d_ = histo2d; }
-  TH2F &&GetHisto2D() { return std::move(histo2d_); }
+  void SetHisto2D(TH2F&& histo2d) { histo2d_ = histo2d; }
+  TH2F&& GetHisto2D() { return std::move(histo2d_); }
 
   void Init();
   std::unique_ptr<TH1F> Convert();
-  void Fit2D(const TString &func);
-  std::array<double, 2> FindNorm(const std::vector<double> &par, double x);
-  double FindIntegral(const std::array<double, 2> &norm1, const std::array<double, 2> &norm2);
-  void SaveBorders2D(const std::string &filename, const std::string &getter_name);
+  void Fit2D(const TString& func);
+  std::array<double, 2> FindNorm(const std::vector<double>& par, double x);
+  double FindIntegral(const std::array<double, 2>& norm1, const std::array<double, 2>& norm2);
+  void SaveBorders2D(const std::string& filename, const std::string& getter_name);
 
   /**
    *
@@ -41,10 +40,10 @@ class BordersFinder2D : public BordersFinder {
    * @param N order
    * @return
    */
-  static double polN(const std::vector<double> &par, double x) {
+  static double polN(const std::vector<double>& par, double x) {
     double res{0.};
     double xn{1.};
-    for (const auto ipar : par) {
+    for(const auto ipar : par) {
       res += ipar * xn;
       xn *= x;
     }
@@ -52,18 +51,16 @@ class BordersFinder2D : public BordersFinder {
   }
 
  private:
-
   TH2F histo2d_;
-  TF1 *fit_{nullptr};
+  TF1* fit_{nullptr};
 
   TString fitname_{""};
 
   double xmax_{1.};
   double ymax_{1.};
 
-//     ClassDef(BordersFinder2D, 1);
-
+  //     ClassDef(BordersFinder2D, 1);
 };
-}
+}// namespace Centrality
 
-#endif //CENTRALITY_BORDERSFINDER2D_H
+#endif//CENTRALITY_BORDERSFINDER2D_H
