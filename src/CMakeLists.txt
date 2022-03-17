@@ -18,6 +18,20 @@ add_library(Centrality SHARED ${SOURCES} ${DICT_FILE_NAME})
 ROOT_GENERATE_DICTIONARY(${DICT_FILE_NAME} ${HEADERS} LINKDEF CentralityLinkDef.hpp)
 target_link_libraries(Centrality ${ROOT_LIBRARIES})
 
+if(Centrality_BUILD_TESTS)
+    enable_testing()
+    include(GoogleTest)
+
+    set(TEST_SOURCES
+            BordersFinder.test.cpp
+            Getter.test.cpp
+            )
+
+    add_executable(Centrality_UnitTests ${TEST_SOURCES})
+    target_link_libraries(Centrality_UnitTests  PRIVATE Centrality gtest_main)
+    gtest_discover_tests(Centrality_UnitTests TEST_PREFIX Centrality_)
+endif()
+
 install(TARGETS Centrality EXPORT CentralityTargets
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
