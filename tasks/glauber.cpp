@@ -1,17 +1,17 @@
-#include <iostream>
 #include <chrono>
+#include <iostream>
 
-#include "Fitter.h"
-#include "FitterHelper.h"
+#include "Fitter.hpp"
+#include "FitterHelper.hpp"
 
-#include "TH1.h"
 #include "TFile.h"
+#include "TH1.h"
 #include "TLegend.h"
-#include "TH2.h"
+
 using namespace Glauber;
 
-int main(int argc, char *argv[]) {
-  if (argc < 2) {
+int main(int argc, char* argv[]) {
+  if(argc < 2) {
     std::cout << "Wrong number of parameters! Executable usage:" << std::endl;
     std::cout << "   ./glauber f0 k0" << std::endl;
     return -1;
@@ -31,13 +31,13 @@ int main(int argc, char *argv[]) {
   ///  |   Ncoll   |     Ncoll^f           |
   const TString mode = "Default";
 
-  const TString glauber_filename = "../input/glauber_auau_sigma_30_100k.root";   // input files
+  const TString glauber_filename = "../input/glauber_auau_sigma_30_100k.root";// input files
   const TString glauber_treename = "nt_Au_Au";
   const TString in_filename = "../input/test_input.root";
   const TString histoname = "hMreco";
 
-  const Int_t min_bin = 50;      // not fitting low multiplicity region due to trigger bias, etc
-  const Int_t max_bin = 10000;   // very large number to fit the whole histo
+  const Int_t min_bin = 50;   // not fitting low multiplicity region due to trigger bias, etc
+  const Int_t max_bin = 10000;// very large number to fit the whole histo
   const Int_t nevents = 100000;
 
   const TString outdir = ".";
@@ -45,10 +45,10 @@ int main(int argc, char *argv[]) {
   // *****************************************
 
   std::unique_ptr<TFile> glauber_file{TFile::Open(glauber_filename, "read")};
-  std::unique_ptr<TTree> glauber_tree{(TTree *) glauber_file->Get(glauber_treename)};
+  std::unique_ptr<TTree> glauber_tree{(TTree*) glauber_file->Get(glauber_treename)};
 
   std::unique_ptr<TFile> f{TFile::Open(in_filename)};
-  TH1F *hdata = (TH1F *) f->Get(histoname);
+  TH1F* hdata = (TH1F*) f->Get(histoname);
 
   Fitter fitter(std::move(glauber_tree));
 

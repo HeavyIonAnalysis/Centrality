@@ -1,6 +1,6 @@
 {
 const TString dir = "../build/";
 gSystem->
-Load( dir
-+"libCentrality.so");
+Load(dir
++ "libCentrality.so");
 }

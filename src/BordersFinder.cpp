@@ -1,13 +1,13 @@
-#include "BordersFinder.h"
-#include "Getter.h"
-#include "BordersFinderHelper.h"
+#include "BordersFinder.hpp"
+#include "BordersFinderHelper.hpp"
+#include "Getter.hpp"
 
-#include <iostream>
 #include <TGraph.h>
+#include <iostream>
 
 #include "TFile.h"
 
-namespace Centrality {
+namespace Centrality{
 
 void BordersFinder::FindBorders() {
   using namespace std;
@@ -23,7 +23,7 @@ void BordersFinder::FindBorders() {
 
   int n = axis->GetNbins();
 
-  double *histIntegral = histo_.GetIntegral();
+  double* histIntegral = histo_.GetIntegral();
   double x[n];
   for (int i = 0; i < n; ++i) {
     x[i] = axis->GetBinCenter(i + 1);
@@ -44,11 +44,12 @@ void BordersFinder::FindBorders() {
 
   for (auto cc : ranges_) {
     double xx = isSpectator_ ? xC(cc) : xC(100 - cc);
-    cout << cc << "%" << ", border:" << xx << endl;
+    cout << cc << "%"
+         << ", border:" << xx << endl;
     borders_.push_back(xx);
   }
 
-/*
+  /*
     uint iSlice{0};
     long int entriesCurrent{0};
     
@@ -72,10 +73,10 @@ void BordersFinder::FindBorders() {
 */
 }
 
-void BordersFinder::SaveBorders(const std::string &filename, const std::string &getter_name) {
+void BordersFinder::SaveBorders(const std::string& filename, const std::string& getter_name) {
   Getter getter;
 
-  if (this->GetBorders().size() < 2) return;
+  if(this->GetBorders().size() < 2) { return; }
 
   std::unique_ptr<TFile> f{TFile::Open(filename.data(), "update")};
 
@@ -85,8 +86,8 @@ void BordersFinder::SaveBorders(const std::string &filename, const std::string &
 
   getter.Write(getter_name.c_str());
 
-//     f->mkdir( ("dir_" + getter_name).c_str());
-//     f->cd( ("dir_" + getter_name).c_str() );
+  //     f->mkdir( ("dir_" + getter_name).c_str());
+  //     f->cd( ("dir_" + getter_name).c_str() );
 
   BordersFinderHelper h;
   h.SetName(getter_name);
@@ -97,4 +98,4 @@ void BordersFinder::SaveBorders(const std::string &filename, const std::string &
   f->Close();
 }
 
-}
+}// namespace Centrality

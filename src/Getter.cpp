@@ -1,20 +1,22 @@
-#include "Getter.h"
+#include "Getter.hpp"
+
 #include <iostream>
 
 ClassImp(Centrality::Getter)
 
-namespace Centrality {
+namespace Centrality{
 
 double Getter::GetCentrality(double value) const {
-  if (!isinitialized_) {
+  if(!isinitialized_) {
     std::cout << "Centrality::Getter is not initialized!" << std::endl;
     exit(-1);
   }
   const int ibin = borders_.FindBin(value);
-  if (ibin == 0 || ibin > borders_.GetNbins())
+  if(ibin == 0 || ibin > borders_.GetNbins()) {
     return -1;
+  }
 
-//     std::cout << value << " " << ranges_.at(ibin-1) << "  " << ranges_.at(ibin) << std::endl; 
+  //     std::cout << value << " " << ranges_.at(ibin-1) << "  " << ranges_.at(ibin) << std::endl;
 
   const double centrality = 0.5 * (ranges_.at(ibin - 1) + ranges_.at(ibin));
 
@@ -22,7 +24,7 @@ double Getter::GetCentrality(double value) const {
 }
 
 double Getter::GetCentrality(double xvalue, double yvalue) const {
-  if (!isinitialized2D_) {
+  if(!isinitialized2D_) {
     std::cout << "Centrality::Getter is not initialized!" << std::endl;
     exit(-1);
   }
@@ -30,18 +32,19 @@ double Getter::GetCentrality(double xvalue, double yvalue) const {
   xvalue /= xmax_;
   yvalue /= ymax_;
 
-  for (uint iborder = 0; iborder < borders2d_.size() - 1; ++iborder) {
+  for(uint iborder = 0; iborder < borders2d_.size() - 1; ++iborder) {
     const double y1 = borders2d_.at(iborder)[0] + borders2d_.at(iborder)[1] * xvalue;
     const double y2 = borders2d_.at(iborder + 1)[0] + borders2d_.at(iborder + 1)[1] * xvalue;
 
-    if (yvalue < y1 && yvalue > y2)
+    if(yvalue < y1 && yvalue > y2) {
       return 0.5 * (ranges_.at(iborder - 1) + ranges_.at(iborder));
+    }
   }
 
   return -1.;
 }
 
-Getter *Getter::Create1DGetter(std::vector<double> borders) {
+Getter* Getter::Create1DGetter(std::vector<double> borders) {
   typedef decltype(ranges_)::value_type doubleing_t;
 
   size_t n_borders = borders.size();
@@ -52,7 +55,7 @@ Getter *Getter::Create1DGetter(std::vector<double> borders) {
   doubleing_t range_step = (range_max - range_min) / (n_borders - 1);
 
   decltype(ranges_) ranges(n_borders);
-  for (uint i = 0; i < n_borders; ++i) {
+  for(uint i = 0; i < n_borders; ++i) {
     auto rr = range_min + range_step * i;
     ranges[i] = rr;
 
@@ -68,5 +71,4 @@ Getter *Getter::Create1DGetter(std::vector<double> borders) {
 
   return getter;
 }
-
 }

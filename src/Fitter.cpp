@@ -1,12 +1,10 @@
-#include "Fitter.h"
-#include "TTree.h"
-#include "TCanvas.h"
+#include "Fitter.hpp"
+
 #include "TF1.h"
 #include "TFile.h"
-#include "TGraph.h"
-#include "TLegend.h"
 #include "TMath.h"
 #include "TRandom.h"
+#include "TTree.h"
 
 ClassImp(Glauber::Fitter)
 
@@ -15,7 +13,7 @@ Glauber::Fitter::Fitter(std::unique_ptr<TTree> tree) {
   fSimTree = std::move(tree);
   std::cout << fSimTree->GetEntries() << std::endl;
 
-  if (!fSimTree) {
+  if(!fSimTree) {
     std::cout << "SetSimHistos: *** Error - " << std::endl;
     exit(EXIT_FAILURE);
   }
@@ -58,26 +56,33 @@ void Glauber::Fitter::Init(int nEntries) {
 
   std::cout << "fNbins = " << fNbins << std::endl;
   std::cout << "fMaxValue = " << fMaxValue << std::endl;
-
 }
 
 double Glauber::Fitter::Nancestors(double f) const {
-  if (fMode == "Default") return f * fNpart + (1 - f) * fNcoll;
-  else if (fMode == "PSD") return f - fNpart;
-  else if (fMode == "Npart") return TMath::Power(fNpart, f);
-  else if (fMode == "Ncoll") return TMath::Power(fNcoll, f);
+  if(fMode == "Default") { return f * fNpart + (1 - f) * fNcoll; }
+  else if(fMode == "PSD") {
+    return f - fNpart;
+  } else if(fMode == "Npart") {
+    return TMath::Power(fNpart, f);
+  } else if(fMode == "Ncoll") {
+    return TMath::Power(fNcoll, f);
+  }
 
   return -1.;
 }
 
 double Glauber::Fitter::NancestorsMax(double f) const {
-  const int NpartMax = fNpartHisto.GetXaxis()->GetXmax();  // some magic
-  const int NcollMax = fNcollHisto.GetXaxis()->GetXmax(); //TODO
+  const int NpartMax = fNpartHisto.GetXaxis()->GetXmax();// some magic
+  const int NcollMax = fNcollHisto.GetXaxis()->GetXmax();//TODO
 
-  if (fMode == "Default") return f * NpartMax + (1 - f) * NcollMax;
-  else if (fMode == "PSD") return NpartMax;
-  else if (fMode == "Npart") return TMath::Power(NpartMax, f);
-  else if (fMode == "Ncoll") return TMath::Power(NcollMax, f);
+  if(fMode == "Default") { return f * NpartMax + (1 - f) * NcollMax; }
+  else if(fMode == "PSD") {
+    return NpartMax;
+  } else if(fMode == "Npart") {
+    return TMath::Power(NpartMax, f);
+  } else if(fMode == "Ncoll") {
+    return TMath::Power(NcollMax, f);
+  }
 
   return -1.;
 }
@@ -92,13 +97,13 @@ void Glauber::Fitter::SetGlauberFitHisto(double f, double mu, double k, int n, B
 
   SetNBDhist(mu, k);
 
-  std::unique_ptr<TH1F> htemp{(TH1F *) fNbdHisto.Clone("htemp")}; // WTF??? Not working without pointer
-  for (int i = 0; i < n; i++) {
+  std::unique_ptr<TH1F> htemp{(TH1F*) fNbdHisto.Clone("htemp")};// WTF??? Not working without pointer
+  for(int i = 0; i < n; i++) {
     fSimTree->GetEntry(i);
     const int Na = int(Nancestors(f));
 
     double nHits{0.};
-    for (int j = 0; j < Na; j++) {
+    for(int j = 0; j < Na; j++) {
       nHits += int(htemp->GetRandom());
     }
     fGlauberFitHisto.Fill(nHits);
@@ -138,8 +143,8 @@ void Glauber::Fitter::NormalizeGlauberFit() {
  * @param nEvents
  * @param nIter
  */
-void Glauber::Fitter::FindMuGoldenSection(double *mu,
-                                          double *chi2,
+void Glauber::Fitter::FindMuGoldenSection(double* mu,
+                                          double* chi2,
                                           double mu_min,
                                           double mu_max,
                                           double f,
@@ -196,7 +201,7 @@ void Glauber::Fitter::FindMuGoldenSection(double *mu,
  * @param k1 upper search edge for NBD parameter
  * @param nEvents
  */
-double Glauber::Fitter::FitGlauber(double *par, double f0, Int_t k0, Int_t k1, Int_t nEvents) {
+double Glauber::Fitter::FitGlauber(double* par, double f0, Int_t k0, Int_t k1, Int_t nEvents) {
   double f_fit{-1};
   double mu_fit{-1};
   double k_fit{-1};
@@ -204,11 +209,11 @@ double Glauber::Fitter::FitGlauber(double *par, double f0, Int_t k0, Int_t k1, I
 
   const TString filename = Form("%s/fit_%4.2f_%d_%d_%d.root", fOutDirName.Data(), f0, k0, k1, fFitMinBin);
 
-  //     std::unique_ptr<TFile> file {TFile::Open(filename, "recreate")};    
+  //     std::unique_ptr<TFile> file {TFile::Open(filename, "recreate")};
   //     std::unique_ptr<TTree> tree {new TTree("test_tree", "tree" )};
 
-  TFile *file{TFile::Open(filename, "recreate")};
-  TTree *tree{new TTree("test_tree", "tree")};
+  TFile* file{TFile::Open(filename, "recreate")};
+  TTree* tree{new TTree("test_tree", "tree")};
 
   TH1F h1("h1", "", fNbins, 0, fMaxValue);
 
@@ -241,7 +246,6 @@ double Glauber::Fitter::FitGlauber(double *par, double f0, Int_t k0, Int_t k1, I
       Chi2Min = chi2;
       fBestFitHisto = fGlauberFitHisto;
     }
-
   }
   tree->Write();
   file->Write();
@@ -291,7 +295,7 @@ void Glauber::Fitter::SetNBDhist(double mu, double k) {
   for (int i = 0; i < nBins; ++i) {
     const double val = NBD(i, mu, k);
     if (val > 1e-10) fNbdHisto.SetBinContent(i + 1, val);
-    //         std::cout << "val " << val << std::endl;    
+    //         std::cout << "val " << val << std::endl;
   }
 }
 
@@ -331,7 +335,7 @@ double Glauber::Fitter::NBD(double n, double mu, double k) const {
  * @return pointer to the histogram 
  */
 std::unique_ptr<TH1F> Glauber::Fitter::GetModelHisto(const double range[2],
-                                                     const TString &name,
+                                                     const TString& name,
                                                      const double par[3],
                                                      int nEvents) {
   const double f = par[0];
@@ -359,8 +363,4 @@ std::unique_ptr<TH1F> Glauber::Fitter::GetModelHisto(const double range[2],
   }
 
   return hModel;
-
 }
-
-
-

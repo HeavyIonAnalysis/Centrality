@@ -8,22 +8,22 @@
 #define GlauberFitterHelper_H 1
 
 #include "TCanvas.h"
-#include "TH1.h"
-#include "TPad.h"
-#include "TLegend.h"
 #include "TFile.h"
+#include "TH1.h"
+#include "TLegend.h"
+#include "TPad.h"
 
-#include "glauber/Fitter.h"
+#include "Fitter.hpp"
 
-namespace Glauber {
-inline void DrawHistos(const Fitter &fit, Bool_t isSim, Bool_t isData, Bool_t isGlauber, Bool_t isNBD) {
+namespace Glauber{
+inline void DrawHistos(const Fitter& fit, Bool_t isSim, Bool_t isData, Bool_t isGlauber, Bool_t isNBD) {
   std::unique_ptr<TCanvas> c1{new TCanvas("c1", "canvas", 1500, 900)};
 
   c1->Divide(2, 2);
 
-  std::unique_ptr<TPad> c1_1{(TPad *) c1->GetListOfPrimitives()->FindObject("c1_1")};
-  std::unique_ptr<TPad> c1_2{(TPad *) c1->GetListOfPrimitives()->FindObject("c1_2")};
-  std::unique_ptr<TPad> c1_4{(TPad *) c1->GetListOfPrimitives()->FindObject("c1_4")};
+  std::unique_ptr<TPad> c1_1{(TPad*) c1->GetListOfPrimitives()->FindObject("c1_1")};
+  std::unique_ptr<TPad> c1_2{(TPad*) c1->GetListOfPrimitives()->FindObject("c1_2")};
+  std::unique_ptr<TPad> c1_4{(TPad*) c1->GetListOfPrimitives()->FindObject("c1_4")};
 
   c1_1->SetLogy(1);
   c1_2->SetLogy(1);
@@ -38,7 +38,7 @@ inline void DrawHistos(const Fitter &fit, Bool_t isSim, Bool_t isData, Bool_t is
 
   std::unique_ptr<TFile> fOut{TFile::Open("glauber_qa.root", "recreate")};
 
-  if (isSim) {
+  if(isSim) {
     c1->cd(1);
     hNcoll.SetLineColor(2);
 
@@ -54,11 +54,11 @@ inline void DrawHistos(const Fitter &fit, Bool_t isSim, Bool_t isData, Bool_t is
     hNpart.Write();
   }
 
-  if (isData) {
+  if(isData) {
     c1->cd(2);
     hData.Draw();
     hData.Write();
-    if (isGlauber) {
+    if(isGlauber) {
       hBestFit.SetLineColor(kRed);
       hBestFit.Draw("same");
 
@@ -70,14 +70,13 @@ inline void DrawHistos(const Fitter &fit, Bool_t isSim, Bool_t isData, Bool_t is
     }
   }
 
-  if (isNBD) {
+  if(isNBD) {
     c1->cd(3);
     hNBD.Draw();
     hNBD.Write();
-
   }
 
-  if (isGlauber) {
+  if(isGlauber) {
     c1->cd(4);
     hBestFit.Draw();
   }
@@ -87,6 +86,6 @@ inline void DrawHistos(const Fitter &fit, Bool_t isSim, Bool_t isData, Bool_t is
   fOut->Close();
 }
 
-}
+}// namespace Glauber
 
 #endif

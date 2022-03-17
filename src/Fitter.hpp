@@ -8,19 +8,18 @@
 #ifndef GlauberFitter_H
 #define GlauberFitter_H 1
 
-#include <vector>
-#include "TString.h"
-#include "TNamed.h"
 #include "TH1F.h"
+#include "TNamed.h"
+#include "TString.h"
 #include "TTree.h"
+
+#include <vector>
 // #include "TMinuit.h"
 
-
-namespace Glauber {
-class Fitter {
+namespace Glauber{
+class Fitter{
 
  public:
-
   /**   Default constructor   **/
   Fitter() = default;;
   explicit Fitter(std::unique_ptr<TTree> tree);
@@ -30,11 +29,11 @@ class Fitter {
   void Init(int nEntries);
   void SetGlauberFitHisto(double f, double mu, double k, Int_t n = 10000, Bool_t Norm2Data = true);
   void NormalizeGlauberFit();
-//  void DrawHistos(Bool_t isSim = true, Bool_t isData = true, Bool_t isGlauber = false, Bool_t isNBD = false) {};
+  //  void DrawHistos(Bool_t isSim = true, Bool_t isData = true, Bool_t isGlauber = false, Bool_t isNBD = false) {};
 
-  double FitGlauber(double *par, double f0, Int_t k0, Int_t k1, Int_t nEvents);
-  void FindMuGoldenSection(double *mu,
-                           double *chi2,
+  double FitGlauber(double* par, double f0, Int_t k0, Int_t k1, Int_t nEvents);
+  void FindMuGoldenSection(double* mu,
+                           double* chi2,
                            double mu_min,
                            double mu_max,
                            double f,
@@ -49,18 +48,18 @@ class Fitter {
   double Nancestors(double f) const;
   double NancestorsMax(double f) const;
 
-  std::unique_ptr<TH1F> GetModelHisto(const double range[2], const TString &name, const double par[3], Int_t nEvents);
+  std::unique_ptr<TH1F> GetModelHisto(const double range[2], const TString& name, const double par[3], Int_t nEvents);
 
   //
   //         Setters
   //
-  void SetInputHisto(const TH1F &h) { fDataHisto = h; }
+  void SetInputHisto(const TH1F& h) { fDataHisto = h; }
   void SetFitMinBin(Int_t min) { fFitMinBin = min; }
   void SetFitMaxBin(Int_t min) { fFitMaxBin = min; }
   void SetNormMinBin(Int_t min) { fNormMinBin = min; }
   void SetBinSize(Int_t size) { fBinSize = size; }
-  void SetOutDirName(const TString &name) { fOutDirName = name; }
-  void SetMode(const TString &mode) { fMode = mode; }
+  void SetOutDirName(const TString& name) { fOutDirName = name; }
+  void SetMode(const TString& mode) { fMode = mode; }
 
   //
   //         Getters
@@ -73,7 +72,6 @@ class Fitter {
   TH1F GetBestFiHisto() const { return fBestFitHisto; }
 
  private:
-
   /**   Data members  **/
   TH1F fNpartHisto;
   TH1F fNcollHisto;
@@ -102,8 +100,7 @@ class Fitter {
 
   TString fOutDirName{""};
  ClassDef(Fitter, 2);
-
 };
-}
+}// namespace Glauber
 
 #endif

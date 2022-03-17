@@ -8,31 +8,30 @@
 #ifndef CENTRALITY_BORDERSFINDERHELPER_H
 #define CENTRALITY_BORDERSFINDERHELPER_H
 
+#include "TF1.h"
 #include "TH1.h"
 #include "TH2.h"
-#include "TF1.h"
 
-#include "Getter.h"
+#include "Getter.hpp"
 
-namespace Centrality {
+namespace Centrality{
 
-class BordersFinderHelper {
+class BordersFinderHelper{
 
  public:
-
   BordersFinderHelper() = default;
-  void QA(const Getter &getter, const TH1F &histo) const;
-  void PlotHisto(const Getter &getter, TH1F &histo) const;
-  void PlotHisto2D(const Getter &getter, TH2F &histo, TF1 &func) const;
+  void QA(const Getter& getter, const TH1F& histo) const;
+  void PlotHisto(const Getter& getter, TH1F& histo) const;
+  void PlotHisto2D(const Getter& getter, TH2F& histo, TF1& func) const;
 
-  void SetName(const TString &name) { name_ = name; }
+  void SetName(const TString& name) { name_ = name; }
   void SetIsPdf(bool is = true) { ispdf_ = is; }
- private:
 
+ private:
   TString name_{"test"};
   bool ispdf_{false};
 };
 
-}
+}// namespace Centrality
 
-#endif //CENTRALITY_BORDERSFINDERHELPER_H
+#endif//CENTRALITY_BORDERSFINDERHELPER_H
