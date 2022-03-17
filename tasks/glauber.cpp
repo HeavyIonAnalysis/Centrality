@@ -11,7 +11,7 @@
 using namespace Glauber;
 
 int main(int argc, char* argv[]) {
-  if(argc < 2) {
+  if (argc < 2) {
     std::cout << "Wrong number of parameters! Executable usage:" << std::endl;
     std::cout << "   ./glauber f0 k0" << std::endl;
     return -1;

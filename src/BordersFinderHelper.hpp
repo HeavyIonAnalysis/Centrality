@@ -14,9 +14,9 @@
 
 #include "Getter.hpp"
 
-namespace Centrality{
+namespace Centrality {
 
-class BordersFinderHelper{
+class BordersFinderHelper {
 
  public:
   BordersFinderHelper() = default;

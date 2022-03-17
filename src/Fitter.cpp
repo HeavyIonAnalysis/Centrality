@@ -8,12 +8,12 @@
 
 ClassImp(Glauber::Fitter)
 
-// -----   Default constructor   -------------------------------------------
-Glauber::Fitter::Fitter(std::unique_ptr<TTree> tree) {
+    // -----   Default constructor   -------------------------------------------
+    Glauber::Fitter::Fitter(std::unique_ptr<TTree> tree) {
   fSimTree = std::move(tree);
   std::cout << fSimTree->GetEntries() << std::endl;
 
-  if(!fSimTree) {
+  if (!fSimTree) {
     std::cout << "SetSimHistos: *** Error - " << std::endl;
     exit(EXIT_FAILURE);
   }
@@ -59,12 +59,13 @@ void Glauber::Fitter::Init(int nEntries) {
 }
 
 double Glauber::Fitter::Nancestors(double f) const {
-  if(fMode == "Default") { return f * fNpart + (1 - f) * fNcoll; }
-  else if(fMode == "PSD") {
+  if (fMode == "Default") {
+    return f * fNpart + (1 - f) * fNcoll;
+  } else if (fMode == "PSD") {
     return f - fNpart;
-  } else if(fMode == "Npart") {
+  } else if (fMode == "Npart") {
     return TMath::Power(fNpart, f);
-  } else if(fMode == "Ncoll") {
+  } else if (fMode == "Ncoll") {
     return TMath::Power(fNcoll, f);
   }
 
@@ -75,12 +76,13 @@ double Glauber::Fitter::NancestorsMax(double f) const {
   const int NpartMax = fNpartHisto.GetXaxis()->GetXmax();// some magic
   const int NcollMax = fNcollHisto.GetXaxis()->GetXmax();//TODO
 
-  if(fMode == "Default") { return f * NpartMax + (1 - f) * NcollMax; }
-  else if(fMode == "PSD") {
+  if (fMode == "Default") {
+    return f * NpartMax + (1 - f) * NcollMax;
+  } else if (fMode == "PSD") {
     return NpartMax;
-  } else if(fMode == "Npart") {
+  } else if (fMode == "Npart") {
     return TMath::Power(NpartMax, f);
-  } else if(fMode == "Ncoll") {
+  } else if (fMode == "Ncoll") {
     return TMath::Power(NcollMax, f);
   }
 
@@ -98,12 +100,12 @@ void Glauber::Fitter::SetGlauberFitHisto(double f, double mu, double k, int n, B
   SetNBDhist(mu, k);
 
   std::unique_ptr<TH1F> htemp{(TH1F*) fNbdHisto.Clone("htemp")};// WTF??? Not working without pointer
-  for(int i = 0; i < n; i++) {
+  for (int i = 0; i < n; i++) {
     fSimTree->GetEntry(i);
     const int Na = int(Nancestors(f));
 
     double nHits{0.};
-    for(int j = 0; j < Na; j++) {
+    for (int j = 0; j < Na; j++) {
       nHits += int(htemp->GetRandom());
     }
     fGlauberFitHisto.Fill(nHits);

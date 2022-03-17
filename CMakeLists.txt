@@ -20,10 +20,10 @@ if (CMAKE_BUILD_TYPE MATCHES DEBUG OR CMAKE_BUILD_TYPE MATCHES Debug)
     set(CMAKE_VERBOSE_MAKEFILE ON)
 endif ()
 
-set(CMAKE_CXX_FLAGS_DEBUG "-O0 -ggdb -DDEBUG -D__DEBUG -Wall -Wextra -fopenmp")
-set(CMAKE_CXX_FLAGS_Debug "-O0 -ggdb -DDEBUG -D__DEBUG -Wall -Wextra -fopenmp")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -ftree-vectorize -ffast-math -DNODEBUG -fopenmp")
-set(CMAKE_CXX_FLAGS_Release "-O3 -march=native -ftree-vectorize -ffast-math -DNODEBUG -fopenmp")
+set(CMAKE_CXX_FLAGS_DEBUG "-O0 -ggdb -DDEBUG -D__DEBUG -Wall -Wextra")
+set(CMAKE_CXX_FLAGS_Debug "-O0 -ggdb -DDEBUG -D__DEBUG -Wall -Wextra")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -ftree-vectorize -ffast-math -DNODEBUG")
+set(CMAKE_CXX_FLAGS_Release "-O3 -march=native -ftree-vectorize -ffast-math -DNODEBUG")
 message(STATUS "Using CXX flags for ${CMAKE_BUILD_TYPE}: ${CMAKE_CXX_FLAGS_${CMAKE_BUILD_TYPE}}")
 
 

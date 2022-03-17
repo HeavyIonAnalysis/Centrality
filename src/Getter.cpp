@@ -4,71 +4,71 @@
 
 ClassImp(Centrality::Getter)
 
-namespace Centrality{
+    namespace Centrality {
 
-double Getter::GetCentrality(double value) const {
-  if(!isinitialized_) {
-    std::cout << "Centrality::Getter is not initialized!" << std::endl;
-    exit(-1);
-  }
-  const int ibin = borders_.FindBin(value);
-  if(ibin == 0 || ibin > borders_.GetNbins()) {
-    return -1;
-  }
-
-  //     std::cout << value << " " << ranges_.at(ibin-1) << "  " << ranges_.at(ibin) << std::endl;
-
-  const double centrality = 0.5 * (ranges_.at(ibin - 1) + ranges_.at(ibin));
-
-  return centrality;
-}
-
-double Getter::GetCentrality(double xvalue, double yvalue) const {
-  if(!isinitialized2D_) {
-    std::cout << "Centrality::Getter is not initialized!" << std::endl;
-    exit(-1);
-  }
-
-  xvalue /= xmax_;
-  yvalue /= ymax_;
-
-  for(uint iborder = 0; iborder < borders2d_.size() - 1; ++iborder) {
-    const double y1 = borders2d_.at(iborder)[0] + borders2d_.at(iborder)[1] * xvalue;
-    const double y2 = borders2d_.at(iborder + 1)[0] + borders2d_.at(iborder + 1)[1] * xvalue;
-
-    if(yvalue < y1 && yvalue > y2) {
-      return 0.5 * (ranges_.at(iborder - 1) + ranges_.at(iborder));
+  double Getter::GetCentrality(double value) const {
+    if (!isinitialized_) {
+      std::cout << "Centrality::Getter is not initialized!" << std::endl;
+      exit(-1);
     }
+    const int ibin = borders_.FindBin(value);
+    if (ibin == 0 || ibin > borders_.GetNbins()) {
+      return -1;
+    }
+
+    //     std::cout << value << " " << ranges_.at(ibin-1) << "  " << ranges_.at(ibin) << std::endl;
+
+    const double centrality = 0.5 * (ranges_.at(ibin - 1) + ranges_.at(ibin));
+
+    return centrality;
   }
 
-  return -1.;
-}
+  double Getter::GetCentrality(double xvalue, double yvalue) const {
+    if (!isinitialized2D_) {
+      std::cout << "Centrality::Getter is not initialized!" << std::endl;
+      exit(-1);
+    }
 
-Getter* Getter::Create1DGetter(std::vector<double> borders) {
-  typedef decltype(ranges_)::value_type doubleing_t;
+    xvalue /= xmax_;
+    yvalue /= ymax_;
 
-  size_t n_borders = borders.size();
-  assert(n_borders > 2);
+    for (uint iborder = 0; iborder < borders2d_.size() - 1; ++iborder) {
+      const double y1 = borders2d_.at(iborder)[0] + borders2d_.at(iborder)[1] * xvalue;
+      const double y2 = borders2d_.at(iborder + 1)[0] + borders2d_.at(iborder + 1)[1] * xvalue;
 
-  doubleing_t range_max = 100.f;
-  doubleing_t range_min = 0.f;
-  doubleing_t range_step = (range_max - range_min) / (n_borders - 1);
+      if (yvalue < y1 && yvalue > y2) {
+        return 0.5 * (ranges_.at(iborder - 1) + ranges_.at(iborder));
+      }
+    }
 
-  decltype(ranges_) ranges(n_borders);
-  for(uint i = 0; i < n_borders; ++i) {
-    auto rr = range_min + range_step * i;
-    ranges[i] = rr;
-
-    std::cout << rr << "%: " << borders[i] << std::endl;
+    return -1.;
   }
 
-  TAxis ax_borders(static_cast<Int_t>(n_borders - 1), &(borders[0]));
+  Getter* Getter::Create1DGetter(std::vector<double> borders) {
+    typedef decltype(ranges_)::value_type doubleing_t;
 
-  auto getter = new Getter;
-  getter->ranges_ = std::move(ranges);
-  getter->borders_ = ax_borders;
-  getter->isinitialized_ = true;
+    size_t n_borders = borders.size();
+    assert(n_borders > 2);
 
-  return getter;
-}
+    doubleing_t range_max = 100.f;
+    doubleing_t range_min = 0.f;
+    doubleing_t range_step = (range_max - range_min) / (n_borders - 1);
+
+    decltype(ranges_) ranges(n_borders);
+    for (uint i = 0; i < n_borders; ++i) {
+      auto rr = range_min + range_step * i;
+      ranges[i] = rr;
+
+      std::cout << rr << "%: " << borders[i] << std::endl;
+    }
+
+    TAxis ax_borders(static_cast<Int_t>(n_borders - 1), &(borders[0]));
+
+    auto getter = new Getter;
+    getter->ranges_ = std::move(ranges);
+    getter->borders_ = ax_borders;
+    getter->isinitialized_ = true;
+
+    return getter;
+  }
 }

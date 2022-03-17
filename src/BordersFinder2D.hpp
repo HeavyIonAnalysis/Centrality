@@ -16,9 +16,9 @@
 #include "TF1.h"
 #include "TH2.h"
 
-namespace Centrality{
+namespace Centrality {
 
-class BordersFinder2D : public BordersFinder{
+class BordersFinder2D : public BordersFinder {
 
  public:
   BordersFinder2D() = default;
@@ -43,7 +43,7 @@ class BordersFinder2D : public BordersFinder{
   static double polN(const std::vector<double>& par, double x) {
     double res{0.};
     double xn{1.};
-    for(const auto ipar : par) {
+    for (const auto ipar : par) {
       res += ipar * xn;
       xn *= x;
     }

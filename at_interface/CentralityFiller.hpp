@@ -7,11 +7,10 @@
 #include "AnalysisTree/TaskManager.hpp"
 #include "Getter.hpp"
 
-namespace AnalysisTree{
+namespace AnalysisTree {
 
-class CentralityFiller : public AnalysisTree::Task{
+class CentralityFiller : public AnalysisTree::Task {
  public:
-
   CentralityFiller() = delete;
   CentralityFiller(const std::string& file, const std::string& getter);
 
@@ -54,10 +53,9 @@ class CentralityFiller : public AnalysisTree::Task{
 
   bool is_event_header_{true};
 
-//  AnalysisTree::Cuts* cuts_{nullptr};
-
+  //  AnalysisTree::Cuts* cuts_{nullptr};
 };
 
-}
+}// namespace AnalysisTree
 
-#endif //CENTRALITY_AT_INTERFACE_CENTRALITYFILLER_HPP_
+#endif//CENTRALITY_AT_INTERFACE_CENTRALITYFILLER_HPP_

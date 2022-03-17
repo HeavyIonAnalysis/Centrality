@@ -1,18 +1,18 @@
 #include "CentralityFiller.hpp"
 
-#include <memory>
 #include "TFile.h"
+#include <memory>
 
-namespace AnalysisTree{
+namespace AnalysisTree {
 
 CentralityFiller::CentralityFiller(const std::string& file, const std::string& getter) {
   auto centr_file = std::unique_ptr<TFile>(TFile::Open(file.c_str(), "read"));
 
-  if((!centr_file) || (centr_file->IsZombie())) {
+  if ((!centr_file) || (centr_file->IsZombie())) {
     throw std::runtime_error("No file or file is zombie");
   }
   getter_ = centr_file->Get<Centrality::Getter>(getter.c_str());
-  if(getter_ == nullptr) {
+  if (getter_ == nullptr) {
     throw std::runtime_error("Centrality Getter is nullptr");
   }
 }
@@ -41,7 +41,7 @@ void CentralityFiller::Init() {
 }
 
 void CentralityFiller::Exec() {
-  if(is_event_header_) {
+  if (is_event_header_) {
     FillFromEventHeader();
   } else {
     FillFromChannels();
@@ -60,8 +60,8 @@ void CentralityFiller::FillFromEventHeader() {
 void CentralityFiller::FillFromChannels() {
   const auto n = input_.size();
   int m{0};
-  for(size_t i = 0; i < n; ++i) {
-    if(!event_cuts_ || event_cuts_->Apply(input_[i])) {
+  for (size_t i = 0; i < n; ++i) {
+    if (!event_cuts_ || event_cuts_->Apply(input_[i])) {
       m++;
     }
   }
@@ -69,4 +69,4 @@ void CentralityFiller::FillFromChannels() {
   output_[0].SetValue(out_field_, centrality);
 }
 
-}
+}// namespace AnalysisTree

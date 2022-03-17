@@ -14,8 +14,8 @@ void HistoCompare() {
   TH1F* hDiff2 = new TH1F("diff2", "", 125, 0, 250);
   TH1F* hDiff3 = new TH1F("diff3", "", 125, 0, 250);
 
-  for(Int_t ii = 0; ii < 125; ii++) {
-    if(hData->GetBinContent(ii + 1) > 0) {
+  for (Int_t ii = 0; ii < 125; ii++) {
+    if (hData->GetBinContent(ii + 1) > 0) {
       Float_t diff1 = (h1->GetBinContent(ii + 1) / hData->GetBinContent(ii + 1));
       hDiff1->SetBinContent(ii + 1, diff1);
 

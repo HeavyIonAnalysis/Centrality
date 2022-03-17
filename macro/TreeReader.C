@@ -8,7 +8,7 @@ void TreeReader(Int_t MultMin = 130, Int_t Mode = 2) {
 
   TCanvas* c1 = new TCanvas("c1", "canvas", 1400, 1000);
 
-  if(Mode == 2) {
+  if (Mode == 2) {
     c1->Divide(2, 1);
     TPad* c1_1 = (TPad*) c1->GetListOfPrimitives()->FindObject("c1_1");
     c1_1->SetLogy(1);
@@ -22,7 +22,7 @@ void TreeReader(Int_t MultMin = 130, Int_t Mode = 2) {
 
   TH1F* h1 = new TH1F("h1", "", 125, 0, 250);
   TH1F* h3 = new TH1F("h3", "", 125, 0, 250);
-  for(Int_t i = 0; i < 125; i++) {
+  for (Int_t i = 0; i < 125; i++) {
     h3->SetBinContent(i + 1, 1);
   }
   h3->SetLineColor(3);

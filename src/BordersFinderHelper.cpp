@@ -18,7 +18,7 @@ void BordersFinderHelper::QA(const Getter& getter, const TH1F& histo) const {
 
   std::unique_ptr<TRandom> r{new TRandom};
 
-  for(Int_t iBin = 0; iBin < histo.GetNbinsX(); ++iBin) {
+  for (Int_t iBin = 0; iBin < histo.GetNbinsX(); ++iBin) {
     const Float_t Mult = histo.GetBinCenter(iBin + 1);
 
     for (Int_t j = 0; j < histo.GetBinContent(iBin + 1); ++j) {
@@ -40,7 +40,7 @@ void BordersFinderHelper::PlotHisto(const Getter& getter, TH1F& histo) const {
   const auto& borders = getter.GetBorders();
   TLine* line;
 
-  for(int i = 0; i < borders.GetNbins(); ++i) {
+  for (int i = 0; i < borders.GetNbins(); ++i) {
     const float border = borders.GetBinLowEdge(i + 1);
     const int height = histo.GetBinContent(histo.FindBin(border));
 
@@ -69,18 +69,18 @@ void BordersFinderHelper::PlotHisto2D(const Getter& getter, TH2F& histo, TF1& fu
   const auto& borders = getter.GetBorders2D();
   TLine* line{nullptr};
 
-  for(uint i = 0; i < borders.size() - 1; ++i) {
+  for (uint i = 0; i < borders.size() - 1; ++i) {
 
     float x1{0.};
     float x2{1.};
     float x{0.5};
 
-    for(int iter = 0; iter < 10; ++iter) {
+    for (int iter = 0; iter < 10; ++iter) {
       x = (x1 + x2) / 2;
 
-      if((func.Eval(x1) - borders.at(i)[0] - borders.at(i)[1] * x1)
-        * (func.Eval(x) - borders.at(i)[0] - borders.at(i)[1] * x)
-        < 0) {
+      if ((func.Eval(x1) - borders.at(i)[0] - borders.at(i)[1] * x1)
+              * (func.Eval(x) - borders.at(i)[0] - borders.at(i)[1] * x)
+          < 0) {
         x2 = x;
       } else {
         x1 = x;
@@ -104,7 +104,7 @@ void BordersFinderHelper::PlotHisto2D(const Getter& getter, TH2F& histo, TF1& fu
   c->SetLogz(true);
   c->Write(name_ + "_histo_2d");
 
-  if(ispdf_) {
+  if (ispdf_) {
     c->SaveAs(name_ + "_histo_2d" + ".pdf");
   }
 

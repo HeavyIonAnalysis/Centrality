@@ -16,15 +16,17 @@
 #include <vector>
 // #include "TMinuit.h"
 
-namespace Glauber{
-class Fitter{
+namespace Glauber {
+class Fitter {
 
  public:
   /**   Default constructor   **/
-  Fitter() = default;;
+  Fitter() = default;
+  ;
   explicit Fitter(std::unique_ptr<TTree> tree);
   /**   Destructor   **/
-  virtual ~Fitter() = default;;
+  virtual ~Fitter() = default;
+  ;
 
   void Init(int nEntries);
   void SetGlauberFitHisto(double f, double mu, double k, Int_t n = 10000, Bool_t Norm2Data = true);
@@ -99,7 +101,7 @@ class Fitter{
   TString fMode{"Default"};
 
   TString fOutDirName{""};
- ClassDef(Fitter, 2);
+  ClassDef(Fitter, 2);
 };
 }// namespace Glauber
 
