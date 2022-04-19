@@ -1,13 +1,40 @@
 # Centrality Framework
 
+## Requirements
+
+### Root
+
+https://root.cern/install/
+
+Version 6.20 or newer is recommended. Root with c++17 standard is strongly recommended.
+
+### AnalysisTree
+
+Optional. Needed for building AnalysisTree interface.
+
+https://github.com/HeavyIonAnalysis/AnalysisTree
+
+Tag v2.2.7 or newer is required. Both pre-installed AnalysisTree and automatically installed together with Centrality framework can be used (see chapter Installation)
+
+AnalysisTree with c++17 standard is strongly recommended.
+
 ## Installation
+
+To use pre-installed AnalysisTree set the environment variable:
+    export AnalysisTree_DIR=/path-to-analysistree/install/lib/cmake/AnalysisTree
+To build AnalysisTree automatically together with Centrality use following cmake keys:
+    -DCentrality_BUNDLED_AT=ON
+    -DCentrality_BUNDLED_AT_VERSION=v2.2.7
+    
+Building with c++17 standard is strongly recommended. Use following key:
+    -DCMAKE_CXX_STANDARD=17
 
     cd centrality
     mkdir build
     cd build
     source /path-to-root/thisroot.sh
-    cmake ../
-    make
+    cmake -DCMAKE_INSTALL_PREFIX=/path-to-centrality/install/ ../
+    make install
 
 
 ## Examples and short description 
