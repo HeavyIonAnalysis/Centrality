@@ -37,7 +37,7 @@ TEST(CentralityFiller, Basics) {
 
   auto* man = TaskManager::GetInstance();
   man->SetOutputName("centrality_filler_test.root", "aTree");
-  man->SetOutputTreeConfig(OutputTreeConfig(eBranchWriteMode::kCopyTree));
+  man->SetWriteMode(eBranchWriteMode::kCopyTree);
 
   CreateCentralityFile();
 

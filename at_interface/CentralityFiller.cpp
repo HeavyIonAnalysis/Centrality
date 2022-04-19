@@ -25,13 +25,15 @@ void CentralityFiller::Init() {
   auto man = TaskManager::GetInstance();
   auto chain = man->GetChain();
   input_ = chain->GetBranchObject(input_name_);
+  input_event_header_ = chain->GetBranchObject(input_event_header_name_);
 
   is_event_header_ = input_.GetBranchType() == DetType::kEventHeader;
 
-  in_field_ = input_.GetField(input_field_name_);
+  if(is_event_header_)
+    in_field_ = input_.GetField(input_field_name_);
   in_branches_.emplace(input_name_);
 
-  auto conf = input_.GetConfig().Clone(output_name_, AnalysisTree::DetType::kEventHeader);
+  auto conf = input_event_header_.GetConfig().Clone(output_name_, AnalysisTree::DetType::kEventHeader);
   conf.AddField<float>(output_field_name_, "centrality, %");
   output_ = Branch(conf);
   out_field_ = output_.GetField(output_field_name_);
@@ -40,6 +42,10 @@ void CentralityFiller::Init() {
   output_.Freeze();
 
   input_.Freeze();
+  input_event_header_.Freeze();
+  
+  if(track_cuts_)
+    track_cuts_ -> Init(*(man->GetConfig()));
 
   man->AddBranch(&output_);
 }
@@ -62,11 +68,16 @@ void CentralityFiller::FillFromEventHeader() {
 }
 
 void CentralityFiller::FillFromChannels() {
+  output_[0].CopyContent(input_event_header_[0]);
   const auto n = input_.size();
   int m{0};
-  for (size_t i = 0; i < n; ++i) {
-    if (!event_cuts_ || event_cuts_->Apply(input_[i])) {
-      m++;
+  if(!track_cuts_)
+    m = n;
+  else{
+    for(size_t i = 0; i < n; ++i) {
+      const auto& track = input_[i];
+      if(track_cuts_->Apply(track))
+        m++;
     }
   }
   const auto centrality = getter_->GetCentrality(m);

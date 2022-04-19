@@ -25,6 +25,8 @@ class CentralityFiller : public AnalysisTree::Task {
   void Finish() override {
     delete getter_;
   }
+  
+  void SetInputEventHeader(std::string branch) { input_event_header_name_ = branch; }
 
   void SetInput(std::string branch, std::string field = "") {
     input_name_ = std::move(branch);
@@ -35,6 +37,8 @@ class CentralityFiller : public AnalysisTree::Task {
     output_name_ = std::move(branch);
     output_field_name_ = std::move(field);
   }
+  
+  void SetTrackCuts(AnalysisTree::Cuts* track_cuts) { track_cuts_ = track_cuts; }
 
   ~CentralityFiller() override = default;
 
@@ -42,6 +46,7 @@ class CentralityFiller : public AnalysisTree::Task {
   void FillFromEventHeader();
   void FillFromChannels();
 
+  std::string input_event_header_name_;
   std::string input_name_;
   std::string input_field_name_;
   std::string output_name_;
@@ -49,6 +54,7 @@ class CentralityFiller : public AnalysisTree::Task {
 
   Centrality::Getter* getter_{nullptr};
 
+  AnalysisTree::Branch input_event_header_;
   AnalysisTree::Branch input_;
   AnalysisTree::Branch output_;
 
@@ -57,7 +63,7 @@ class CentralityFiller : public AnalysisTree::Task {
 
   bool is_event_header_{true};
 
-  //  AnalysisTree::Cuts* cuts_{nullptr};
+  AnalysisTree::Cuts* track_cuts_{nullptr};
 };
 
 }// namespace AnalysisTree
