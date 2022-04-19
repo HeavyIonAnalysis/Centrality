@@ -6,6 +6,7 @@ set(PROJECT_VERSION 1.0)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 option(Centrality_BUNDLED_AT "Build AnalysisTree" OFF)
+option(Centrality_BUNDLED_AT_VERSION "Version of AnalysisTree to build" "v2.2.7")
 option(Centrality_BUILD_TESTS "Build tests for the Centrality" ON)
 
 if(NOT DEFINED CMAKE_CXX_STANDARD)

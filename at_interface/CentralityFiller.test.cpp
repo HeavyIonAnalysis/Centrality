@@ -37,11 +37,12 @@ TEST(CentralityFiller, Basics) {
 
   auto* man = TaskManager::GetInstance();
   man->SetOutputName("centrality_filler_test.root", "aTree");
-  man->SetOutputTreeConfig(OutputTreeConfig(eBranchWriteMode::kCopyTree));
+  man->SetWriteMode(eBranchWriteMode::kCopyTree);
 
   CreateCentralityFile();
 
   auto* task = new CentralityFiller("getter_test_at_interface.root", "centr_getter_1d");
+  task->SetInputEventHeader("SimEventHeader");
   task->SetInput("RecTracks", "ones");
   task->SetOutput("AnaEventHeader", "centrality_tracks");
 
