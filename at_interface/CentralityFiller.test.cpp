@@ -42,6 +42,7 @@ TEST(CentralityFiller, Basics) {
   CreateCentralityFile();
 
   auto* task = new CentralityFiller("getter_test_at_interface.root", "centr_getter_1d");
+  task->SetInputEventHeader("SimEventHeader");
   task->SetInput("RecTracks", "ones");
   task->SetOutput("AnaEventHeader", "centrality_tracks");
 
