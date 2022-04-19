@@ -30,34 +30,27 @@ if(Centrality_BUILD_TESTS)
     gtest_discover_tests(CentralityFiller_UnitTests TEST_PREFIX CentralityFiller_)
 endif()
 
-#install(TARGETS Centrality EXPORT CentralityTargets
-#        LIBRARY DESTINATION lib
-#        ARCHIVE DESTINATION lib
-#        RUNTIME DESTINATION bin
-#        INCLUDES DESTINATION include
-#        )
-#
-#install(
-#        FILES
-#        ${HEADERS}
-#        DESTINATION
-#        include/Centrality
-#        COMPONENT
-#        Devel
-#)
-#
-#install(
-#        FILES
-#        "${CMAKE_CURRENT_BINARY_DIR}/${PCM_FILE_NAME}_rdict.pcm"
-#        DESTINATION
-#        lib
-#        OPTIONAL
-#)
-#
-#install(
-#        FILES
-#        "${CMAKE_CURRENT_BINARY_DIR}/${PCM_FILE_NAME}.rootmap"
-#        DESTINATION
-#        lib
-#        OPTIONAL
-#)
+install(TARGETS ATCentrality EXPORT CentralityTargets
+       LIBRARY DESTINATION lib
+       ARCHIVE DESTINATION lib
+       RUNTIME DESTINATION bin
+       INCLUDES DESTINATION include
+       )
+
+install(
+       FILES
+       ${HEADERS}
+       DESTINATION
+       include/Centrality
+       COMPONENT
+       Devel
+)
+
+install(
+       FILES
+       "${CMAKE_CURRENT_BINARY_DIR}/${PCM_FILE_NAME}_rdict.pcm"
+       "${CMAKE_CURRENT_BINARY_DIR}/${PCM_FILE_NAME}.rootmap"
+       DESTINATION
+       lib
+       OPTIONAL
+)
