@@ -65,14 +65,20 @@ $(function() {
   <div class="headertitle"><div class="title">Centrality Framework </div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p ><a class="anchor" id="md_README"></a> </p><h1>Installation</h1>
-<pre class="fragment">cd centrality
-mkdir build
-cd build
-source /path-to-root/thisroot.sh
-cmake ../
-make
-</pre><h1>Examples and short description</h1>
+<div class="textblock"><p ><a class="anchor" id="md_README"></a> </p><h1>Requirements</h1>
+<h2>Root</h2>
+<p ><a href="https://root.cern/install/">https://root.cern/install/</a></p>
+<p >Version 6.20 or newer is recommended. Root with c++17 standard is strongly recommended.</p>
+<h2>AnalysisTree</h2>
+<p >Optional. Needed for building AnalysisTree interface.</p>
+<p ><a href="https://github.com/HeavyIonAnalysis/AnalysisTree">https://github.com/HeavyIonAnalysis/AnalysisTree</a></p>
+<p >Tag v2.2.7 or newer is required. Both pre-installed AnalysisTree and automatically installed together with Centrality framework can be used (see chapter Installation)</p>
+<p >AnalysisTree with c++17 standard is strongly recommended.</p>
+<h1>Installation</h1>
+<p >To use pre-installed AnalysisTree set the environment variable: export AnalysisTree_DIR=/path-to-analysistree/install/lib/cmake/AnalysisTree To build AnalysisTree automatically together with Centrality use following cmake keys: -DCentrality_BUNDLED_AT=ON -DCentrality_BUNDLED_AT_VERSION=v2.2.7</p>
+<p >Building with c++17 standard is strongly recommended. Use following key: -DCMAKE_CXX_STANDARD=17</p>
+<p >cd centrality mkdir build cd build source /path-to-root/thisroot.sh cmake -DCMAKE_INSTALL_PREFIX=/path-to-centrality/install/ ../ make install</p>
+<h1>Examples and short description</h1>
 <h2>General</h2>
 <p ><b>main</b> has 3 arguments:</p><ol type="1">
 <li>input file name</li>
