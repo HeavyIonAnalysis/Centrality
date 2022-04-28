@@ -29,8 +29,7 @@ TEST(Getter, Basics) {
 
   EXPECT_EQ(getter.GetCentrality(0.5), 12.5);
   EXPECT_EQ(getter.GetCentrality(1.5), 37.5);
-
 }
 
-}
+}// namespace
 #endif

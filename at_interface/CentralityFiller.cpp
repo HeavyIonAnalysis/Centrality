@@ -29,7 +29,7 @@ void CentralityFiller::Init() {
 
   is_event_header_ = input_.GetBranchType() == DetType::kEventHeader;
 
-  if(is_event_header_)
+  if (is_event_header_)
     in_field_ = input_.GetField(input_field_name_);
   in_branches_.emplace(input_name_);
 
@@ -43,9 +43,9 @@ void CentralityFiller::Init() {
 
   input_.Freeze();
   input_event_header_.Freeze();
-  
-  if(track_cuts_)
-    track_cuts_ -> Init(*(man->GetConfig()));
+
+  if (track_cuts_)
+    track_cuts_->Init(*(man->GetConfig()));
 
   man->AddBranch(&output_);
 }
@@ -71,12 +71,12 @@ void CentralityFiller::FillFromChannels() {
   output_[0].CopyContent(input_event_header_[0]);
   const auto n = input_.size();
   int m{0};
-  if(!track_cuts_)
+  if (!track_cuts_)
     m = n;
-  else{
-    for(size_t i = 0; i < n; ++i) {
+  else {
+    for (size_t i = 0; i < n; ++i) {
       const auto& track = input_[i];
-      if(track_cuts_->Apply(track))
+      if (track_cuts_->Apply(track))
         m++;
     }
   }
