@@ -17,7 +17,7 @@ namespace {
 using namespace AnalysisTree;
 using namespace Centrality;
 
-void CreateCentralityFile(){
+void CreateCentralityFile() {
   BordersFinder bf;
 
   bf.SetRanges(4, 0, 100);
@@ -26,7 +26,6 @@ void CreateCentralityFile(){
 
   bf.SaveBorders("getter_test_at_interface.root", "centr_getter_1d");
 }
-
 
 TEST(CentralityFiller, Basics) {
 
@@ -51,7 +50,6 @@ TEST(CentralityFiller, Basics) {
   man->Init({filelist}, {"tTree"});
   man->Run(-1);
   man->Finish();
-
 }
 
 }// namespace

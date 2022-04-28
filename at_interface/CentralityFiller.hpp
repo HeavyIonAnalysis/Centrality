@@ -25,7 +25,7 @@ class CentralityFiller : public AnalysisTree::Task {
   void Finish() override {
     delete getter_;
   }
-  
+
   void SetInputEventHeader(std::string branch) { input_event_header_name_ = branch; }
 
   void SetInput(std::string branch, std::string field = "") {
@@ -37,7 +37,7 @@ class CentralityFiller : public AnalysisTree::Task {
     output_name_ = std::move(branch);
     output_field_name_ = std::move(field);
   }
-  
+
   void SetTrackCuts(AnalysisTree::Cuts* track_cuts) { track_cuts_ = track_cuts; }
 
   ~CentralityFiller() override = default;

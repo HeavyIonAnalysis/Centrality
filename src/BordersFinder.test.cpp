@@ -13,12 +13,11 @@ namespace {
 
 using namespace Centrality;
 
-TH1F MakeHistoGaus(){
+TH1F MakeHistoGaus() {
   TH1F h1("h1", "histo from a gaussian", 100, -3, 3);
   h1.FillRandom("gaus", 100000);
   return h1;
 }
-
 
 TEST(BordersFinder, Basics) {
 
@@ -47,8 +46,8 @@ TEST(BordersFinder, Basics) {
   EXPECT_NEAR(borders.at(3), 0.6685, 0.05);
   EXPECT_FLOAT_EQ(borders.at(4), 3);
 
-//  bf.SaveBorders(outfilename, "centr_getter_1d");
+  //  bf.SaveBorders(outfilename, "centr_getter_1d");
 }
 
-}
+}// namespace
 #endif
