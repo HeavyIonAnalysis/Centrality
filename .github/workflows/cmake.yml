@@ -23,7 +23,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: Configure CMake
-      run: cmake -B ${{github.workspace}}/build -DCentrality_BUNDLED_AT=ON -DAnalysisTreeQA_BUNDLED_AT_VERSION=v2.2.7 -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_CXX_STANDARD=17
+      run: cmake -B ${{github.workspace}}/build -DCentrality_BUNDLED_AT=ON -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_CXX_STANDARD=17
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
     - name: Test
@@ -37,7 +37,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Configure CMake
-        run: cmake -B ${{github.workspace}}/build -DCentrality_BUNDLED_AT=ON -DAnalysisTreeQA_BUNDLED_AT_VERSION=v2.2.7 -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_CXX_STANDARD=17
+        run: cmake -B ${{github.workspace}}/build -DCentrality_BUNDLED_AT=ON -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_CXX_STANDARD=17
       - name: Build
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
       - name: Test
