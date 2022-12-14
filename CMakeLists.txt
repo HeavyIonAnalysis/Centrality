@@ -63,6 +63,8 @@ install(
         OPTIONAL
 )
 
+configure_file(cmake/CentralityConfig.sh.in ${CMAKE_BINARY_DIR}/CentralityConfig.sh)
+
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
         "${CMAKE_CURRENT_BINARY_DIR}/Centrality/CentralityConfigVersion.cmake"
@@ -81,7 +83,7 @@ set(Centrality_INCLUDE_DIR "include")
 set(Centrality_LIBRARY_DIR "lib")
 
 configure_package_config_file(
-        CentralityConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/Centrality/CentralityConfig.cmake
+        cmake/CentralityConfig.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/Centrality/CentralityConfig.cmake
         INSTALL_DESTINATION ${ConfigPackageLocation}
         PATH_VARS Centrality_INCLUDE_DIR Centrality_LIBRARY_DIR
 )
@@ -102,3 +104,10 @@ install(FILES
         Devel
         )
 
+install(FILES
+        ${CMAKE_BINARY_DIR}/CentralityConfig.sh
+        DESTINATION
+        bin
+        COMPONENT
+        Devel
+        )
