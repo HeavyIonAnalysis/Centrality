@@ -37,7 +37,8 @@ int main(int argc, char** argv) {
     Centrality::BordersFinder bf;
     bf.SetHisto(*histo);
     bf.SetRanges(20, 0, 100);// number of bins, min, max value
-    //   bf.SetRanges( {0,10,30,60,100} );  // centrality bins borders with array
+//     bf.SetRanges( {0, 2, 4, 6, 8, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100} );  // centrality bins borders with array
+    // not to call SetRanges is also OK - then the ranging will be determined automatically according to input histo
     bf.IsSpectator(is_spectator);// true if impact parameter b correlated with estimator (spectators eneggy),
     // false - anticorrelated (multiplicity of produced particles)
 
@@ -51,7 +52,7 @@ int main(int argc, char** argv) {
 
     bf.SetHisto(*h1d);
     bf.SetRanges(20, 0, 100);// number of bins, min, max value
-    //   bf.SetRanges( {0,10,30,60,100} );  // centrality bins borders with array
+//     bf.SetRanges( {0,10,30,60,100} );  // centrality bins borders with array
     bf.IsSpectator(is_spectator);// true if impact parameter b correlated with estimator (spectators energy),
     // false - anticorrelated (multiplicity of produced particles)
 

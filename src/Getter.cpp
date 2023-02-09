@@ -16,9 +16,12 @@ ClassImp(Centrality::Getter)
       return -1;
     }
 
-    //     std::cout << value << " " << ranges_.at(ibin-1) << "  " << ranges_.at(ibin) << std::endl;
+    auto lo = borders_.GetBinLowEdge(ibin);
+    auto hi = borders_.GetBinUpEdge(ibin);
+    auto left_weight = (hi-value) / (hi-lo);
+    auto right_weight = (value-lo) / (hi-lo);
 
-    const double centrality = 0.5 * (ranges_.at(ibin - 1) + ranges_.at(ibin));
+    const double centrality = left_weight * ranges_.at(ibin - 1) + right_weight * ranges_.at(ibin);
 
     return centrality;
   }
