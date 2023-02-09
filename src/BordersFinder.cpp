@@ -13,7 +13,7 @@ void BordersFinder::FindBorders() {
   using namespace std;
 
   bool is_ranges_predefined;
-  if(ranges_.size() > 1) {
+  if (ranges_.size() > 1) {
     is_ranges_predefined = true;
   } else if (ranges_.size() == 0) {
     is_ranges_predefined = false;
@@ -32,15 +32,15 @@ void BordersFinder::FindBorders() {
   int n = axis->GetNbins();
 
   double* histIntegral = histo_.GetIntegral();
-  double* x = new double[n+1];
+  double* x = new double[n + 1];
   for (int i = 0; i <= n; ++i) {
     x[i] = axis->GetBinUpEdge(i);
   }
 
-  TGraph intVsXGraph(n+1, x, histIntegral);
+  TGraph intVsXGraph(n + 1, x, histIntegral);
   intVsXGraph.SetBit(TGraph::kIsSortedX);
 
-  TGraph xVsIntGraph(n+1, histIntegral, x);
+  TGraph xVsIntGraph(n + 1, histIntegral, x);
   xVsIntGraph.SetBit(TGraph::kIsSortedX);
 
   double intLo = intVsXGraph.Eval(xLo);
@@ -50,19 +50,20 @@ void BordersFinder::FindBorders() {
   auto cX = [=](double x) { return 100. / norm * (intVsXGraph.Eval(x) - intVsXGraph.Eval(xLo)); };
   auto xC = [=](double c) { return xVsIntGraph.Eval((c / 100.) * norm + intLo); };
 
-  if(is_ranges_predefined) {
+  if (is_ranges_predefined) {
     for (auto cc : ranges_) {
       double xx = isSpectator_ ? xC(cc) : xC(100 - cc);
       cout << cc << "%"
-          << ", border:" << xx << endl;
+           << ", border:" << xx << endl;
       borders_.push_back(xx);
     }
   } else {
-    for(int i=0; i<=n; i++) {
+    for (int i = 0; i <= n; i++) {
       borders_.push_back(x[i]);
-      auto cc = isSpectator_ ? histIntegral[i]*100 : (1 - histIntegral[i])*100;
+      auto cc = isSpectator_ ? histIntegral[i] * 100 : (1 - histIntegral[i]) * 100;
       ranges_.push_back(cc);
-      std::cout << cc << "%" << ", border:" << x[i] << "\n";
+      std::cout << cc << "%"
+                << ", border:" << x[i] << "\n";
     }
   }
 }
