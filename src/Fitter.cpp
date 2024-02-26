@@ -222,11 +222,11 @@ double Glauber::Fitter::FitGlauber(double* par, double f0, Int_t k0, Int_t k1, I
   double f, mu, k, chi2, sigma;
 
   tree->Branch("histo", "TH1F", &h1);
-  tree->Branch("f", &f, "f/F");
-  tree->Branch("mu", &mu, "mu/F");
-  tree->Branch("k", &k, "k/F");
-  tree->Branch("chi2", &chi2, "chi2/F");
-  tree->Branch("sigma", &sigma, "sigma/F");
+  tree->Branch("f", &f, "f/D");
+  tree->Branch("mu", &mu, "mu/D");
+  tree->Branch("k", &k, "k/D");
+  tree->Branch("chi2", &chi2, "chi2/D");
+  tree->Branch("sigma", &sigma, "sigma/D");
 
   f = f0;
   for (int j = k0; j <= k1; j++) {
@@ -344,7 +344,7 @@ std::unique_ptr<TH1F> Glauber::Fitter::GetModelHisto(const double range[2],
   const double mu = par[1];
   const double k = par[2];
 
-  double modelpar{-999.};
+  float modelpar{-999.};
   fSimTree->SetBranchAddress(name, &modelpar);
 
   SetNBDhist(mu, k);

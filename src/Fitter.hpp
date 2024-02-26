@@ -85,8 +85,8 @@ class Fitter {
   /* MC data */
   std::unique_ptr<TTree> fSimTree{nullptr};
 
-  double fNpart{-1.};
-  double fNcoll{-1.};
+  float fNpart{-1.};
+  float fNcoll{-1.};
 
   double fMaxValue{-1.};
 
