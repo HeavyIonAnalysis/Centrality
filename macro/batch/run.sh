@@ -1,8 +1,17 @@
 #!/bin/bash
-
-LOGDIR=/lustre/nyx/cbm/users/$USER/log
+LOGDIR=/lustre/cbm/users/$USER/glauber/log
 mkdir -p $LOGDIR
 mkdir -p $LOGDIR/out
 mkdir -p $LOGDIR/error
 
-sbatch --partition main -D "/lustre/nyx/cbm/users/$USER/log" --export=ALL run_glauberfit.sh $1
+MAX_JOB_NUMBER=3131
+
+JOBS=1-3131
+
+sbatch --job-name=glauber \
+       -t 00:10:00 \
+       --partition main \
+       --output=$LOGDIR/out/%j.out.log \
+       --error=$LOGDIR/error/%j.err.log \
+       -a $JOBS \
+       -- $PWD/batch_run.sh

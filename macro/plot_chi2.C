@@ -7,14 +7,13 @@ void plot_chi2(TString InFileName) {
   TString histoname = "reco_info/hMreco";
 
   std::unique_ptr<TFile> fqa{TFile::Open(qa_filename.Data())};
-  TH1F* hData1 = (TH1F*) fqa->Get(histoname);
+//   TH1F* hData1 = (TH1F*) fqa->Get(histoname);
+  TH1F* hData1 = nullptr;
 
   TFile* file = new TFile(InFileName);
   TTree* tree = (TTree*) file->Get("test_tree");
 
-  Float_t f, mu, k;
-  Float_t chi2;
-  Float_t sigma;
+  double f, mu, k, chi2, sigma;
   TH1F* h1 = new TH1F("h1", "", 500, 0, 500);
 
   tree->SetBranchAddress("f", &f);

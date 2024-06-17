@@ -21,7 +21,6 @@ void BordersFinder::FindBorders() {
     throw std::runtime_error("BordersFinder::ranges_.size() == 1 is not a legal value");
   }
 
-  if (norm_ == -1) norm_ = histo_.Integral(0, histo_.GetNbinsX());
   if (!isSpectator_) std::reverse(std::begin(ranges_), std::end(ranges_));
 
   auto axis = histo_.GetXaxis();
@@ -47,7 +46,7 @@ void BordersFinder::FindBorders() {
   double intHi = intVsXGraph.Eval(xHi);
   double norm = intHi - intLo;
 
-  auto cX = [=](double x) { return 100. / norm * (intVsXGraph.Eval(x) - intVsXGraph.Eval(xLo)); };
+  auto cX = [=](double x) { return 100. / norm * (intVsXGraph.Eval(x) - intLo); };
   auto xC = [=](double c) { return xVsIntGraph.Eval((c / 100.) * norm + intLo); };
 
   if (is_ranges_predefined) {
@@ -60,7 +59,7 @@ void BordersFinder::FindBorders() {
   } else {
     for (int i = 0; i <= n; i++) {
       borders_.push_back(x[i]);
-      auto cc = isSpectator_ ? histIntegral[i] * 100 : (1 - histIntegral[i]) * 100;
+      auto cc = isSpectator_ ? cX(x[i]) : 100 - cX(x[i]);
       ranges_.push_back(cc);
       std::cout << cc << "%"
                 << ", border:" << x[i] << "\n";
@@ -80,9 +79,6 @@ void BordersFinder::SaveBorders(const std::string& filename, const std::string& 
   getter.IsSpectator(this->GetIsSpectator());
 
   getter.Write(getter_name.c_str());
-
-  //     f->mkdir( ("dir_" + getter_name).c_str());
-  //     f->cd( ("dir_" + getter_name).c_str() );
 
   BordersFinderHelper h;
   h.SetName(getter_name);

@@ -11,14 +11,14 @@
 using namespace Glauber;
 
 int main(int argc, char* argv[]) {
-  if (argc < 2) {
+  if (argc < 3) {
     std::cout << "Wrong number of parameters! Executable usage:" << std::endl;
     std::cout << "   ./glauber f0 k0" << std::endl;
     return -1;
   }
   const double_t f0 = atof(argv[1]);
   const Int_t k0 = atoi(argv[2]);
-  const Int_t k1 = atoi(argv[2]);
+  const Int_t k1 = argc == 4 ? atoi(argv[3]) : k0;
 
   // *****************************************
   // Modify this part according to your needs
@@ -29,20 +29,27 @@ int main(int argc, char* argv[]) {
   ///  |   PSD     |     f - Npart         |
   ///  |   Npart   |     Npart^f           |
   ///  |   Ncoll   |     Ncoll^f           |
-  const TString mode = "Default";
+  const TString mode = "Default"; // leave Default if you need to fit a multiplicity distribution
 
-  const TString glauber_filename = "../input/glauber_auau_sigma_30_100k.root";// input files
-  const TString glauber_treename = "nt_Au_Au";
-  const TString in_filename = "../input/test_input.root";
-  const TString histoname = "hMreco";
+  const TString glauber_filename = "../../input/glauber_auau_sigma_30_100k.root"; // input MC Glauber file
+  const TString glauber_treename = "nt_Au_Au"; // name of the TNtuple in the MC Glauber file
+  const TString in_filename = "../../input/multiplicity_qa.urqmd.12agev.root"; // name of the input file with multiplicity histogram to be fitted
+  const TString histoname = "hMult"; // name of the multiplicity histogram to be fitted
 
-  const Int_t min_bin = 50;   // not fitting low multiplicity region due to trigger bias, etc
-  const Int_t max_bin = 10000;// very large number to fit the whole histo
-  const Int_t nevents = 100000;
+  // fitting ranges:
+  const Int_t min_bin = 50;    // not fitting low multiplicity region due to trigger bias, etc
+  const Int_t max_bin = 10000; // very large number to fit the whole histo
+
+  // number of events from input MC Glauber file used for building the fitting histogram
+  // set -1 to take ALL available events
+  const Int_t nevents = -1;
 
   const TString outdir = ".";
   // *****************************************
-  // *****************************************
+
+  if(mode == "Default" && !(f0>=0 && f0<=1)) {
+    throw std::runtime_error("glauber::main(): In Default mode the f0 must be in [0; 1] range");
+  }
 
   std::unique_ptr<TFile> glauber_file{TFile::Open(glauber_filename, "read")};
   std::unique_ptr<TTree> glauber_tree{(TTree*) glauber_file->Get(glauber_treename)};
@@ -75,9 +82,8 @@ int main(int argc, char* argv[]) {
 
   Glauber::DrawHistos(fitter, true, true, true, true);
 
-  const double range[2] = {300, 350.};
-  std::unique_ptr<TH1F> hB(fitter.GetModelHisto(range, "B", par, 100000));
-  hB->SaveAs("b_test.root");
+  std::unique_ptr<TH2F> hB(fitter.GetModelHisto("B", par, 100000));
+  hB->SaveAs("mult_b.root");
 
   std::cout << "END!" << std::endl;
 
