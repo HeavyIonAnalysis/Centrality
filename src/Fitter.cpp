@@ -23,10 +23,10 @@ ClassImp(Glauber::Fitter)
 }
 
 void Glauber::Fitter::Init(int nEntries) {
-  if(nEntries < 0) {
+  if (nEntries < 0) {
     nEntries = fSimTree->GetEntries();
   }
-  if(nEntries > fSimTree->GetEntries()) {
+  if (nEntries > fSimTree->GetEntries()) {
     nEntries = fSimTree->GetEntries();
     std::cout << "Warning - Fitter::Init() nEntries > fSimTree->GetEntries()" << std::endl;
   }
@@ -206,7 +206,7 @@ void Glauber::Fitter::FindMuGoldenSection(double* mu,
  * @param nEvents
  */
 double Glauber::Fitter::FitGlauber(double* par, double f0, Int_t k0, Int_t k1, Int_t nEvents) {
-  if(nEvents < 0 || nEvents > fSimTree->GetEntries()) {
+  if (nEvents < 0 || nEvents > fSimTree->GetEntries()) {
     nEvents = fSimTree->GetEntries();
   }
 

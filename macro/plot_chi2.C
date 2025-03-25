@@ -8,16 +8,16 @@ void plot_chi2(const std::string& filename) {
   treeIn->SetBranchAddress("k", &k);
   treeIn->SetBranchAddress("chi2", &chi2);
 
-  double opt_chi2 = 1e9; // a very large number
-	double opt_f, opt_k, opt_mu;
+  double opt_chi2 = 1e9;// a very large number
+  double opt_f, opt_k, opt_mu;
 
   TGraph2D* graph = new TGraph2D();
   graph->GetXaxis()->SetTitle("f");
   graph->GetYaxis()->SetTitle("k");
 
-  for(int i=0; i<treeIn->GetEntries(); i++) {
+  for (int i = 0; i < treeIn->GetEntries(); i++) {
     treeIn->GetEntry(i);
-    if(chi2<opt_chi2) {
+    if (chi2 < opt_chi2) {
       opt_chi2 = chi2;
       opt_f = f;
       opt_k = k;

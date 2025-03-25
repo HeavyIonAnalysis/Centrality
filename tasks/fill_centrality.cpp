@@ -24,7 +24,6 @@ void fill_centrality(const std::string& filelist, const std::string& centrality_
   // The name of an output EventHeader and name of field with centrality value
   task->SetOutput("AnaEventHeader", "centrality_tracks");
 
-
   // Uncomment one of two following blocks:
 
   // ***** get centrality from multiplicity stored in the event header *****

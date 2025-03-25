@@ -29,16 +29,16 @@ int main(int argc, char* argv[]) {
   ///  |   PSD     |     f - Npart         |
   ///  |   Npart   |     Npart^f           |
   ///  |   Ncoll   |     Ncoll^f           |
-  const TString mode = "Default"; // leave Default if you need to fit a multiplicity distribution
+  const TString mode = "Default";// leave Default if you need to fit a multiplicity distribution
 
-  const TString glauber_filename = "../../input/glauber_auau_sigma_30_100k.root"; // input MC Glauber file
-  const TString glauber_treename = "nt_Au_Au"; // name of the TNtuple in the MC Glauber file
-  const TString in_filename = "../../input/multiplicity_qa.urqmd.12agev.root"; // name of the input file with multiplicity histogram to be fitted
-  const TString histoname = "hMult"; // name of the multiplicity histogram to be fitted
+  const TString glauber_filename = "../../input/glauber_auau_sigma_30_100k.root";// input MC Glauber file
+  const TString glauber_treename = "nt_Au_Au";                                   // name of the TNtuple in the MC Glauber file
+  const TString in_filename = "../../input/multiplicity_qa.urqmd.12agev.root";   // name of the input file with multiplicity histogram to be fitted
+  const TString histoname = "hMult";                                             // name of the multiplicity histogram to be fitted
 
   // fitting ranges:
-  const Int_t min_bin = 50;    // not fitting low multiplicity region due to trigger bias, etc
-  const Int_t max_bin = 10000; // very large number to fit the whole histo
+  const Int_t min_bin = 50;   // not fitting low multiplicity region due to trigger bias, etc
+  const Int_t max_bin = 10000;// very large number to fit the whole histo
 
   // number of events from input MC Glauber file used for building the fitting histogram
   // set -1 to take ALL available events
@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
   const TString outdir = ".";
   // *****************************************
 
-  if(mode == "Default" && !(f0>=0 && f0<=1)) {
+  if (mode == "Default" && !(f0 >= 0 && f0 <= 1)) {
     throw std::runtime_error("glauber::main(): In Default mode the f0 must be in [0; 1] range");
   }
 

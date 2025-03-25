@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
   std::string outfilename = "centrality_getter.root";
 
   if (!is_2d) {
-  // 1D slicing (i.e. a single quantity is used as a centrality estimator)
+    // 1D slicing (i.e. a single quantity is used as a centrality estimator)
     std::unique_ptr<TH1F> histo{(TH1F*) (fIn->Get(histoname))};
     Centrality::BordersFinder bf;
     bf.SetHisto(*histo);
@@ -46,7 +46,7 @@ int main(int argc, char** argv) {
 
     // (optionally*) Define the ranges of centrality classes to be obtained
     // for ranges with equivalent widths use the next line, for different widths - the line after the next
-    bf.SetRanges(20, 0, 100); // number of bins, min, max value
+    bf.SetRanges(20, 0, 100);// number of bins, min, max value
     // bf.SetRanges( {0, 5, 10, 15, 20, 30, 40, 50, 60, 70, 100} );  // array
 
     // (*)It is also possible no to pre-define the centrality classes ranges -
@@ -56,9 +56,8 @@ int main(int argc, char** argv) {
     // inconvenient for visual perception.
     // To use this option do not call SetRanges() function.
 
-
-    bf.IsSpectator(is_spectator); // true if impact parameter b correlated with estimator (spectators energy),
-                                  // false - anticorrelated (multiplicity of produced particles)
+    bf.IsSpectator(is_spectator);// true if impact parameter b correlated with estimator (spectators energy),
+                                 // false - anticorrelated (multiplicity of produced particles)
     bf.FindBorders();
     bf.SaveBorders(outfilename, "centr_getter_1d");
   } else {
@@ -70,8 +69,8 @@ int main(int argc, char** argv) {
     std::unique_ptr<TH1F> h1d = bf.Convert();
 
     bf.SetHisto(*h1d);
-    bf.SetRanges(20, 0, 100);// number of bins, min, max value
-//     bf.SetRanges( {0,10,30,60,100} );  // centrality bins borders with array
+    bf.SetRanges(20, 0, 100);    // number of bins, min, max value
+                                 //     bf.SetRanges( {0,10,30,60,100} );  // centrality bins borders with array
     bf.IsSpectator(is_spectator);// true if impact parameter b correlated with estimator (spectators energy),
                                  // false - anticorrelated (multiplicity of produced particles)
 
