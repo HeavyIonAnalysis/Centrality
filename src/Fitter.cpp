@@ -97,7 +97,7 @@ double Glauber::Fitter::NancestorsMax(double f) const {
  */
 void Glauber::Fitter::SetGlauberFitHisto(double f, double mu, double k, int n, Bool_t Norm2Data) {
   fGlauberFitHisto = TH1F("glaub", "", fNbins * 1.3, 0, 1.3 * fMaxValue);
-  fGlauberFitHisto.SetName(Form("glaub_%4.2f_%6.4f_%4.2f_%d", f, mu, k, n));
+  fGlauberFitHisto.SetName(Form("glaub_%4.2f_%d", f, int(k)));
 
   SetNBDhist(mu, k);
 
