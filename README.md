@@ -105,7 +105,7 @@ This procedure is repeated for each event from the MC Glauber file.
 
 The configuration of MC-Glauber fitting is done in the task/glauber.cpp file, which produces an exacutable glauber after compilation.
 Look into the comments in this file.
-To run the glauber fitting executable type\
+To run the glauber fitting executable type
 
     ./glauber f0 k0 k1,
 
@@ -116,29 +116,36 @@ This way is strongly recommended and is considered in a future explanations.
 
 During MC Glauber fit with *glauber* executable an optimal $\mu$ value is found while $f$ and $k$ are input parameters defined by user in the runtime.
 The output of the *glauber* executable contains 4 files.
-Let us digest them:\
+Let us digest them:<br>
 1) fit_0.35_4_4_50.root, where $f=0.35$, $k0=4$, $k1=4$ are set in the command line and described above, and $M=50$ is a lower edge of multiplicity range to be fitted (set in the executable source code).
 The file contains a ROOT-tree with values of $f,\ k,\ \mu,\ \chi^2$ and $\sigma^2$, where $\mu$ is an optimal (with the least $\chi^2$) for pre-defined $f$ and $k$;
 the $\sigma^2$ is the variance of the NBD for given $\mu$ and $k$.
-This file also contains a fitting histogram (generated with given $f$ and $k$ and an optimal $\mu$).\
-2) glauber_qa.root, where following histograms are stored:\
-- fNcollHisto with $N_{\text{coll}}$ distribution from the input MC Glauber file;\
-- fNpartHisto with $N_{\text{part}}$ distribution from the input MC Glauber file;\
-- hMult with multiplicity distribution to be fitted taken from the input file;\
-- glaub_0.35_0.5340_4.00_100000 with fitting histogram (the same as in the fit_0.35_4_4_50.root file);\
-- nbd_0.534004_4.000000 with NBD for optimized $\mu$ and given $k$.\
-There is also a TCanvas with following histograms (starting from the left upper corner and clock-wise):\
-- fNcollHisto and fNpartHisto;\
-- hMult and glaub_0.35_0.5340_4.00_100000;\
-- glaub_0.35_0.5340_4.00_100000;\
-- nbd_0.534004_4.000000.\
-3) glauber.pdf with the TCanvas from the previous file printed in PDF file.\
+This file also contains a fitting histogram (generated with given $f$ and $k$ and an optimal $\mu$).<br>
+2) glauber_qa.root, where following histograms are stored:<br>
+- fNcollHisto with $N_{\text{coll}}$ distribution from the input MC Glauber file;<br>
+- fNpartHisto with $N_{\text{part}}$ distribution from the input MC Glauber file;<br>
+- hMult with multiplicity distribution to be fitted taken from the input file;<br>
+- glaub_0.35_0.5340_4.00_100000 with fitting histogram (the same as in the fit_0.35_4_4_50.root file);<br>
+- nbd_0.534004_4.000000 with NBD for optimized $\mu$ and given $k$.<br>
+There is also a TCanvas with following histograms (starting from the left upper corner and clock-wise):<br>
+- fNcollHisto and fNpartHisto;<br>
+- hMult and glaub_0.35_0.5340_4.00_100000;<br>
+- glaub_0.35_0.5340_4.00_100000;<br>
+- nbd_0.534004_4.000000.<br>
+3) glauber.pdf with the TCanvas from the previous file printed in PDF file.<br>
 4) mult_b.root with a 2D histogram, showing a correlation between impact parameter taken from the input MC Glauber file and multiplicity evaluated with given $f$ and $k$ and an optimal $\mu$.
 
 A single run of the *glauber* executable allows for determination of an optimal $\mu$ for given $f$ and $k$.
 In order to determine optimal $f$ and $k$ as well, one needs to run the *glauber* executable for various values of them.
 The most convenient way to do it is the usage of the cluster for parallel calculations.
 At GSI one can use <a href="https://hpc.gsi.de/virgo/" target="_blank">Virgo</a> cluster which is based on <a href="https://slurm.schedmd.com/documentation.html" target="_blank">Slurm</a> technology.
+An example of batch scripts together with comments is here: <a href="https://github.com/HeavyIonAnalysis/Centrality/blob/master/macro/batch/batch_run.sh" target="_blank">batch_run.sh</a> and <a href="https://github.com/HeavyIonAnalysis/Centrality/blob/master/macro/batch/run.sh" target="_blank">run.sh</a>.
+Set executive rights for both of them (chmod +x filename) and run:\
+
+    ./run.sh
+
+After running the jobs merge output fit_<...>.root files into a single one with *hadd* ROOT command.
+
 
 ## Doxygen documentation
     doxygen Doxyfile

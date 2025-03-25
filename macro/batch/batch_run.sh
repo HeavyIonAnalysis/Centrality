@@ -5,15 +5,13 @@ source $GLAUBER_FIT_SOFT/CentralityConfig.sh
 
 INDEX=${SLURM_ARRAY_TASK_ID}
 
-INDEX=$(($INDEX-1))
-
-NF=101 # How many equidistant values of f in [0; 1] range should be considered
-# 101 means that they f will be 0, 0.01, 0.02, ..., 0.99, 1
+NF=51 # How many equidistant values of f in [0; 1] range should be considered
+# 51 means that they f will be 0, 0.02, 0.04, ..., 0.98, 1
 
 # Prepare values of f and k from the job id value:
-F=$(($INDEX%$NF))
-K=$(($INDEX/$NF))
-f=$(echo "$F * 0.01" | bc -l)
+F=$(($(($INDEX-1))%$NF))
+K=$(($(($(($INDEX-1))/$NF))+1))
+f=$(echo "$F / $(($NF-1))" | bc -l)
 
 # Set names of directories and executable
 PROJECT_DIR=/lustre/cbm/users/$USER/glauber
