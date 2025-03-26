@@ -23,10 +23,12 @@ ClassImp(Glauber::Fitter)
 }
 
 void Glauber::Fitter::Init(int nEntries) {
-  if (nEntries < 0 || nEntries > fSimTree->GetEntries()) {
-    std::cout << "Init: *** ERROR - number of entries < 0 or less that number of entries in input tree" << std::endl;
-    std::cout << "Init: *** number of entries in input tree = " << fSimTree->GetEntries() << std::endl;
-    exit(EXIT_FAILURE);
+  if (nEntries < 0) {
+    nEntries = fSimTree->GetEntries();
+  }
+  if (nEntries > fSimTree->GetEntries()) {
+    nEntries = fSimTree->GetEntries();
+    std::cout << "Warning - Fitter::Init() nEntries > fSimTree->GetEntries()" << std::endl;
   }
 
   const int NpartMax = int(fSimTree->GetMaximum("Npart"));
@@ -95,14 +97,14 @@ double Glauber::Fitter::NancestorsMax(double f) const {
  */
 void Glauber::Fitter::SetGlauberFitHisto(double f, double mu, double k, int n, Bool_t Norm2Data) {
   fGlauberFitHisto = TH1F("glaub", "", fNbins * 1.3, 0, 1.3 * fMaxValue);
-  fGlauberFitHisto.SetName(Form("glaub_%4.2f_%6.4f_%4.2f_%d", f, mu, k, n));
+  fGlauberFitHisto.SetName(Form("glaub_%4.2f_%d", f, int(k)));
 
   SetNBDhist(mu, k);
 
   std::unique_ptr<TH1F> htemp{(TH1F*) fNbdHisto.Clone("htemp")};// WTF??? Not working without pointer
   for (int i = 0; i < n; i++) {
     fSimTree->GetEntry(i);
-    const int Na = int(Nancestors(f));
+    const int Na = int(std::round(Nancestors(f)));
 
     double nHits{0.};
     for (int j = 0; j < Na; j++) {
@@ -204,6 +206,10 @@ void Glauber::Fitter::FindMuGoldenSection(double* mu,
  * @param nEvents
  */
 double Glauber::Fitter::FitGlauber(double* par, double f0, Int_t k0, Int_t k1, Int_t nEvents) {
+  if (nEvents < 0 || nEvents > fSimTree->GetEntries()) {
+    nEvents = fSimTree->GetEntries();
+  }
+
   double f_fit{-1};
   double mu_fit{-1};
   double k_fit{-1};
@@ -211,22 +217,18 @@ double Glauber::Fitter::FitGlauber(double* par, double f0, Int_t k0, Int_t k1, I
 
   const TString filename = Form("%s/fit_%4.2f_%d_%d_%d.root", fOutDirName.Data(), f0, k0, k1, fFitMinBin);
 
-  //     std::unique_ptr<TFile> file {TFile::Open(filename, "recreate")};
-  //     std::unique_ptr<TTree> tree {new TTree("test_tree", "tree" )};
-
   TFile* file{TFile::Open(filename, "recreate")};
   TTree* tree{new TTree("test_tree", "tree")};
 
   TH1F h1("h1", "", fNbins, 0, fMaxValue);
 
-  double f, mu, k, chi2, sigma;
+  double f, mu, k, chi2, sigma2;
 
-  tree->Branch("histo", "TH1F", &h1);
   tree->Branch("f", &f, "f/D");
   tree->Branch("mu", &mu, "mu/D");
   tree->Branch("k", &k, "k/D");
   tree->Branch("chi2", &chi2, "chi2/D");
-  tree->Branch("sigma", &sigma, "sigma/D");
+  tree->Branch("sigma2", &sigma2, "sigma2/D");
 
   f = f0;
   for (int j = k0; j <= k1; j++) {
@@ -236,7 +238,7 @@ double Glauber::Fitter::FitGlauber(double* par, double f0, Int_t k0, Int_t k1, I
     const double mu_max = 1.0 * mu;
 
     FindMuGoldenSection(&mu, &chi2, mu_min, mu_max, f, k, nEvents, 10);
-    sigma = (mu / k + 1) * mu;
+    sigma2 = (mu / k + 1) * mu;
     h1 = fGlauberFitHisto;
 
     tree->Fill();
@@ -249,8 +251,9 @@ double Glauber::Fitter::FitGlauber(double* par, double f0, Int_t k0, Int_t k1, I
       fBestFitHisto = fGlauberFitHisto;
     }
   }
+  file->cd();
   tree->Write();
-  file->Write();
+  h1.Write();
   file->Close();
 
   par[0] = f_fit;
@@ -336,8 +339,7 @@ double Glauber::Fitter::NBD(double n, double mu, double k) const {
  * @param Nevents
  * @return pointer to the histogram 
  */
-std::unique_ptr<TH1F> Glauber::Fitter::GetModelHisto(const double range[2],
-                                                     const TString& name,
+std::unique_ptr<TH2F> Glauber::Fitter::GetModelHisto(const TString& name,
                                                      const double par[3],
                                                      int nEvents) {
   const double f = par[0];
@@ -348,21 +350,22 @@ std::unique_ptr<TH1F> Glauber::Fitter::GetModelHisto(const double range[2],
   fSimTree->SetBranchAddress(name, &modelpar);
 
   SetNBDhist(mu, k);
-  std::unique_ptr<TH1F> hModel(new TH1F("hModel", "name", 100, fSimTree->GetMinimum(name), fSimTree->GetMaximum(name)));
+  std::unique_ptr<TH2F> hModel(new TH2F("hModel", "", 100, fSimTree->GetMinimum(name), fSimTree->GetMaximum(name), fBestFitHisto.GetNbinsX(), fBestFitHisto.GetXaxis()->GetXmin(), fBestFitHisto.GetXaxis()->GetXmax()));
 
 #pragma omp parallel for
   for (int i = 0; i < nEvents; i++) {
     fSimTree->GetEntry(i);
-    const int Na = int(Nancestors(f));
+    const int Na = int(std::round(Nancestors(f)));
     double nHits{0.};
     for (int j = 0; j < Na; ++j) {
       nHits += (int) fNbdHisto.GetRandom();
     }
 
-    if (nHits > range[0] && nHits < range[1]) {
-      hModel->Fill(modelpar);
-    }
+    hModel->Fill(modelpar, nHits);
   }
+
+  hModel->GetXaxis()->SetTitle(name);
+  hModel->GetYaxis()->SetTitle("Multiplicity");
 
   return hModel;
 }

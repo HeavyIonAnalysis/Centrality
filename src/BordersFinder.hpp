@@ -23,9 +23,6 @@ class BordersFinder {
   void SetHisto(const TH1F& h) { histo_ = h; }
   TH1F& GetHisto() { return histo_; }// not const to use Draw etc
 
-  void SetNormalization(long int norm) { norm_ = norm; }
-  Double_t GetNormalization() const { return norm_; }
-
   void SetRanges(const std::vector<double>& ranges) { ranges_ = ranges; }
   void SetRanges(int n, double min, double max) {
     ranges_.clear();
@@ -52,7 +49,6 @@ class BordersFinder {
 
  private:
   TH1F histo_;
-  Double_t norm_{-1};
 
   std::vector<double> ranges_{};
   std::vector<double> borders_{};

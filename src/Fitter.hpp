@@ -9,6 +9,7 @@
 #define GlauberFitter_H 1
 
 #include "TH1F.h"
+#include "TH2F.h"
 #include "TNamed.h"
 #include "TString.h"
 #include "TTree.h"
@@ -50,7 +51,7 @@ class Fitter {
   double Nancestors(double f) const;
   double NancestorsMax(double f) const;
 
-  std::unique_ptr<TH1F> GetModelHisto(const double range[2], const TString& name, const double par[3], Int_t nEvents);
+  std::unique_ptr<TH2F> GetModelHisto(const TString& name, const double par[3], Int_t nEvents);
 
   //
   //         Setters
