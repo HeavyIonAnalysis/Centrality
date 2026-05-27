@@ -63,7 +63,8 @@ void BordersFinder::FindBorders() {
   if (is_ranges_predefined) {
     for (auto cc : ranges_) {
       double xx = isSpectator_ ? xC(cc - cOffset) : xC(cStart - cc);
-      std::cout << cc << "%" << ", border: " << xx << std::endl;
+      std::cout << cc << "%"
+                << ", border: " << xx << std::endl;
       borders_.push_back(xx);
     }
   } else {
@@ -71,7 +72,8 @@ void BordersFinder::FindBorders() {
       borders_.push_back(x[i]);
       auto cc = isSpectator_ ? cX(x[i]) : cStart - cX(x[i]);
       ranges_.push_back(cc);
-      std::cout << cc << "%" << ", border: " << x[i] << std::endl;
+      std::cout << cc << "%"
+                << ", border: " << x[i] << std::endl;
     }
   }
 }
