@@ -42,11 +42,12 @@ int main(int argc, char** argv) {
     // Optionally set the limits of the 1D histogram, where to define centrality
     // e.g. if you need to remove unphysics tails of the esimator-quantity distribution
     // uncomment the next line
-    // bf.SetLimits(15, 80);
+    bf.SetLimits(0,500);
 
     // (optionally*) Define the ranges of centrality classes to be obtained
     // for ranges with equivalent widths use the next line, for different widths - the line after the next
     bf.SetRanges(20, 0, 100);// number of bins, min, max value
+			     // optional parameter: only centrality sub-range (false) or default full range (true) 
     // bf.SetRanges( {0, 5, 10, 15, 20, 30, 40, 50, 60, 70, 100} );  // array
 
     // (*)It is also possible no to pre-define the centrality classes ranges -

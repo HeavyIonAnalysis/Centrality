@@ -74,6 +74,25 @@ TH1D and TCanvas are also written into pdf-files produced during the executable 
 (\*) When creating a histogram with discrete quantity, such as *M*, choose the bin edges in such a way that integer values are in the center of bin, but not at its edge (see "hMult" histogram in input/multiplicity_qa.urqmd.12agev.root).\
 (\*\*) Also there is a possibility to run a 2D slicing (i.e. to determine centrality classes simultaneously with two estimators - *M* and *E*<sub>PSD</sub>), however this procedure is not yet well-established and therefore deprecated.
 
+#### Slicing with a restricted impact parameter range
+
+If the simulated dataset does not cover the full minimum-bias range but only a restricted interval of impact parameters — for example *b* ∈ [2, 4] fm, which corresponds to roughly 10–20% centrality — the `SetRanges` call must reflect this by passing the known centrality limits as the `min` and `max` arguments and setting the fourth argument `fullRange` to `false`.
+This tells `BordersFinder` that the input histogram covers only this sub-range, so the integral normalization is scaled to the width of that window instead of assuming a 0–100% span.
+
+In `tasks/main.cpp`, replace the standard call
+
+    bf.SetRanges(20, 0, 100);
+
+with
+
+    bf.SetRanges(4, 10, 20, false);  // 4 equal bins within the known 10–20% centrality window
+
+and restrict the histogram to the corresponding estimator values with `SetLimits` if needed:
+
+    bf.SetLimits(xLo, xHi);  // histogram estimator values corresponding to b in [2, 4] fm
+
+The resulting `Getter` object will return centrality values in the range 10–20% and can be used in the filling step in the usual way.
+
 ### Filling
 
 Once slicing is preformed and the centrality_getter.root file is produced, filling the root-file containing reconstructed events can be done - each event will be assigned with estimated centrality percentage.

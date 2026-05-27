@@ -9,6 +9,7 @@
 
 namespace Centrality {
 
+// ---------------------------------------------------------------------------------
 void BordersFinder::FindBorders() {
   using namespace std;
 
@@ -46,27 +47,38 @@ void BordersFinder::FindBorders() {
   double intHi = intVsXGraph.Eval(xHi);
   double norm = intHi - intLo;
 
-  auto cX = [=](double x) { return 100. / norm * (intVsXGraph.Eval(x) - intLo); };
-  auto xC = [=](double c) { return xVsIntGraph.Eval((c / 100.) * norm + intLo); };
+  // Check if full or only part of centrality range is used in input histogram
+  double cRangeInput = 100.;
+  double cStart = 100.;
+  double cOffset = 0.;
+  if (useFullRange_==false && is_ranges_predefined) {
+    cRangeInput = abs(ranges_.front() - ranges_.back());
+    cStart = isSpectator_ ? ranges_.back() : ranges_.front();
+    cOffset = isSpectator_ ? ranges_.front() : 0.;
+  }
+
+  auto cX = [=](double x) { return cRangeInput / norm * (intVsXGraph.Eval(x) - intLo); };
+  auto xC = [=](double c) { return xVsIntGraph.Eval((c / cRangeInput) * norm + intLo); };
 
   if (is_ranges_predefined) {
     for (auto cc : ranges_) {
-      double xx = isSpectator_ ? xC(cc) : xC(100 - cc);
-      cout << cc << "%"
-           << ", border:" << xx << endl;
+      double xx = isSpectator_ ? xC(cc - cOffset) : xC(cStart - cc);
+      std::cout << cc << "%" << ", border: " << xx << std::endl;
       borders_.push_back(xx);
     }
   } else {
     for (int i = 0; i <= n; i++) {
       borders_.push_back(x[i]);
-      auto cc = isSpectator_ ? cX(x[i]) : 100 - cX(x[i]);
+      auto cc = isSpectator_ ? cX(x[i]) : cStart - cX(x[i]);
       ranges_.push_back(cc);
-      std::cout << cc << "%"
-                << ", border:" << x[i] << "\n";
+      std::cout << cc << "%"  << ", border: " << x[i] << std::endl;
     }
   }
 }
+// ---------------------------------------------------------------------------------
 
+
+// ---------------------------------------------------------------------------------
 void BordersFinder::SaveBorders(const std::string& filename, const std::string& getter_name) {
   Getter getter;
 
@@ -88,5 +100,17 @@ void BordersFinder::SaveBorders(const std::string& filename, const std::string& 
 
   f->Close();
 }
+// ---------------------------------------------------------------------------------
+
+
+// ---------------------------------------------------------------------------------
+void BordersFinder::SetRanges(int n, double min, double max, bool fullRange) {
+  ranges_.clear();
+  for (int i = 0; i <= n; ++i) {
+    ranges_.push_back(min + i * (max - min) / n);
+  }
+  useFullRange_ = fullRange;
+}
+// ---------------------------------------------------------------------------------
 
 }// namespace Centrality
