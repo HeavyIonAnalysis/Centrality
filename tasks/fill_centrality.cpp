@@ -34,9 +34,9 @@ void fill_centrality(const std::string& filelist, const std::string& centrality_
   task->SetInput("VtxTracks");
 
   AnalysisTree::SimpleCut sc_vtx_chi2 = AnalysisTree::RangeCut("VtxTracks.vtx_chi2", 0, 3);
-  AnalysisTree::SimpleCut sc_nhits    = AnalysisTree::RangeCut("VtxTracks.nhits", 4, 100);
+  AnalysisTree::SimpleCut sc_nhits = AnalysisTree::RangeCut("VtxTracks.nhits", 4, 100);
   AnalysisTree::SimpleCut sc_chi2_ndf({{"VtxTracks.chi2"}, {"VtxTracks.ndf"}}, [](std::vector<double> par) { return par[0] / par[1] < 3; });
-  AnalysisTree::SimpleCut sc_eta      = AnalysisTree::RangeCut("VtxTracks.eta", 0.2, 6);
+  AnalysisTree::SimpleCut sc_eta = AnalysisTree::RangeCut("VtxTracks.eta", 0.2, 6);
 
   auto* tracks_cuts = new AnalysisTree::Cuts("VtxTracks", {sc_vtx_chi2, sc_nhits, sc_chi2_ndf, sc_eta});
 

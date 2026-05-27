@@ -51,7 +51,7 @@ void BordersFinder::FindBorders() {
   double cRangeInput = 100.;
   double cStart = 100.;
   double cOffset = 0.;
-  if (useFullRange_==false && is_ranges_predefined) {
+  if (useFullRange_ == false && is_ranges_predefined) {
     cRangeInput = abs(ranges_.front() - ranges_.back());
     cStart = isSpectator_ ? ranges_.back() : ranges_.front();
     cOffset = isSpectator_ ? ranges_.front() : 0.;
@@ -71,12 +71,11 @@ void BordersFinder::FindBorders() {
       borders_.push_back(x[i]);
       auto cc = isSpectator_ ? cX(x[i]) : cStart - cX(x[i]);
       ranges_.push_back(cc);
-      std::cout << cc << "%"  << ", border: " << x[i] << std::endl;
+      std::cout << cc << "%" << ", border: " << x[i] << std::endl;
     }
   }
 }
 // ---------------------------------------------------------------------------------
-
 
 // ---------------------------------------------------------------------------------
 void BordersFinder::SaveBorders(const std::string& filename, const std::string& getter_name) {
@@ -101,7 +100,6 @@ void BordersFinder::SaveBorders(const std::string& filename, const std::string& 
   f->Close();
 }
 // ---------------------------------------------------------------------------------
-
 
 // ---------------------------------------------------------------------------------
 void BordersFinder::SetRanges(int n, double min, double max, bool fullRange) {
