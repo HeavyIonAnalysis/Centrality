@@ -54,7 +54,7 @@ TEST(BordersFinder, NonSpectatorPartialRange) {
 
   auto h1 = MakeHistoGaus();
   bf.SetHisto(h1);
-  bf.SetRanges(4, 0, 20, false);
+  bf.SetRanges(4, 0, 20);
   bf.IsSpectator(false);
 
   bf.FindBorders();
@@ -81,7 +81,7 @@ TEST(BordersFinder, SpectatorPartialRange) {
 
   auto h1 = MakeHistoGaus();
   bf.SetHisto(h1);
-  bf.SetRanges(2, 10, 20, false);
+  bf.SetRanges(2, 10, 20);
   bf.IsSpectator(true);
 
   bf.FindBorders();

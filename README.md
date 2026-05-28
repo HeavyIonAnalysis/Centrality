@@ -76,8 +76,8 @@ TH1D and TCanvas are also written into pdf-files produced during the executable 
 
 #### Slicing with a restricted impact parameter range
 
-If the simulated dataset does not cover the full minimum-bias range but only a restricted interval of impact parameters — for example *b* ∈ [2, 4] fm, which corresponds to roughly 10–20% centrality — the `SetRanges` call must reflect this by passing the known centrality limits as the `min` and `max` arguments and setting the fourth argument `fullRange` to `false`.
-This tells `BordersFinder` that the input histogram covers only this sub-range, so the integral normalization is scaled to the width of that window instead of assuming a 0–100% span.
+If the simulated dataset does not cover the full minimum-bias range but only a restricted interval of impact parameters — for example *b* ∈ [2, 4] fm, which corresponds to roughly 10–20% centrality — the `SetRanges` call must reflect this by passing the known centrality limits as the `min` and `max` arguments.
+The `BordersFinder` always derives its normalization from the specified range, so the integral is automatically scaled to the width of that window.
 
 In `tasks/main.cpp`, replace the standard call
 
@@ -85,7 +85,7 @@ In `tasks/main.cpp`, replace the standard call
 
 with
 
-    bf.SetRanges(4, 10, 20, false);  // 4 equal bins within the known 10–20% centrality window
+    bf.SetRanges(4, 10, 20);  // 4 equal bins within the known 10–20% centrality window
 
 and restrict the histogram to the corresponding estimator values with `SetLimits` if needed:
 

@@ -27,7 +27,7 @@ class BordersFinder {
   void SetRanges(const std::vector<double>& ranges) { ranges_ = ranges; }
 
   // Set ranges of centrality estimator, i.e. min, max centrality [%] + number of equal sized bins
-  void SetRanges(int n, double min, double max, bool fullRange = true);
+  void SetRanges(int n, double min, double max);
 
   /**
   * To be used only in tests
@@ -53,7 +53,6 @@ class BordersFinder {
   std::vector<double> borders_{};
 
   bool isSpectator_{false};
-  bool useFullRange_{true};
 
   bool applyLimits_{false};
   double xLo_{-1};

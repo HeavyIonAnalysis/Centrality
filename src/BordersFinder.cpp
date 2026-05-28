@@ -47,11 +47,10 @@ void BordersFinder::FindBorders() {
   double intHi = intVsXGraph.Eval(xHi);
   double norm = intHi - intLo;
 
-  // Check if full or only part of centrality range is used in input histogram
   double cRangeInput = 100.;
   double cStart = 100.;
   double cOffset = 0.;
-  if (useFullRange_ == false && is_ranges_predefined) {
+  if (is_ranges_predefined) {
     cRangeInput = abs(ranges_.front() - ranges_.back());
     cStart = isSpectator_ ? ranges_.back() : ranges_.front();
     cOffset = isSpectator_ ? ranges_.front() : 0.;
@@ -104,12 +103,11 @@ void BordersFinder::SaveBorders(const std::string& filename, const std::string& 
 // ---------------------------------------------------------------------------------
 
 // ---------------------------------------------------------------------------------
-void BordersFinder::SetRanges(int n, double min, double max, bool fullRange) {
+void BordersFinder::SetRanges(int n, double min, double max) {
   ranges_.clear();
   for (int i = 0; i <= n; ++i) {
     ranges_.push_back(min + i * (max - min) / n);
   }
-  useFullRange_ = fullRange;
 }
 // ---------------------------------------------------------------------------------
 
