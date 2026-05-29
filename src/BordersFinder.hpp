@@ -23,13 +23,12 @@ class BordersFinder {
   void SetHisto(const TH1F& h) { histo_ = h; }
   TH1F& GetHisto() { return histo_; }// not const to use Draw etc
 
+  // Set ranges of centrality estimator by vector, e.g. {0., 25., 50., 75., 100.} centrality [%]
   void SetRanges(const std::vector<double>& ranges) { ranges_ = ranges; }
-  void SetRanges(int n, double min, double max) {
-    ranges_.clear();
-    for (int i = 0; i <= n; ++i) {
-      ranges_.push_back(min + i * (max - min) / n);
-    }
-  }
+
+  // Set ranges of centrality estimator, i.e. min, max centrality [%] + number of equal sized bins
+  void SetRanges(int n, double min, double max);
+
   /**
   * To be used only in tests
   */

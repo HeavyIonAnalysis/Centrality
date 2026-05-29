@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
     // Optionally set the limits of the 1D histogram, where to define centrality
     // e.g. if you need to remove unphysics tails of the esimator-quantity distribution
     // uncomment the next line
-    // bf.SetLimits(15, 80);
+    // bf.SetLimits(0,500);
 
     // (optionally*) Define the ranges of centrality classes to be obtained
     // for ranges with equivalent widths use the next line, for different widths - the line after the next
